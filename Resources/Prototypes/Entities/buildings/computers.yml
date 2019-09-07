@@ -64,13 +64,20 @@
 - type: entity
   id: computerSupplyOrdering
   parent: computerBase
-  name: Supply Ordering Computer
+  name: Cargo Ordering Computer
   components:
   - type: Appearance
     visuals:
     - type: ComputerVisualizer2D
       key: tech_key
       screen: supply
+  - type: CargoConsole
+  - type: CargoOrderDatabase
+  - type: GalacticMarket
+  - type: UserInterface
+    interfaces:
+    - key: enum.CargoConsoleUiKey.Key
+      type: CargoConsoleBoundUserInterface
 
 
 - type: entity

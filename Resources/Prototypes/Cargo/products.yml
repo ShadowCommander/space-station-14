@@ -1,0 +1,19 @@
+- type: cargoProduct
+  name: "Dice"
+  id: cargo.dice
+  description: Some dice
+  icon: Objects/items/dice.rsi
+  product: d20
+  cost: 20
+  category: other
+  group: market
+
+- type: cargoProduct
+  name: "Flashlight"
+  id: cargo.flashlight
+  description: Shine a light in the dark
+  icon: Objects/items/flashlight.rsi
+  product: FlashlightLantern
+  cost: 30
+  category: other
+  group: market
