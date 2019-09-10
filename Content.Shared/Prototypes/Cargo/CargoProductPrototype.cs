@@ -36,7 +36,7 @@ namespace Content.Shared.Prototypes.Cargo
                     return _name;
                 var protoMan = IoCManager.Resolve<IPrototypeManager>();
                 if (protoMan == null)
-                    return _description;
+                    return _name;
                 protoMan.TryIndex(_product, out EntityPrototype prototype);
                 if (prototype?.Name != null)
                     _name = prototype.Name;
@@ -68,7 +68,24 @@ namespace Content.Shared.Prototypes.Cargo
         ///     Texture path used in the CargoConsole GUI.
         /// </summary>
         [ViewVariables]
-        public SpriteSpecifier Icon => _icon;
+        public SpriteSpecifier Icon
+        {
+            get
+            {
+                if (_icon != null)
+                    return _icon;
+                var protoMan = IoCManager.Resolve<IPrototypeManager>();
+                if (protoMan == null)
+                    return _icon;
+                protoMan.TryIndex(_product, out EntityPrototype prototype);
+                if (prototype == null)
+                    return _icon;
+                prototype.Components.TryGetValue("icon", out YamlMappingNode value);
+                var serializer = YamlObjectSerializer.NewReader(value);
+                serializer.DataField(ref _icon, "icon", SpriteSpecifier.Invalid);
+                return _icon;
+            }
+        }
 
         /// <summary>
         ///     The prototype name of the product.

@@ -19,10 +19,11 @@ namespace Content.Client.UserInterface.Cargo
 
         protected override Vector2? CustomSize => (400, 600);
 
-        public CargoConsoleBoundUserInterface Owner { get; set; }
+        public CargoConsoleBoundUserInterface Owner { get; private set; }
 
-        private List<CargoProductPrototype> _productPrototypes = new List<CargoProductPrototype>();
-        private List<CargoOrderData> _requestData = new List<CargoOrderData>();
+        public List<CargoProductPrototype> ProductPrototypes = new List<CargoProductPrototype>();
+        public List<CargoOrderData> RequestData = new List<CargoOrderData>();
+
         private List<CargoOrderData> _orderData = new List<CargoOrderData>();
         private List<string> _categoryStrings = new List<string>();
 
@@ -174,8 +175,6 @@ namespace Content.Client.UserInterface.Cargo
             CallShuttleButton.OnPressed += OnCallShuttleButtonPressed;
             _searchBar.OnTextChanged += OnSearchBarTextChanged;
             _categories.OnItemSelected += OnOverrideMenuItemSelected;
-            Products.OnItemSelected += OnItemsItemSelected;
-            Populate();
         }
 
         private void OnCallShuttleButtonPressed(BaseButton.ButtonEventArgs args)
@@ -191,29 +190,23 @@ namespace Content.Client.UserInterface.Cargo
             PopulateMarket();
         }
 
-        private void OnItemsItemSelected(ItemList.ItemListSelectedEventArgs args)
-        {
-            
-            Owner.AddOrder(_productPrototypes[args.ItemIndex]);
-        }
-
         /// <summary>
         ///     Populates the list of products that will actually be shown, using the current filters.
         /// </summary>
         public void PopulateMarket()
         {
-            _productPrototypes.Clear();
+            ProductPrototypes.Clear();
             _categoryStrings.Clear();
 
             Products.Clear();
             _categories.Clear();
 
             var search = _searchBar.Text.Trim().ToLowerInvariant();
-            foreach (var prototype in Owner.Market)
+            foreach (var prototype in Owner.Market.Products)
             {
                 if (search.Length == 0 || prototype.Name.ToLowerInvariant().Contains(search))
                 {
-                    _productPrototypes.Add(prototype);
+                    ProductPrototypes.Add(prototype);
                     Products.AddItem(prototype.Name, prototype.Icon.Frame0());
                     if (!_categoryStrings.Contains(prototype.Category))
                     {
@@ -233,23 +226,24 @@ namespace Content.Client.UserInterface.Cargo
         /// </summary>
         public void PopulateOrders()
         {
-            _requestData.Clear();
+            RequestData.Clear();
             _orderData.Clear();
 
             _requests.Clear();
             _orders.Clear();
 
-            foreach (var order in Owner.Orders)
+            foreach (var order in Owner.Orders.Orders)
             {
+                var str = $"{Owner.Market.GetProduct(order.ProductId).Name} (x{order.Amount}) by {order.Requester} reason: {order.Reason}";
                 if (order.Approved)
                 {
                     _orderData.Add(order);
-                    _orders.AddItem($"{order.Product.Name} (x{order.Amount}) by {order.Requester}\nReason: {order.Reason}", order.Product.Icon.Frame0());
+                    _orders.AddItem(str, Owner.Market.GetProduct(order.ProductId).Icon.Frame0());
                 }
                 else
                 {
-                    _requestData.Add(order);
-                    _requests.AddItem($"{order.Product.Name} (x{order.Amount}) by {order.Requester}\nReason: {order.Reason}", order.Product.Icon.Frame0());
+                    RequestData.Add(order);
+                    _requests.AddItem(str, Owner.Market.GetProduct(order.ProductId).Icon.Frame0());
                 }
             }
         }

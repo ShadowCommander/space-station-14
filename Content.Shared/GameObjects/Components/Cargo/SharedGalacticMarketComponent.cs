@@ -19,8 +19,12 @@ namespace Content.Shared.GameObjects.Components.Cargo
         public override uint? NetID => ContentNetIDs.GALACTIC_MARKET;
         public override Type StateType => typeof(GalacticMarketState);
 
-        [ViewVariables]
         protected List<CargoProductPrototype> _products = new List<CargoProductPrototype>();
+
+        /// <summary>
+        ///     A read-only list of products.
+        /// </summary>
+        public IReadOnlyList<CargoProductPrototype> Products => _products;
 
         public IEnumerator<CargoProductPrototype> GetEnumerator()
         {
@@ -30,6 +34,20 @@ namespace Content.Shared.GameObjects.Components.Cargo
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        /// <summary>
+        ///     Returns a list with the IDs of all products.
+        /// </summary>
+        /// <returns>A list of product IDs</returns>
+        public CargoProductPrototype GetProduct(string productId)
+        {
+            var prototypeManager = IoCManager.Resolve<IPrototypeManager>();
+            if (!prototypeManager.TryIndex(productId, out CargoProductPrototype product) || !_products.Contains(product))
+            {
+                return null;
+            }
+            return product;
         }
 
         /// <summary>
@@ -54,19 +72,19 @@ namespace Content.Shared.GameObjects.Components.Cargo
 
             if (serializer.Reading)
             {
-                var products = serializer.ReadDataField("cargoProduct", new List<string>());
+                var products = serializer.ReadDataField("products", new List<string>());
                 var prototypeManager = IoCManager.Resolve<IPrototypeManager>();
                 foreach (var id in products)
                 {
-                    if (!prototypeManager.TryIndex(id, out CargoProductPrototype recipe))
+                    if (!prototypeManager.TryIndex(id, out CargoProductPrototype product))
                         continue;
-                    _products.Add(recipe);
+                    _products.Add(product);
                 }
             }
             else if (serializer.Writing)
             {
                 var products = GetProductIdList();
-                serializer.DataField(ref products, "cargoProduct", new List<string>());
+                serializer.DataField(ref products, "products", new List<string>());
             }
         }
     }

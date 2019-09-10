@@ -24,15 +24,24 @@ namespace Content.Server.GameObjects.Components.Cargo
 
         [ViewVariables]
         public GalacticMarketComponent Market { get; private set; }
-
         [ViewVariables]
         public CargoOrderDatabaseComponent Orders { get; private set; }
+        [ViewVariables]
+        public string BankName { get; private set; }
+        [ViewVariables]
+        public int BankId { get; private set; }
+
+        private bool _requestOnly = false;
 
         public override void Initialize()
         {
             base.Initialize();
+            Market = Owner.GetComponent<GalacticMarketComponent>();
+            Orders = Owner.GetComponent<CargoOrderDatabaseComponent>();
             _userInterface = Owner.GetComponent<ServerUserInterfaceComponent>().GetBoundUserInterface(CargoConsoleUiKey.Key);
             _userInterface.OnReceiveMessage += UserInterfaceOnOnReceiveMessage;
+            BankName = "Galactic Bank";
+            BankId = 0;
         }
 
         private void UserInterfaceOnOnReceiveMessage(ServerBoundUserInterfaceMessage serverMsg)
@@ -40,9 +49,21 @@ namespace Content.Server.GameObjects.Components.Cargo
             var message = serverMsg.Message;
             switch (message)
             {
-                case CargoConsoleAddOrder msg:
+                case CargoConsoleAddOrderMessage msg:
                 {
-                    Orders.AddOrder(msg.Order);
+                    _prototypeManager.TryIndex(msg.ProductId, out CargoProductPrototype product);
+                    if (product == null)
+                    {
+                        break;
+                    }
+
+                    Orders.AddOrder(msg.Requester, msg.Reason, msg.ProductId, msg.Amount, BankName, BankId, !_requestOnly);
+                    _userInterface.SendMessage(new CargoConsoleOrderDataMessage(Orders.GetOrderList()));
+                    break;
+                }
+                case CargoConsoleSyncMessage msg:
+                {
+                    //_userInterface.SendMessage(new CargoConsoleFullDataMessage(Orders.GetOrderList(), Market.GetProductIdList()));
                     break;
                 }
             }

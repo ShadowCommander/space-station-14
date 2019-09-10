@@ -169,6 +169,9 @@ namespace Content.Client.UserInterface
             var itemListItemBackground = new StyleBoxFlat {BackgroundColor = new Color(55, 55, 68)};
             itemListItemBackground.SetContentMarginOverride(StyleBox.Margin.Vertical, 2);
             itemListItemBackground.SetContentMarginOverride(StyleBox.Margin.Horizontal, 4);
+            var itemListItemBackgroundTransparent = new StyleBoxFlat { BackgroundColor = Color.Transparent };
+            itemListItemBackgroundTransparent.SetContentMarginOverride(StyleBox.Margin.Vertical, 2);
+            itemListItemBackgroundTransparent.SetContentMarginOverride(StyleBox.Margin.Horizontal, 4);
 
             Stylesheet = new Stylesheet(new[]
             {
@@ -405,7 +408,7 @@ namespace Content.Client.UserInterface
                     new StyleProperty(ItemList.StylePropertyBackground,
                         new StyleBoxFlat {BackgroundColor = Color.Transparent}),
                     new StyleProperty(ItemList.StylePropertyItemBackground,
-                        new StyleBoxFlat {BackgroundColor = Color.Transparent}),
+                        itemListItemBackgroundTransparent),
                     new StyleProperty(ItemList.StylePropertyDisabledItemBackground,
                         itemListItemBackgroundDisabled),
                     new StyleProperty(ItemList.StylePropertySelectedItemBackground,

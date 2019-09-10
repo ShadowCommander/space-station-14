@@ -15,18 +15,18 @@ namespace Content.Shared.Prototypes.Cargo
         // public String RequesterRank;
         // public int RequesterId;
         public string Reason;
-        public CargoProductPrototype Product;
+        public string ProductId;
         public int Amount;
         public string PayingAccount;
         public int PayingAccountId;
         public bool Approved;
 
-        public CargoOrderData(int orderNumber, string requester, string reason, CargoProductPrototype product, int amount, string payingAccount, int payingAccountId, bool approved)
+        public CargoOrderData(int orderNumber, string requester, string reason, string productId, int amount, string payingAccount, int payingAccountId, bool approved)
         {
             OrderNumber = orderNumber;
             Requester = requester;
             Reason = reason;
-            Product = product;
+            ProductId = productId;
             Amount = amount;
             PayingAccount = payingAccount;
             PayingAccountId = payingAccountId;

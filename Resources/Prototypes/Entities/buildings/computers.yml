@@ -74,6 +74,11 @@
   - type: CargoConsole
   - type: CargoOrderDatabase
   - type: GalacticMarket
+    static: true
+    products:
+      - cargo.dice
+      - cargo.flashlight
+      - cargo.Medkit
   - type: UserInterface
     interfaces:
     - key: enum.CargoConsoleUiKey.Key
