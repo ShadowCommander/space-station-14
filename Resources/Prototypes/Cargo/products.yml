@@ -4,7 +4,7 @@
   description: Some dice
   icon:
     sprite: Objects/items/dice.rsi
-    state: d1212
+    state: d2020
   product: d20
   cost: 20
   category: Other

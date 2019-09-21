@@ -39,6 +39,8 @@ namespace Content.Client.UserInterface.Cargo
         public Button CallShuttleButton { get; set; }
         public Button PermissionsButton { get; set; }
 
+        private string _category = null;
+
         public CargoConsoleMenu(CargoConsoleBoundUserInterface owner)
         {
             IoCManager.InjectDependencies(this);
@@ -60,7 +62,7 @@ namespace Content.Client.UserInterface.Cargo
                 StyleClasses = { NanoStyle.StyleClassLabelKeyText }
             };
             _accountNameLabel = new Label {
-                Text = _loc.GetString("None")
+                Text = _loc.GetString("None") // Owner.Bank.Account.Name
             };
             accountName.AddChild(accountNameLabel);
             accountName.AddChild(_accountNameLabel);
@@ -74,7 +76,7 @@ namespace Content.Client.UserInterface.Cargo
             };
             _pointsLabel = new Label
             {
-                Text = "0"
+                Text = "0" // Owner.Bank.Account.Balance
             };
             points.AddChild(pointsLabel);
             points.AddChild(_pointsLabel);
@@ -88,7 +90,7 @@ namespace Content.Client.UserInterface.Cargo
             };
             _shuttleStatusLabel = new Label
             {
-                Text = _loc.GetString("Away")
+                Text = _loc.GetString("Away") // Shuttle.Status
             };
             shuttleStatus.AddChild(shuttleStatusLabel);
             shuttleStatus.AddChild(_shuttleStatusLabel);
@@ -113,6 +115,7 @@ namespace Content.Client.UserInterface.Cargo
             var category = new HBoxContainer();
             _categories = new OptionButton
             {
+                Text = "Categories:",
                 SizeFlagsHorizontal = SizeFlags.FillExpand,
                 SizeFlagsStretchRatio = 1
             };
@@ -163,55 +166,75 @@ namespace Content.Client.UserInterface.Cargo
 
             Contents.AddChild(rows);
 
-            /*categories.AddItem("Honk");
-            categories.AddItem("Foo");
-            categories.AddItem("Bar");
-            categories.AddItem("Baz");
-
-            for (var i = 0; i < categoriesList.Length; i++)
-            {
-                categories.AddItem(categoriesList[i], i);
-            }*/
             CallShuttleButton.OnPressed += OnCallShuttleButtonPressed;
             _searchBar.OnTextChanged += OnSearchBarTextChanged;
-            _categories.OnItemSelected += OnOverrideMenuItemSelected;
+            _categories.OnItemSelected += OnCategoryItemSelected;
         }
 
         private void OnCallShuttleButtonPressed(BaseButton.ButtonEventArgs args)
         {
         }
 
-        private void OnOverrideMenuItemSelected(OptionButton.ItemSelectedEventArgs args)
+        private void OnCategoryItemSelected(OptionButton.ItemSelectedEventArgs args)
         {
+            if (args.Id == 0)
+            {
+                _category = null;
+            }
+            else
+            {
+                _category = _categoryStrings[args.Id];
+            }
+            _categories.SelectId(args.Id);
+            PopulateProducts();
+
         }
 
         private void OnSearchBarTextChanged(LineEdit.LineEditEventArgs args)
         {
-            PopulateMarket();
+            PopulateProducts();
         }
 
         /// <summary>
         ///     Populates the list of products that will actually be shown, using the current filters.
         /// </summary>
-        public void PopulateMarket()
+        public void PopulateProducts()
         {
             ProductPrototypes.Clear();
-            _categoryStrings.Clear();
-
             Products.Clear();
-            _categories.Clear();
 
             var search = _searchBar.Text.Trim().ToLowerInvariant();
             foreach (var prototype in Owner.Market.Products)
             {
-                if (search.Length == 0 || prototype.Name.ToLowerInvariant().Contains(search))
+                // if no search or category
+                // else if search
+                // else if category and not search
+                if ((search.Length == 0 && _category == null) ||
+                    (search.Length != 0 && prototype.Name.ToLowerInvariant().Contains(search)) ||
+                    (search.Length == 0 && _category != null && prototype.Category.Equals(_category)))
                 {
                     ProductPrototypes.Add(prototype);
                     Products.AddItem(prototype.Name, prototype.Icon.Frame0());
-                    if (!_categoryStrings.Contains(prototype.Category))
-                    {
-                        _categoryStrings.Add(prototype.Category);
-                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Populates the list of products that will actually be shown, using the current filters.
+        /// </summary>
+        public void PopulateCategories()
+        {
+            _categoryStrings.Clear();
+            _categories.Clear();
+
+            _categoryStrings.Add("All");
+
+            var search = _searchBar.Text.Trim().ToLowerInvariant();
+            foreach (var prototype in Owner.Market.Products)
+            {
+                if (!_categoryStrings.Contains(prototype.Category))
+                {
+                    _categoryStrings.Add(prototype.Category);
                 }
             }
             _categoryStrings.Sort();
@@ -250,7 +273,8 @@ namespace Content.Client.UserInterface.Cargo
 
         public void Populate()
         {
-            PopulateMarket();
+            PopulateProducts();
+            PopulateCategories();
             PopulateOrders();
         }
     }

@@ -3,6 +3,7 @@ using Robust.Client.UserInterface.CustomControls;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Maths;
+using System;
 using System.Collections.Generic;
 
 namespace Content.Client.UserInterface.Cargo
@@ -12,8 +13,6 @@ namespace Content.Client.UserInterface.Cargo
 #pragma warning disable 649
         [Dependency] private readonly ILocalizationManager _loc;
 #pragma warning restore 649
-
-        //protected override Vector2? CustomSize => (300, 100);
 
         public LineEdit Requester { get; set; }
         public LineEdit Reason { get; set; }
@@ -58,12 +57,6 @@ namespace Content.Client.UserInterface.Cargo
             vBox.AddChild(SubmitButton);
 
             Contents.AddChild(vBox);
-        }
-
-        internal void Submit()
-        {
-            if (Requester.Text.Trim().Length == 0)
-                return;
         }
     }
 }

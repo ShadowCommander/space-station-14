@@ -37,9 +37,9 @@ namespace Content.Shared.GameObjects.Components.Cargo
         }
 
         /// <summary>
-        ///     Returns a list with the IDs of all products.
+        ///     Returns a product from the string id;
         /// </summary>
-        /// <returns>A list of product IDs</returns>
+        /// <returns>Product</returns>
         public CargoProductPrototype GetProduct(string productId)
         {
             var prototypeManager = IoCManager.Resolve<IPrototypeManager>();

@@ -45,7 +45,7 @@ namespace Content.Shared.GameObjects.Components.Cargo
         }
 
         /// <summary>
-        ///     Adds a order to the database.
+        ///     Adds an order to the database.
         /// </summary>
         /// <param name="order">The order to be added.</param>
         public virtual void AddOrder(CargoOrderData order)
@@ -55,19 +55,25 @@ namespace Content.Shared.GameObjects.Components.Cargo
         }
 
         /// <summary>
-        ///     Adds a order to the database.
+        ///     Adds an order to the database.
         /// </summary>
-        /// <param name="order">The order to be added.</param>
-        public virtual void AddOrder(string requester, string reason, string productId, int amount, string payingAccount, int payingAccountId, bool approved)
+        /// <param name="requester">The person who requested the item.</param>
+        /// <param name="reason">The reason the product was requested.</param>
+        /// <param name="productId">The ID of the product requested.</param>
+        /// <param name="amount">The amount of the products requested.</param>
+        /// <param name="payingAccount">The name of the bank account paying for the order.</param>
+        /// <param name="payingAccountId">The ID of the bank account paying for the order.</param>
+        /// <param name="approved">Whether the order will be bought when the orders are processed.</param>
+        public virtual void AddOrder(string requester, string reason, string productId, int amount, int payingAccountId, bool approved)
         {
-            var order = new CargoOrderData(_orderNumber, requester, reason, productId, amount, payingAccount, payingAccountId, approved);
+            var order = new CargoOrderData(_orderNumber, requester, reason, productId, amount, payingAccountId, approved);
             _orderNumber += 1;
             if (!Contains(order))
                 _orders.Add(order);
         }
 
         /// <summary>
-        ///     Removes a order from the database.
+        ///     Removes an order from the database.
         /// </summary>
         /// <param name="order">The order to be removed.</param>
         /// <returns>Whether it could be removed or not</returns>
@@ -87,7 +93,7 @@ namespace Content.Shared.GameObjects.Components.Cargo
         }
 
         /// <summary>
-        ///     Returns a list with the IDs of all order.
+        ///     Returns a list with the IDs of all orders.
         /// </summary>
         /// <returns>A list of order IDs</returns>
         public List<CargoOrderData> GetOrderList()

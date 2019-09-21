@@ -20,8 +20,6 @@ namespace Content.Client.GameObjects.Components.Cargo
         private CargoConsoleMenu _menu;
         [ViewVariables]
         private CargoConsoleOrderMenu _orderMenu;
-        [ViewVariables]
-        private CargoConsoleMenu _amountMenu;
 
         [ViewVariables]
         public GalacticMarketComponent Market { get; private set; }
@@ -48,16 +46,21 @@ namespace Content.Client.GameObjects.Components.Cargo
 
             _menu = new CargoConsoleMenu(this);
             _orderMenu = new CargoConsoleOrderMenu();
-            //amountMenu = new CargoConsoleConfirmationMenu { Owner = this };
 
             _menu.OnClose += Close;
 
             _menu.Populate();
 
-            Market.OnDatabaseUpdated += _menu.PopulateMarket;
+            Market.OnDatabaseUpdated += _menu.PopulateProducts;
+            Market.OnDatabaseUpdated += _menu.PopulateCategories;
             Orders.OnDatabaseUpdated += _menu.PopulateOrders;
 
-            _menu.Products.OnItemSelected += (args) => {
+            _menu.CallShuttleButton.OnPressed += (args) =>
+            {
+                
+            };
+            _menu.Products.OnItemSelected += (args) =>
+            {
                 _product = _menu.ProductPrototypes[args.ItemIndex];
                 _orderMenu.OpenCenteredMinSize();
             };
@@ -94,7 +97,6 @@ namespace Content.Client.GameObjects.Components.Cargo
             if (!disposing) return;
             _menu?.Dispose();
             _orderMenu?.Dispose();
-            _amountMenu?.Dispose();
         }
 
         internal void AddOrder()
