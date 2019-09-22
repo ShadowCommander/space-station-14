@@ -31,5 +31,6 @@
         public const uint CARGO_CONSOLE = 1025;
         public const uint CARGO_ORDER_DATABASE = 1026;
         public const uint GALACTIC_MARKET = 1027;
+        public const uint GALACTIC_BANK = 1028;
     }
 }

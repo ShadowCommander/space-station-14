@@ -40,7 +40,6 @@ namespace Content.Server.GameObjects.Components.Cargo
             Orders = Owner.GetComponent<CargoOrderDatabaseComponent>();
             _userInterface = Owner.GetComponent<ServerUserInterfaceComponent>().GetBoundUserInterface(CargoConsoleUiKey.Key);
             _userInterface.OnReceiveMessage += UserInterfaceOnOnReceiveMessage;
-            BankName = "Galactic Bank";
             BankId = 0;
         }
 
@@ -57,7 +56,7 @@ namespace Content.Server.GameObjects.Components.Cargo
                         break;
                     }
 
-                    Orders.AddOrder(msg.Requester, msg.Reason, msg.ProductId, msg.Amount, BankName, BankId, !_requestOnly);
+                    Orders.AddOrder(msg.Requester, msg.Reason, msg.ProductId, msg.Amount, BankId, !_requestOnly);
                     _userInterface.SendMessage(new CargoConsoleOrderDataMessage(Orders.GetOrderList()));
                     break;
                 }
