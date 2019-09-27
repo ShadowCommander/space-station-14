@@ -10,15 +10,15 @@ namespace Content.Shared.DatabaseData
     [NetSerializable, Serializable]
     public class GalacticBankAccount
     {
-        private string _id;
-        private string _name;
-        private int _balance;
+        public int Id { get;  }
+        public string Name { get; }
+        public int Balance { get; set; }
 
-        public GalacticBankAccount(string id, string name, int balance)
+        public GalacticBankAccount(int id, string name)
         {
-            _id = id;
-            _name = name;
-            _balance = balance;
+            Id = id;
+            Name = name;
+            Balance = 0;
         }
     }
 }

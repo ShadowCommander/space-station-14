@@ -62,7 +62,7 @@ namespace Content.Client.UserInterface.Cargo
                 StyleClasses = { NanoStyle.StyleClassLabelKeyText }
             };
             _accountNameLabel = new Label {
-                Text = _loc.GetString("None") // Owner.Bank.Account.Name
+                Text = Owner.Bank.Account.Name
             };
             accountName.AddChild(accountNameLabel);
             accountName.AddChild(_accountNameLabel);
@@ -76,7 +76,7 @@ namespace Content.Client.UserInterface.Cargo
             };
             _pointsLabel = new Label
             {
-                Text = "0" // Owner.Bank.Account.Balance
+                Text = Owner.Bank.Account.Balance.ToString()
             };
             points.AddChild(pointsLabel);
             points.AddChild(_pointsLabel);

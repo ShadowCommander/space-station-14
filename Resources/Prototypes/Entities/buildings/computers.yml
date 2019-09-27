@@ -79,6 +79,7 @@
       - cargo.dice
       - cargo.flashlight
       - cargo.Medkit
+  - type: GalacticBank
   - type: UserInterface
     interfaces:
     - key: enum.CargoConsoleUiKey.Key

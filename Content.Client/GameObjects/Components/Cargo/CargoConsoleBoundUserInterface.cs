@@ -25,7 +25,7 @@ namespace Content.Client.GameObjects.Components.Cargo
         public GalacticMarketComponent Market { get; private set; }
         [ViewVariables]
         public CargoOrderDatabaseComponent Orders { get; private set; }
-        // TODO add GalacticBank account
+        //public GalacticBankComponent Bank { get; private set; }
 
         private CargoProductPrototype _product;
 
@@ -40,9 +40,11 @@ namespace Content.Client.GameObjects.Components.Cargo
 
             if (!Owner.Owner.TryGetComponent(out GalacticMarketComponent market)
             ||  !Owner.Owner.TryGetComponent(out CargoOrderDatabaseComponent orders)) return;
+            //||  !Owner.Owner.TryGetComponent(out GalacticBankComponent bank)
 
             Market = market;
             Orders = orders;
+            //Bank = bank;
 
             _menu = new CargoConsoleMenu(this);
             _orderMenu = new CargoConsoleOrderMenu();
