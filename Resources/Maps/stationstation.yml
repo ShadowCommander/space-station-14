@@ -1837,7 +1837,7 @@ entities:
       mask: 19
       layer: 16
     type: Collidable
-- type: computerAlert
+- type: computerSupplyOrdering
   uid: 154
   components:
   - grid: 0

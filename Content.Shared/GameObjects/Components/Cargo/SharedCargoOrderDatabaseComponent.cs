@@ -1,9 +1,6 @@
 ﻿using Content.Shared.Prototypes.Cargo;
 using Robust.Shared.GameObjects;
-using Robust.Shared.IoC;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
-using Robust.Shared.ViewVariables;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,7 +10,7 @@ namespace Content.Shared.GameObjects.Components.Cargo
     public class SharedCargoOrderDatabaseComponent : Component, IEnumerable<CargoOrderData>
     {
 
-        public override string Name => "CargoOrderDatabase";
+        public sealed override string Name => "CargoOrderDatabase";
         public sealed override uint? NetID => ContentNetIDs.CARGO_ORDER_DATABASE;
         public sealed override Type StateType => typeof(CargoOrderDatabaseState);
 

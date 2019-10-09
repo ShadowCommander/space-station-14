@@ -25,7 +25,7 @@ namespace Content.Client.GameObjects.Components.Cargo
         public GalacticMarketComponent Market { get; private set; }
         [ViewVariables]
         public CargoOrderDatabaseComponent Orders { get; private set; }
-        //public GalacticBankComponent Bank { get; private set; }
+        //public SharedGalacticBankComponent Bank { get; private set; }
 
         private CargoProductPrototype _product;
 

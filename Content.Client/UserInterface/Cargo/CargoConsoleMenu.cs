@@ -62,7 +62,7 @@ namespace Content.Client.UserInterface.Cargo
                 StyleClasses = { NanoStyle.StyleClassLabelKeyText }
             };
             _accountNameLabel = new Label {
-                Text = Owner.Bank.Account.Name
+                Text = "Bank account" //Owner.Bank.Account.Name
             };
             accountName.AddChild(accountNameLabel);
             accountName.AddChild(_accountNameLabel);
@@ -76,7 +76,7 @@ namespace Content.Client.UserInterface.Cargo
             };
             _pointsLabel = new Label
             {
-                Text = Owner.Bank.Account.Balance.ToString()
+                Text = "0" //Owner.Bank.Account.Balance.ToString()
             };
             points.AddChild(pointsLabel);
             points.AddChild(_pointsLabel);
@@ -186,6 +186,7 @@ namespace Content.Client.UserInterface.Cargo
                 _category = _categoryStrings[args.Id];
             }
             _categories.SelectId(args.Id);
+            //_categories.Text = _categories.GetItem
             PopulateProducts();
 
         }

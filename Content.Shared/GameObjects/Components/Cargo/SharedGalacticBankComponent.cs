@@ -9,27 +9,9 @@ namespace Content.Shared.GameObjects.Components.Cargo
 {
     public class SharedGalacticBankComponent : Component
     {
-        public override string Name => "GalacticBank";
-        public override uint? NetID => ContentNetIDs.GALACTIC_BANK;
-        public override Type StateType => typeof(GalacticBankState);
-
-        protected GalacticBankAccount _account;
-
-        public GalacticBankAccount Account => _account;
-
-        public override void ExposeData(ObjectSerializer serializer)
-        {
-            base.ExposeData(serializer);
-
-            if (serializer.Reading)
-            {
-                _account = serializer.ReadDataField<GalacticBankAccount>("account");
-            }
-            else if (serializer.Writing)
-            {
-                serializer.DataField(ref _account, "account", null);
-            }
-        }
+        public sealed override string Name => "GalacticBank";
+        public sealed override uint? NetID => ContentNetIDs.GALACTIC_BANK;
+        public sealed override Type StateType => typeof(GalacticBankState);
     }
 
     [NetSerializable, Serializable]

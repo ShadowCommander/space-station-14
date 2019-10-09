@@ -14,8 +14,8 @@ namespace Content.Shared.GameObjects.Components.Cargo
 {
     public class SharedCargoConsoleComponent : Component
     {
-        public override string Name => "CargoConsole";
-        public override uint? NetID => ContentNetIDs.CARGO_CONSOLE;
+        public sealed override string Name => "CargoConsole";
+        public sealed override uint? NetID => ContentNetIDs.CARGO_CONSOLE;
 
 #pragma warning disable CS0649
         [Dependency]

@@ -3,21 +3,17 @@ using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
-using Robust.Shared.ViewVariables;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Content.Shared.GameObjects.Components.Cargo
 {
     public class SharedGalacticMarketComponent : Component, IEnumerable<CargoProductPrototype>
     {
-        public override string Name => "GalacticMarket";
-        public override uint? NetID => ContentNetIDs.GALACTIC_MARKET;
-        public override Type StateType => typeof(GalacticMarketState);
+        public sealed override string Name => "GalacticMarket";
+        public sealed override uint? NetID => ContentNetIDs.GALACTIC_MARKET;
+        public sealed override Type StateType => typeof(GalacticMarketState);
 
         protected List<CargoProductPrototype> _products = new List<CargoProductPrototype>();
 
