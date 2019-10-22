@@ -278,5 +278,11 @@ namespace Content.Client.UserInterface.Cargo
             PopulateCategories();
             PopulateOrders();
         }
+
+        public void UpdateBankData()
+        {
+            _accountNameLabel.Text = Owner.BankName;
+            _pointsLabel.Text = Owner.BankBalance.ToString();
+        }
     }
 }

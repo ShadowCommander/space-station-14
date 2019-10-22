@@ -28,9 +28,7 @@
         public const uint TECHNOLOGY_DATABASE = 1022;
         public const uint RESEARCH_CONSOLE = 1023;
         public const uint WIRES = 1024;
-        public const uint CARGO_CONSOLE = 1025;
-        public const uint CARGO_ORDER_DATABASE = 1026;
-        public const uint GALACTIC_MARKET = 1027;
-        public const uint GALACTIC_BANK = 1028;
+        public const uint CARGO_ORDER_DATABASE = 1025;
+        public const uint GALACTIC_MARKET = 1026;
     }
 }

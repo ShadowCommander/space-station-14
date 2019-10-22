@@ -2,6 +2,7 @@
 using Content.Shared.GameObjects.Components.Cargo;
 using Content.Shared.Prototypes.Cargo;
 using Robust.Client.GameObjects.Components.UserInterface;
+using Robust.Shared.GameObjects;
 using Robust.Shared.GameObjects.Components.UserInterface;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
@@ -25,13 +26,15 @@ namespace Content.Client.GameObjects.Components.Cargo
         public GalacticMarketComponent Market { get; private set; }
         [ViewVariables]
         public CargoOrderDatabaseComponent Orders { get; private set; }
-        //public SharedGalacticBankComponent Bank { get; private set; }
+        public int BankId { get; private set; }
+        public string BankName { get; private set; }
+        public int BankBalance { get; private set; }
 
         private CargoProductPrototype _product;
 
         public CargoConsoleBoundUserInterface(ClientUserInterfaceComponent owner, object uiKey) : base(owner, uiKey)
         {
-            SendMessage(new SharedCargoConsoleComponent.CargoConsoleSyncMessage());
+            SendMessage(new SharedCargoConsoleComponent.CargoConsoleSyncRequestMessage());
         }
 
         protected override void Open()
@@ -40,11 +43,9 @@ namespace Content.Client.GameObjects.Components.Cargo
 
             if (!Owner.Owner.TryGetComponent(out GalacticMarketComponent market)
             ||  !Owner.Owner.TryGetComponent(out CargoOrderDatabaseComponent orders)) return;
-            //||  !Owner.Owner.TryGetComponent(out GalacticBankComponent bank)
 
             Market = market;
             Orders = orders;
-            //Bank = bank;
 
             _menu = new CargoConsoleMenu(this);
             _orderMenu = new CargoConsoleOrderMenu();

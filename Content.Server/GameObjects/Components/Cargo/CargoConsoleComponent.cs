@@ -1,9 +1,11 @@
-﻿using Content.Server.GameObjects.EntitySystems;
+﻿using Content.Server.Cargo;
+using Content.Server.GameObjects.EntitySystems;
 using Content.Shared.GameObjects.Components.Cargo;
 using Content.Shared.Prototypes.Cargo;
 using Robust.Server.GameObjects.Components.UserInterface;
 using Robust.Server.Interfaces.GameObjects;
 using Robust.Shared.GameObjects;
+using Robust.Shared.IoC;
 using Robust.Shared.ViewVariables;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,10 @@ namespace Content.Server.GameObjects.Components.Cargo
     [ComponentReference(typeof(IActivate))]
     public class CargoConsoleComponent : SharedCargoConsoleComponent, IActivate
     {
+#pragma warning disable 649
+        [Dependency] private readonly IGalacticBankManager _galacticBankManager;
+#pragma warning restore 649
+
         [ViewVariables]
         public int Points = 1000;
 
@@ -26,8 +32,6 @@ namespace Content.Server.GameObjects.Components.Cargo
         public GalacticMarketComponent Market { get; private set; }
         [ViewVariables]
         public CargoOrderDatabaseComponent Orders { get; private set; }
-        [ViewVariables]
-        public string BankName { get; private set; }
         [ViewVariables]
         public int BankId { get; private set; }
 
@@ -60,7 +64,7 @@ namespace Content.Server.GameObjects.Components.Cargo
                     _userInterface.SendMessage(new CargoConsoleOrderDataMessage(Orders.GetOrderList()));
                     break;
                 }
-                case CargoConsoleSyncMessage msg:
+                case CargoConsoleSyncRequestMessage msg:
                 {
                     //_userInterface.SendMessage(new CargoConsoleFullDataMessage(Orders.GetOrderList(), Market.GetProductIdList()));
                     break;
@@ -76,6 +80,11 @@ namespace Content.Server.GameObjects.Components.Cargo
             }
 
             _userInterface.Open(actor.playerSession);
+        }
+
+        public void SetAccountBalance(int balance)
+        {
+            _userInterface.SetState(new CargoConsoleInterfaceState(balance));
         }
     }
 }

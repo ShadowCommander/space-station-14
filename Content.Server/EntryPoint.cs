@@ -1,4 +1,5 @@
-﻿using Content.Server.Chat;
+﻿using Content.Server.Cargo;
+using Content.Server.Chat;
 using Content.Server.GameTicking;
 using Content.Server.Interfaces;
 using Content.Server.Interfaces.Chat;
@@ -80,6 +81,14 @@ namespace Content.Server
             base.Update(level, frameEventArgs);
 
             _gameTicker.Update(frameEventArgs);
+            switch (level)
+            {
+                case ModUpdateLevel.PreEngine:
+                {
+                    IoCManager.Resolve<IGalacticBankManager>().Update(frameEventArgs);
+                    break;
+                }
+            }
         }
     }
 }

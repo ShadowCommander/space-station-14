@@ -15,7 +15,6 @@ namespace Content.Shared.GameObjects.Components.Cargo
     public class SharedCargoConsoleComponent : Component
     {
         public sealed override string Name => "CargoConsole";
-        public sealed override uint? NetID => ContentNetIDs.CARGO_CONSOLE;
 
 #pragma warning disable CS0649
         [Dependency]
@@ -23,12 +22,12 @@ namespace Content.Shared.GameObjects.Components.Cargo
 #pragma warning restore
 
         /// <summary>
-        ///     Sent to the server to sync market and order lists.
+        ///     Sent to the server to request a sync of market and order lists.
         /// </summary>
         [Serializable, NetSerializable]
-        public class CargoConsoleSyncMessage : BoundUserInterfaceMessage
+        public class CargoConsoleSyncRequestMessage : BoundUserInterfaceMessage
         {
-            public CargoConsoleSyncMessage()
+            public CargoConsoleSyncRequestMessage()
             {
             }
         }
@@ -71,6 +70,21 @@ namespace Content.Shared.GameObjects.Components.Cargo
         public enum CargoConsoleUiKey
         {
             Key
+        }
+    }
+
+    [NetSerializable, Serializable]
+    public class CargoConsoleInterfaceState : BoundUserInterfaceState
+    {
+        public readonly int Id;
+        public readonly string Name;
+        public readonly int Balance;
+
+        public CargoConsoleInterfaceState(int id, string name, int balance)
+        {
+            Id = id;
+            Name = name;
+            Balance = balance;
         }
     }
 }
