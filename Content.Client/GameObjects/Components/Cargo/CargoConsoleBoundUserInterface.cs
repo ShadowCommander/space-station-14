@@ -77,23 +77,6 @@ namespace Content.Client.GameObjects.Components.Cargo
 
         }
 
-        protected override void ReceiveMessage(BoundUserInterfaceMessage message)
-        {
-            switch (message)
-            {
-                case SharedCargoConsoleComponent.CargoConsoleOrderDataMessage msg:
-                {
-                    Orders.Clear();
-                    foreach(var order in msg.Orders)
-                    {
-                        Orders.AddOrder(order);
-                    }
-                    _menu.PopulateOrders();
-                    break;
-                }
-            }
-        }
-
         protected override void UpdateState(BoundUserInterfaceState state)
         {
             base.UpdateState(state);

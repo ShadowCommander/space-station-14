@@ -33,20 +33,6 @@ namespace Content.Shared.GameObjects.Components.Cargo
         }
 
         /// <summary>
-        ///     Sent to the client to let it know about the market and orders.
-        /// </summary>
-        [Serializable, NetSerializable]
-        public class CargoConsoleOrderDataMessage : BoundUserInterfaceMessage
-        {
-            public readonly List<CargoOrderData> Orders;
-
-            public CargoConsoleOrderDataMessage(List<CargoOrderData> orders)
-            {
-                Orders = orders;
-            }
-        }
-
-        /// <summary>
         ///     Request that the server updates the client.
         /// </summary>
         [Serializable, NetSerializable]

@@ -1,4 +1,5 @@
 ﻿using Content.Shared.GameObjects.Components.Cargo;
+using Content.Shared.Prototypes.Cargo;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Prototypes;
@@ -13,6 +14,9 @@ namespace Content.Client.GameObjects.Components.Cargo
     [RegisterComponent]
     public class CargoOrderDatabaseComponent : SharedCargoOrderDatabaseComponent
     {
+        private List<CargoOrderData> _orders = new List<CargoOrderData>();
+
+        public IReadOnlyList<CargoOrderData> Orders => _orders;
         /// <summary>
         ///     Event called when the database is updated.
         /// </summary>

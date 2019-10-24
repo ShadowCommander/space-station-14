@@ -21,6 +21,7 @@ namespace Content.Server.GameObjects.Components.Cargo
     {
 #pragma warning disable 649
         [Dependency] private readonly IGalacticBankManager _galacticBankManager;
+        [Dependency] private readonly ICargoOrderDataManager _cargoOrderDataManager;
 #pragma warning restore 649
 
         [ViewVariables]
@@ -60,9 +61,7 @@ namespace Content.Server.GameObjects.Components.Cargo
                         break;
                     if (!_requestOnly && !_galacticBankManager.ChangeBalance(BankId, -product.PointCost))
                         break;
-
-                    Orders.AddOrder(msg.Requester, msg.Reason, msg.ProductId, msg.Amount, BankId, !_requestOnly);
-                    _userInterface.SendMessage(new CargoConsoleOrderDataMessage(Orders.GetOrderList()));
+                    _cargoOrderDataManager.AddOrder(Orders.AccountId, msg.Requester, msg.Reason, msg.ProductId, msg.Amount, BankId, !_requestOnly);
                     break;
                 }
                 case CargoConsoleSyncRequestMessage msg:

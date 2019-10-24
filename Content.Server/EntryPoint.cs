@@ -50,6 +50,7 @@ namespace Content.Server
             IoCManager.Register<IChatManager, ChatManager>();
             IoCManager.Register<IMoMMILink, MoMMILink>();
             IoCManager.Register<IGalacticBankManager, GalacticBankManager>();
+            IoCManager.Register<ICargoOrderDataManager, CargoOrderDataManager>();
             if (TestingCallbacks != null)
             {
                 var cast = (ServerModuleTestingCallbacks) TestingCallbacks;
