@@ -62,7 +62,7 @@ namespace Content.Client.UserInterface.Cargo
                 StyleClasses = { NanoStyle.StyleClassLabelKeyText }
             };
             _accountNameLabel = new Label {
-                Text = "Bank account" //Owner.Bank.Account.Name
+                Text = "None" //Owner.Bank.Account.Name
             };
             accountName.AddChild(accountNameLabel);
             accountName.AddChild(_accountNameLabel);
@@ -215,7 +215,7 @@ namespace Content.Client.UserInterface.Cargo
                     (search.Length == 0 && _category != null && prototype.Category.Equals(_category)))
                 {
                     ProductPrototypes.Add(prototype);
-                    Products.AddItem(prototype.Name, prototype.Icon.Frame0());
+                    Products.AddItem(prototype.Name + " (" + prototype.PointCost + ")", prototype.Icon.Frame0());
                 }
             }
         }

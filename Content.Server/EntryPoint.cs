@@ -49,6 +49,7 @@ namespace Content.Server
             IoCManager.Register<IGameTicker, GameTicker>();
             IoCManager.Register<IChatManager, ChatManager>();
             IoCManager.Register<IMoMMILink, MoMMILink>();
+            IoCManager.Register<IGalacticBankManager, GalacticBankManager>();
             if (TestingCallbacks != null)
             {
                 var cast = (ServerModuleTestingCallbacks) TestingCallbacks;

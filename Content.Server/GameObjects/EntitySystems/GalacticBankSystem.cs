@@ -12,7 +12,7 @@ namespace Content.Server.GameObjects.EntitySystems
 {
     public class GalacticBankSystem : EntitySystem
     {
-        private float _timer = 0f;
+/*        private float _timer = 0f;
         private int _idIndex = 0;
         private readonly List<GalacticBankAccount> _accounts = new List<GalacticBankAccount>();
 
@@ -94,5 +94,5 @@ namespace Content.Server.GameObjects.EntitySystems
 
             return list;
         }
-    }
+*/    }
 }

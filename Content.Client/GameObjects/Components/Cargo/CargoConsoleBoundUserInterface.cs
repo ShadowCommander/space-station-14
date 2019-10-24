@@ -94,6 +94,18 @@ namespace Content.Client.GameObjects.Components.Cargo
             }
         }
 
+        protected override void UpdateState(BoundUserInterfaceState state)
+        {
+            base.UpdateState(state);
+
+            if (!(state is CargoConsoleInterfaceState cstate))
+                return;
+            BankId = cstate.Id;
+            BankName = cstate.Name;
+            BankBalance = cstate.Balance;
+            _menu.UpdateBankData();
+        }
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
@@ -104,7 +116,8 @@ namespace Content.Client.GameObjects.Components.Cargo
 
         internal void AddOrder()
         {
-            SendMessage(new SharedCargoConsoleComponent.CargoConsoleAddOrderMessage(_orderMenu.Requester.Text, _orderMenu.Reason.Text, _product.ID, _orderMenu.Amount.Value));
+            SendMessage(new SharedCargoConsoleComponent.CargoConsoleAddOrderMessage(_orderMenu.Requester.Text,
+                _orderMenu.Reason.Text, _product.ID, _orderMenu.Amount.Value));
         }
     }
 }

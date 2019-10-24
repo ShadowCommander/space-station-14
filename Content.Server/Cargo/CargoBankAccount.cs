@@ -4,22 +4,17 @@ namespace Content.Server.Cargo
 {
     public class CargoBankAccount : ICargoBankAccount
     {
-        public int ID { get; }
+        public int Id { get; }
 
         public string Name { get; }
 
-        public int Balance { get; private set; }
+        public int Balance { get; set; }
 
-        public CargoBankAccount(int iD, string name, int balance)
+        public CargoBankAccount(int id, string name, int balance)
         {
-            ID = iD;
+            Id = id;
             Name = name;
             Balance = balance;
-        }
-
-        internal void ChangeBalance(int points)
-        {
-            Balance += points;
         }
     }
 }

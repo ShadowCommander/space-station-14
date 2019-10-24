@@ -44,6 +44,7 @@ namespace Content.Server.GameObjects.Components.Cargo
             Orders = Owner.GetComponent<CargoOrderDatabaseComponent>();
             _userInterface = Owner.GetComponent<ServerUserInterfaceComponent>().GetBoundUserInterface(CargoConsoleUiKey.Key);
             _userInterface.OnReceiveMessage += UserInterfaceOnOnReceiveMessage;
+            _galacticBankManager.AddComponent(this);
             BankId = 0;
         }
 
@@ -56,9 +57,9 @@ namespace Content.Server.GameObjects.Components.Cargo
                 {
                     _prototypeManager.TryIndex(msg.ProductId, out CargoProductPrototype product);
                     if (product == null)
-                    {
                         break;
-                    }
+                    if (!_requestOnly && !_galacticBankManager.ChangeBalance(BankId, -product.PointCost))
+                        break;
 
                     Orders.AddOrder(msg.Requester, msg.Reason, msg.ProductId, msg.Amount, BankId, !_requestOnly);
                     _userInterface.SendMessage(new CargoConsoleOrderDataMessage(Orders.GetOrderList()));
@@ -82,9 +83,9 @@ namespace Content.Server.GameObjects.Components.Cargo
             _userInterface.Open(actor.playerSession);
         }
 
-        public void SetAccountBalance(int balance)
+        public void SetState(int id, string name, int balance)
         {
-            _userInterface.SetState(new CargoConsoleInterfaceState(balance));
+            _userInterface.SetState(new CargoConsoleInterfaceState(id, name, balance));
         }
     }
 }

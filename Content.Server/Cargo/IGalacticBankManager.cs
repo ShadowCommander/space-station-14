@@ -1,4 +1,5 @@
-﻿using Robust.Shared.Timing;
+﻿using Content.Server.GameObjects.Components.Cargo;
+using Robust.Shared.Timing;
 using System.Collections.Generic;
 
 namespace Content.Server.Cargo
@@ -10,6 +11,10 @@ namespace Content.Server.Cargo
         void Shutdown();
         void Update(FrameEventArgs frameEventArgs);
 
-        CargoBankAccount CreateBankAccount(int id, string name, int balance);
+        void CreateBankAccount(string name, int balance);
+        CargoBankAccount GetBankAccount(int id);
+        void AddComponent(CargoConsoleComponent cargoConsoleComponent);
+        bool TryGetBankAccount(int id, out CargoBankAccount account);
+        bool ChangeBalance(int id, int n);
     }
 }

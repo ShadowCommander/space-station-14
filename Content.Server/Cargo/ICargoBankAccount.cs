@@ -4,7 +4,7 @@ namespace Content.Server.Cargo
 {
     public interface ICargoBankAccount
     {
-        int ID { get; }
+        int Id { get; }
         string Name { get; }
         int Balance { get; }
     }

@@ -58,7 +58,6 @@ namespace Content.Shared.GameObjects.Components.Cargo
         /// <param name="reason">The reason the product was requested.</param>
         /// <param name="productId">The ID of the product requested.</param>
         /// <param name="amount">The amount of the products requested.</param>
-        /// <param name="payingAccount">The name of the bank account paying for the order.</param>
         /// <param name="payingAccountId">The ID of the bank account paying for the order.</param>
         /// <param name="approved">Whether the order will be bought when the orders are processed.</param>
         public virtual void AddOrder(string requester, string reason, string productId, int amount, int payingAccountId, bool approved)
