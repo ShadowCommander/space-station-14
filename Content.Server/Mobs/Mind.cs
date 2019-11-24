@@ -107,6 +107,16 @@ namespace Content.Server.Mobs
             return role;
         }
 
+        public bool HasRoleType(Type type)
+        {
+            foreach (var role in _roles)
+            {
+                if (role.GetType() == type)
+                    return true;
+            }
+            return false;
+        }
+
         /// <summary>
         ///     Removes a role from this mind.
         /// </summary>
