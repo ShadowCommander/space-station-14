@@ -282,7 +282,7 @@ namespace Content.Server.GameObjects.Components.Weapon.Ranged.Projectile
                 count = (magComponent.CountLoaded, magComponent.Capacity);
             }
 
-            return new BallisticMagazineWeaponComponentState(chambered, count);
+            return new BallisticMagazineWeaponComponentState(chambered, count, Caliber);
         }
 
         [Verb]

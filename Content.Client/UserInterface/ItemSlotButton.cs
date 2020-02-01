@@ -19,6 +19,7 @@ namespace Content.Client.GameObjects
         public ItemSlotButton(Texture texture, Texture storageTexture)
         {
             CustomMinimumSize = (64, 64);
+            SizeFlagsVertical = SizeFlags.ShrinkEnd;
 
             AddChild(Button = new TextureButton
             {

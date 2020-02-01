@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 
@@ -20,10 +20,13 @@ namespace Content.Shared.GameObjects.Components.Weapons.Ranged
         /// </remarks>
         public (int count, int max)? MagazineCount { get; }
 
-        public BallisticMagazineWeaponComponentState(bool chambered, (int count, int max)? magazineCount) : base(ContentNetIDs.BALLISTIC_MAGAZINE_WEAPON)
+        public BallisticCaliber Caliber { get; }
+
+        public BallisticMagazineWeaponComponentState(bool chambered, (int count, int max)? magazineCount, BallisticCaliber caliber) : base(ContentNetIDs.BALLISTIC_MAGAZINE_WEAPON)
         {
             Chambered = chambered;
             MagazineCount = magazineCount;
+            Caliber = caliber;
         }
     }
 

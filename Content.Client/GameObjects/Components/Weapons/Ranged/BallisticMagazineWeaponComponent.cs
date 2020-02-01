@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Content.Client.Animations;
 using Content.Client.UserInterface;
 using Content.Client.Utility;
@@ -68,6 +68,8 @@ namespace Content.Client.GameObjects.Components.Weapons.Ranged
             }
         };
 
+        private static readonly Texture BulletAtlas = ResC.GetTexture("/Textures/UserInterface/status/bullets/bullets.png");
+
         public override string Name => "BallisticMagazineWeapon";
         public override uint? NetID => ContentNetIDs.BALLISTIC_MAGAZINE_WEAPON;
         public override Type StateType => typeof(BallisticMagazineWeaponComponentState);
@@ -89,6 +91,8 @@ namespace Content.Client.GameObjects.Components.Weapons.Ranged
         [ViewVariables]
         public (int count, int max)? MagazineCount { get; private set; }
 
+        [ViewVariables] private BallisticCaliber _caliber;
+
         [ViewVariables(VVAccess.ReadWrite)] private bool _isLmgAlarmAnimation;
 
         public override void ExposeData(ObjectSerializer serializer)
@@ -104,6 +108,7 @@ namespace Content.Client.GameObjects.Components.Weapons.Ranged
 
             Chambered = cast.Chambered;
             MagazineCount = cast.MagazineCount;
+            _caliber = cast.Caliber;
             _statusControl?.Update();
         }
 
@@ -155,29 +160,19 @@ namespace Content.Client.GameObjects.Components.Weapons.Ranged
                     SeparationOverride = 0,
                     Children =
                     {
-                        (_bulletsListTop = new HBoxContainer {SeparationOverride = 0}),
+                        (_bulletsListTop = new HBoxContainer {
+                            SeparationOverride = 0
+                        }),
                         new HBoxContainer
                         {
                             SizeFlagsHorizontal = SizeFlags.FillExpand,
                             Children =
                             {
-                                new Control
+                                (_bulletsListBottom = new HBoxContainer
                                 {
-                                    SizeFlagsHorizontal = SizeFlags.FillExpand,
-                                    Children =
-                                    {
-                                        (_bulletsListBottom = new HBoxContainer
-                                        {
-                                            SizeFlagsVertical = SizeFlags.ShrinkCenter,
-                                            SeparationOverride = 0
-                                        }),
-                                        (_noMagazineLabel = new Label
-                                        {
-                                            Text = "No Magazine!",
-                                            StyleClasses = {NanoStyle.StyleClassItemStatus}
-                                        })
-                                    }
-                                },
+                                    SizeFlagsVertical = SizeFlags.ShrinkCenter,
+                                    SeparationOverride = 0
+                                }),
                                 (_chamberedBullet = new TextureRect
                                 {
                                     Texture = ResC.GetTexture("/Textures/UserInterface/status/bullets/chambered.png"),
@@ -187,6 +182,11 @@ namespace Content.Client.GameObjects.Components.Weapons.Ranged
                             }
                         }
                     }
+                });
+                AddChild(_noMagazineLabel = new Label
+                {
+                    Text = "No Magazine!",
+                    StyleClasses = { NanoStyle.StyleClassItemStatus }
                 });
             }
 
@@ -208,28 +208,34 @@ namespace Content.Client.GameObjects.Components.Weapons.Ranged
 
                 _noMagazineLabel.Visible = false;
 
-                string texturePath;
-                if (capacity <= 20)
+                AtlasTexture texture;
+                if (_parent._caliber == BallisticCaliber.Unspecified)
                 {
-                    texturePath = "/Textures/UserInterface/status/bullets/normal.png";
-                }
-                else if (capacity <= 30)
-                {
-                    texturePath = "/Textures/UserInterface/status/bullets/small.png";
+                    texture = new AtlasTexture(BulletAtlas, new UIBox2(90, 30, 94, 40));
                 }
                 else
                 {
-                    texturePath = "/Textures/UserInterface/status/bullets/tiny.png";
+                    if (_parent._caliber == BallisticCaliber.A762mm)
+                    {
+                        texture = new AtlasTexture(BulletAtlas, new UIBox2(38, 9, 44, 40));
+                    }
+                    else if (_parent._caliber == BallisticCaliber.A44)
+                    {
+                        texture = new AtlasTexture(BulletAtlas, new UIBox2(70, 21, 74, 40));
+                    }
+                    else
+                    {
+                        texture = new AtlasTexture(BulletAtlas, new UIBox2(90, 30, 94, 40));
+                    }
                 }
 
-                var texture = ResC.GetTexture(texturePath);
 
-                const int tinyMaxRow = 60;
+                var maxRow = 120 / texture.Width;
 
-                if (capacity > tinyMaxRow)
+                if (capacity > maxRow)
                 {
-                    FillBulletRow(_bulletsListBottom, Math.Min(tinyMaxRow, count), tinyMaxRow, texture);
-                    FillBulletRow(_bulletsListTop, Math.Max(0, count - tinyMaxRow), capacity - tinyMaxRow, texture);
+                    FillBulletRow(_bulletsListBottom, Math.Min(maxRow, count), maxRow, texture);
+                    FillBulletRow(_bulletsListTop, Math.Max(0, count - maxRow), capacity - maxRow, texture);
                 }
                 else
                 {

@@ -1,3 +1,4 @@
+﻿using Content.Shared.GameObjects.Components.Weapons.Ranged;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 

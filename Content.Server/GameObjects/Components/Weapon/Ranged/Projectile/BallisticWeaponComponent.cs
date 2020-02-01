@@ -1,5 +1,6 @@
 ﻿using System;
 using Content.Server.GameObjects.Components.Sound;
+using Content.Shared.GameObjects.Components.Weapons.Ranged;
 using Robust.Server.GameObjects.Components.Container;
 using Robust.Shared.Interfaces.GameObjects;
 using Robust.Shared.Serialization;
