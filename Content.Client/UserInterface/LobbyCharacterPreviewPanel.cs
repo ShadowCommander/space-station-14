@@ -23,6 +23,9 @@ namespace Content.Client.UserInterface
         private IEntity _previewDummy;
         private readonly Label _summaryLabel;
 
+        public Button CharacterSetupButton { get; }
+        public Button AntagSetupButton { get; }
+
         public LobbyCharacterPreviewPanel(IEntityManager entityManager,
             ILocalizationManager localization,
             IClientPreferencesManager preferencesManager)
@@ -35,9 +38,18 @@ namespace Content.Client.UserInterface
                 Text = localization.GetString("Character setup")
             };
 
+            var setupButtons = new HBoxContainer();
+
             CharacterSetupButton = new Button
             {
                 Text = localization.GetString("Customize"),
+                SizeFlagsHorizontal = SizeFlags.None
+            };
+
+            AntagSetupButton = new Button
+            {
+                ToggleMode = true,
+                Text = localization.GetString("Antag Preferences"),
                 SizeFlagsHorizontal = SizeFlags.None
             };
 
@@ -51,7 +63,9 @@ namespace Content.Client.UserInterface
             var vBox = new VBoxContainer();
 
             vBox.AddChild(header);
-            vBox.AddChild(CharacterSetupButton);
+            setupButtons.AddChild(CharacterSetupButton);
+            setupButtons.AddChild(AntagSetupButton);
+            vBox.AddChild(setupButtons);
 
             vBox.AddChild(_summaryLabel);
 
@@ -67,8 +81,6 @@ namespace Content.Client.UserInterface
 
             UpdateUI();
         }
-
-        public Button CharacterSetupButton { get; }
 
         protected override void Dispose(bool disposing)
         {

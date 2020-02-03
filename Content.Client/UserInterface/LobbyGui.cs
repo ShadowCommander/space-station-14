@@ -1,4 +1,4 @@
-using Content.Client.Chat;
+﻿using Content.Client.Chat;
 using Content.Client.Interfaces;
 using Content.Client.Utility;
 using Robust.Client.Graphics.Drawing;
@@ -22,6 +22,8 @@ namespace Content.Client.UserInterface
         public ItemList OnlinePlayerItemList { get; }
         public ServerInfo ServerInfo { get; }
         public LobbyCharacterPreviewPanel CharacterPreview { get; }
+        public VBoxContainer RightDisplay { get; }
+        public PanelContainer RightContainer { get; set; }
 
         public LobbyGui(IEntityManager entityManager,
             ILocalizationManager localization,
@@ -193,47 +195,51 @@ namespace Content.Client.UserInterface
                 PanelOverride = new StyleBoxFlat {BackgroundColor = NanoStyle.NanoGold}, CustomMinimumSize = (2, 0)
             });
 
+            hBox.AddChild(RightContainer = new PanelContainer
             {
-                hBox.AddChild(new VBoxContainer
+                SizeFlagsHorizontal = SizeFlags.FillExpand
+            });
+
+            RightDisplay = new VBoxContainer
+            {
+                SizeFlagsHorizontal = SizeFlags.FillExpand,
+                Children =
                 {
-                    SizeFlagsHorizontal = SizeFlags.FillExpand,
-                    Children =
+                    new NanoHeading
                     {
-                        new NanoHeading
+                        Text = localization.GetString("Online Players"),
+                    },
+                    new MarginContainer
+                    {
+                        SizeFlagsVertical = SizeFlags.FillExpand,
+                        MarginRightOverride = 3,
+                        MarginLeftOverride = 3,
+                        MarginTopOverride = 3,
+                        MarginBottomOverride = 3,
+                        Children =
                         {
-                            Text = localization.GetString("Online Players"),
-                        },
-                        new MarginContainer
+                            (OnlinePlayerItemList = new ItemList())
+                        }
+                    },
+                    new NanoHeading
+                    {
+                        Text = localization.GetString("Server Info"),
+                    },
+                    new MarginContainer
+                    {
+                        SizeFlagsVertical = SizeFlags.FillExpand,
+                        MarginRightOverride = 3,
+                        MarginLeftOverride = 3,
+                        MarginTopOverride = 3,
+                        MarginBottomOverride = 2,
+                        Children =
                         {
-                            SizeFlagsVertical = SizeFlags.FillExpand,
-                            MarginRightOverride = 3,
-                            MarginLeftOverride = 3,
-                            MarginTopOverride = 3,
-                            MarginBottomOverride = 3,
-                            Children =
-                            {
-                                (OnlinePlayerItemList = new ItemList())
-                            }
-                        },
-                        new NanoHeading
-                        {
-                            Text = localization.GetString("Server Info"),
-                        },
-                        new MarginContainer
-                        {
-                            SizeFlagsVertical = SizeFlags.FillExpand,
-                            MarginRightOverride = 3,
-                            MarginLeftOverride = 3,
-                            MarginTopOverride = 3,
-                            MarginBottomOverride = 2,
-                            Children =
-                            {
-                                (ServerInfo = new ServerInfo(localization))
-                            }
-                        },
-                    }
-                });
-            }
+                            (ServerInfo = new ServerInfo(localization))
+                        }
+                    },
+                }
+            };
+            RightContainer.AddChild(RightDisplay);
         }
     }
 }

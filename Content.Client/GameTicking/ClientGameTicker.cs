@@ -46,6 +46,7 @@ namespace Content.Client.GameTicking
 
         [ViewVariables] private bool _areWeReady;
         [ViewVariables] private CharacterSetupGui _characterSetup;
+        [ViewVariables] private AntagPreferencesGui _antagPreferences;
         [ViewVariables] private ChatBox _gameChat;
         [ViewVariables] private bool _gameStarted;
         [ViewVariables] private bool _initialized;
@@ -203,6 +204,9 @@ namespace Content.Client.GameTicking
                 _userInterfaceManager.StateRoot.AddChild(_lobby);
                 _userInterfaceManager.StateRoot.RemoveChild(_characterSetup);
             };
+
+            _antagPreferences = new AntagPreferencesGui(_localization);
+
             _lobby = new LobbyGui(_entityManager, _localization, _resourceCache, _preferencesManager);
             _userInterfaceManager.StateRoot.AddChild(_lobby);
 
@@ -223,6 +227,19 @@ namespace Content.Client.GameTicking
                 SetReady(false);
                 _userInterfaceManager.StateRoot.RemoveChild(_lobby);
                 _userInterfaceManager.StateRoot.AddChild(_characterSetup);
+            };
+            _lobby.CharacterPreview.AntagSetupButton.OnToggled += args =>
+            {
+                if (args.Pressed)
+                {
+                    _lobby.RightContainer.RemoveAllChildren();
+                    _lobby.RightContainer.AddChild(_antagPreferences);
+                }
+                else
+                {
+                    _lobby.RightContainer.RemoveAllChildren();
+                    _lobby.RightContainer.AddChild(_lobby.RightDisplay);
+                }
             };
 
             _lobby.ObserveButton.OnPressed += args => _console.ProcessCommand("observe");
