@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Content.Server.GameObjects.EntitySystems;
 using Content.Shared.GameObjects;
+using Content.Shared.Interfaces;
 using Robust.Server.GameObjects.Components.Container;
 using Robust.Server.Interfaces.Player;
 using Robust.Shared.GameObjects;
@@ -59,6 +60,19 @@ namespace Content.Server.GameObjects
         private string GetSlotString(Slots slot)
         {
             return Name + "_" + Enum.GetName(typeof(Slots), slot);
+        }
+
+        private bool TryGetSlotContainer(Slots slot, out ContainerSlot containerSlot)
+        {
+            if (!SlotContainers.ContainsKey(slot))
+            {
+                containerSlot = null;
+                return false;
+            }
+
+            containerSlot = SlotContainers[slot];
+
+            return true;
         }
 
         /// <summary>
@@ -187,6 +201,51 @@ namespace Content.Server.GameObjects
             return InventorySlot.ContainedEntity != null && InventorySlot.CanRemove(InventorySlot.ContainedEntity);
         }
 
+        public bool Transfer(Slots slot, Container container)
+        {
+            if (slot == Slots.NONE)
+            {
+                throw new ArgumentNullException(nameof(slot));
+            }
+
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            if (!CanUnequip(slot))
+            {
+                return false;
+            }
+
+            var inventorySlot = SlotContainers[slot];
+            var item = GetSlotItem(slot);
+            if (!inventorySlot.CanRemove(inventorySlot.ContainedEntity))
+            {
+                return false;
+            }
+
+            if (!container.CanInsert(inventorySlot.ContainedEntity))
+            {
+                return false;
+            }
+
+            if (!inventorySlot.Remove(inventorySlot.ContainedEntity))
+            {
+                throw new InvalidOperationException();
+            }
+
+            item.RemovedFromSlot();
+
+            if (!container.Insert(item.Owner))
+            {
+                throw new InvalidOperationException();
+            }
+
+            Dirty();
+            return true;
+        }
+
         /// <summary>
         ///     Adds a new slot to this inventory component.
         /// </summary>
@@ -272,11 +331,12 @@ namespace Content.Server.GameObjects
                     var activeHand = hands.GetActiveHand;
                     if (activeHand != null && activeHand.Owner.TryGetComponent(out ItemComponent clothing))
                     {
-                        hands.Drop(hands.ActiveIndex);
-                        if (!Equip(msg.Inventoryslot, clothing))
+                        if (!TryGetSlotContainer(msg.Inventoryslot, out var slot))
                         {
-                            hands.PutInHand(clothing);
+                            return;
                         }
+
+                        hands.Transfer(hands.ActiveIndex, slot);
                     }
                     break;
                 }
