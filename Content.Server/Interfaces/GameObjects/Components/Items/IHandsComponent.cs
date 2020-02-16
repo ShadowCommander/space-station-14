@@ -33,11 +33,19 @@ namespace Content.Server.Interfaces.GameObjects
         ItemComponent GetActiveHand { get; }
 
         /// <summary>
-        ///     Puts an item into any empty hand, preferring the active hand.
+        ///     Checks to see if an item can be put in the specified hand.
         /// </summary>
-        /// <param name="item">The item to put in a hand.</param>
-        /// <returns>True if the item was inserted, false otherwise.</returns>
-        bool PutInHand(ItemComponent item);
+        /// <param name="item">The item to check for.</param>
+        /// <param name="index">The index for the hand to check for.</param>
+        /// <returns>True if the item can be inserted, false otherwise.</returns>
+        bool CanPutInHand(ItemComponent item, string index);
+
+        /// <summary>
+        ///     Checks to see if an item can be put in any hand.
+        /// </summary>
+        /// <param name="item">The item to check for.</param>
+        /// <returns>True if the item can be inserted, false otherwise.</returns>
+        bool CanPutInHand(ItemComponent item);
 
         /// <summary>
         ///     Puts an item into a specific hand.
@@ -51,19 +59,11 @@ namespace Content.Server.Interfaces.GameObjects
         bool PutInHand(ItemComponent item, string index, bool fallback=true);
 
         /// <summary>
-        ///     Checks to see if an item can be put in any hand.
+        ///     Puts an item into any empty hand, preferring the active hand.
         /// </summary>
-        /// <param name="item">The item to check for.</param>
-        /// <returns>True if the item can be inserted, false otherwise.</returns>
-        bool CanPutInHand(ItemComponent item);
-
-        /// <summary>
-        ///     Checks to see if an item can be put in the specified hand.
-        /// </summary>
-        /// <param name="item">The item to check for.</param>
-        /// <param name="index">The index for the hand to check for.</param>
-        /// <returns>True if the item can be inserted, false otherwise.</returns>
-        bool CanPutInHand(ItemComponent item, string index);
+        /// <param name="item">The item to put in a hand.</param>
+        /// <returns>True if the item was inserted, false otherwise.</returns>
+        bool PutInHand(ItemComponent item);
 
         /// <summary>
         ///     Finds the hand slot holding the specified entity, if any.
@@ -75,6 +75,15 @@ namespace Content.Server.Interfaces.GameObjects
         ///     The index of the hand slot if the entity is indeed held, <see langword="null" /> otherwise.
         /// </returns>
         string FindHand(IEntity entity);
+
+        /// <summary>
+        ///     Checks whether the item in the specified hand can be dropped.
+        /// </summary>
+        /// <param name="index">The hand to check for.</param>
+        /// <returns>
+        ///     True if the item can be dropped, false if the hand is empty or the item in the hand cannot be dropped.
+        /// </returns>
+        bool CanDrop(string index);
 
         /// <summary>
         ///     Drops the item contained in the slot to the same position as our entity.
@@ -156,15 +165,6 @@ namespace Content.Server.Interfaces.GameObjects
         ///     Thrown if <see cref="entity"/> is not actually held in any hand.
         /// </exception>
         bool Transfer(IEntity entity, BaseContainer targetContainer);
-
-        /// <summary>
-        ///     Checks whether the item in the specified hand can be dropped.
-        /// </summary>
-        /// <param name="index">The hand to check for.</param>
-        /// <returns>
-        ///     True if the item can be dropped, false if the hand is empty or the item in the hand cannot be dropped.
-        /// </returns>
-        bool CanDrop(string index);
 
         /// <summary>
         ///     Adds a new hand to this hands component.

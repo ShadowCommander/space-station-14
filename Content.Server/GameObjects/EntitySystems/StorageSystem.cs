@@ -47,9 +47,9 @@ namespace Content.Server.GameObjects.EntitySystems
 
         private static void HandleEntityInsertedIntoContainer(object sender, EntInsertedIntoContainerMessage message)
         {
-            var oldParentEntity = message.Container.Owner;
+            var parentEntity = message.Container.Owner;
 
-            if (oldParentEntity.TryGetComponent(out ServerStorageComponent storageComp))
+            if (parentEntity.TryGetComponent(out ServerStorageComponent storageComp))
             {
                 storageComp.HandleEntityMaybeInserted(message);
             }
