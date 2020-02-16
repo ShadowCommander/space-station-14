@@ -60,7 +60,7 @@ namespace Content.Server.GameObjects.Components.Interactable
 
             var handsComponent = eventArgs.User.GetComponent<IHandsComponent>();
 
-            if (!handsComponent.Drop(eventArgs.AttackWith, _cellContainer))
+            if (!handsComponent.Transfer(eventArgs.AttackWith, _cellContainer))
             {
                 return false;
             }

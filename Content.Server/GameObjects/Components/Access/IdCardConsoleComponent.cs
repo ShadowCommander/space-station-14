@@ -131,7 +131,7 @@ namespace Content.Server.GameObjects.Components.Access
             {
                 return;
             }
-            if(!hands.Drop(hands.ActiveIndex, container))
+            if(!hands.Transfer(hands.ActiveIndex, container))
             {
                 _notifyManager.PopupMessage(Owner.Transform.GridPosition, user, _localizationManager.GetString("You can't let go of the ID card!"));
                 return;

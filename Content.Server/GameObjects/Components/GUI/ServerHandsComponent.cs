@@ -268,7 +268,7 @@ namespace Content.Server.GameObjects
             return Drop(slot);
         }
 
-        public bool Drop(string slot, BaseContainer targetContainer)
+        public bool Transfer(string slot, BaseContainer targetContainer)
         {
             if (slot == null)
             {
@@ -285,19 +285,19 @@ namespace Content.Server.GameObjects
                 return false;
             }
 
-            var inventorySlot = hands[slot];
-            var item = inventorySlot.ContainedEntity.GetComponent<ItemComponent>();
-            if (!inventorySlot.CanRemove(inventorySlot.ContainedEntity))
+            var handSlot = hands[slot];
+            var item = handSlot.ContainedEntity.GetComponent<ItemComponent>();
+            if (!handSlot.CanRemove(handSlot.ContainedEntity))
             {
                 return false;
             }
 
-            if (!targetContainer.CanInsert(inventorySlot.ContainedEntity))
+            if (!targetContainer.CanInsert(handSlot.ContainedEntity))
             {
                 return false;
             }
 
-            if (!inventorySlot.Remove(inventorySlot.ContainedEntity))
+            if (!handSlot.Remove(handSlot.ContainedEntity))
             {
                 throw new InvalidOperationException();
             }
@@ -313,7 +313,7 @@ namespace Content.Server.GameObjects
             return true;
         }
 
-        public bool Drop(IEntity entity, BaseContainer targetContainer)
+        public bool Transfer(IEntity entity, BaseContainer targetContainer)
         {
             if (entity == null)
             {
@@ -326,7 +326,7 @@ namespace Content.Server.GameObjects
                 throw new ArgumentException("Entity must be held in one of our hands.", nameof(entity));
             }
 
-            return Drop(slot, targetContainer);
+            return Transfer(slot, targetContainer);
         }
 
         /// <summary>

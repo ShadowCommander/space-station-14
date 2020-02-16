@@ -126,9 +126,9 @@ namespace Content.Server.Interfaces.GameObjects
         bool Drop(IEntity entity, GridCoordinates coords);
 
         /// <summary>
-        ///     Drop the item contained in a slot into another container.
+        ///     Transfer the item contained in a hand slot into another container.
         /// </summary>
-        /// <param name="slot">The slot of which to drop the entity.</param>
+        /// <param name="handSlot">The slot of which to drop the entity.</param>
         /// <param name="targetContainer">The container to drop into.</param>
         /// <returns>True on success, false if something was blocked (insertion or removal).</returns>
         /// <exception cref="InvalidOperationException">
@@ -136,10 +136,10 @@ namespace Content.Server.Interfaces.GameObjects
         ///     but practical remove or insert returned false anyways.
         ///     This is an edge-case that is currently unhandled.
         /// </exception>
-        bool Drop(string slot, BaseContainer targetContainer);
+        bool Transfer(string handSlot, BaseContainer targetContainer);
 
         /// <summary>
-        ///     Drops an item in one of the hands into a container.
+        ///     Transfer an item in one of the hands into a container.
         /// </summary>
         /// <param name="entity">The item to drop.</param>
         /// <param name="targetContainer">The container to drop into.</param>
@@ -155,7 +155,7 @@ namespace Content.Server.Interfaces.GameObjects
         /// <exception cref="ArgumentException">
         ///     Thrown if <see cref="entity"/> is not actually held in any hand.
         /// </exception>
-        bool Drop(IEntity entity, BaseContainer targetContainer);
+        bool Transfer(IEntity entity, BaseContainer targetContainer);
 
         /// <summary>
         ///     Checks whether the item in the specified hand can be dropped.
