@@ -64,6 +64,11 @@ namespace Content.Client.UserInterface.Stylesheets
             windowBackground.SetPatchMargin(StyleBox.Margin.Horizontal | StyleBox.Margin.Bottom, 2);
             windowBackground.SetExpandMargin(StyleBox.Margin.Horizontal | StyleBox.Margin.Bottom, 2);
 
+            var hotbarBackground = new StyleBoxTexture
+            {
+                Texture = windowBackgroundTex
+            };
+
             var textureInvertedTriangle = resCache.GetTexture("/Nano/inverted_triangle.svg.png");
 
             // Button styles.
@@ -83,6 +88,31 @@ namespace Content.Client.UserInterface.Stylesheets
             };
 
             var buttonDisabled = new StyleBoxTexture(buttonNormal)
+            {
+                Modulate = ButtonColorDisabled
+            };
+
+            var buttonRect = new StyleBoxTexture
+            {
+                Texture = buttonTex,
+                Modulate = ButtonColorDefault
+            };
+            buttonRect.SetPatchMargin(StyleBox.Margin.All, 10);
+            buttonRect.SetPadding(StyleBox.Margin.All, 1);
+            buttonRect.SetContentMarginOverride(StyleBox.Margin.Vertical, 0);
+            buttonRect.SetContentMarginOverride(StyleBox.Margin.Horizontal, 0);
+
+            var buttonRectHover = new StyleBoxTexture(buttonRect)
+            {
+                Modulate = ButtonColorHovered
+            };
+
+            var buttonRectPressed = new StyleBoxTexture(buttonRect)
+            {
+                Modulate = ButtonColorPressed
+            };
+
+            var buttonRectDisabled = new StyleBoxTexture(buttonRect)
             {
                 Modulate = ButtonColorDisabled
             };
@@ -290,6 +320,13 @@ namespace Content.Client.UserInterface.Stylesheets
                         new StyleProperty(Control.StylePropertyModulateSelf, Color.FromHex("#753131")),
                     }),
 
+                // Hotbar background
+                new StyleRule(new SelectorElement(typeof(Hotbar), null, null, null),
+                    new[]
+                    {
+                        new StyleProperty(PanelContainer.StylePropertyPanel, hotbarBackground),
+                    }),
+
                 // Regular buttons!
                 new StyleRule(new SelectorElement(typeof(ContainerButton), new[] { ContainerButton.StyleClassButton }, null, new[] {ContainerButton.StylePseudoClassNormal}), new[]
                 {
@@ -320,6 +357,24 @@ namespace Content.Client.UserInterface.Stylesheets
                     {
                         new StyleProperty("font-color", Color.FromHex("#E5E5E581")),
                     }),
+
+                // Thin buttons
+                new StyleRule(new SelectorElement(typeof(Hotbar.HotbarSlot), null, null, new[] {ContainerButton.StylePseudoClassNormal}), new[]
+                {
+                    new StyleProperty(ContainerButton.StylePropertyStyleBox, buttonRect),
+                }),
+                new StyleRule(new SelectorElement(typeof(Hotbar.HotbarSlot), null, null, new[] {ContainerButton.StylePseudoClassHover}), new[]
+                {
+                    new StyleProperty(ContainerButton.StylePropertyStyleBox, buttonRectHover),
+                }),
+                new StyleRule(new SelectorElement(typeof(Hotbar.HotbarSlot), null, null, new[] {ContainerButton.StylePseudoClassPressed}), new[]
+                {
+                    new StyleProperty(ContainerButton.StylePropertyStyleBox, buttonRectPressed),
+                }),
+                new StyleRule(new SelectorElement(typeof(Hotbar.HotbarSlot), null, null, new[] {ContainerButton.StylePseudoClassDisabled}), new[]
+                {
+                    new StyleProperty(ContainerButton.StylePropertyStyleBox, buttonRectDisabled),
+                }),
 
                 // Main menu: Make those buttons bigger.
                 new StyleRule(new SelectorChild(

@@ -47,6 +47,7 @@ namespace Content.Client.UserInterface
         bool SandboxButtonVisible { get; set; }
         Action<bool> SandboxButtonToggled { get; set; }
 
+        Control Hotbar { get; }
         Control HandsContainer { get; }
         Control InventoryQuickButtonContainer { get; }
 
@@ -81,6 +82,7 @@ namespace Content.Client.UserInterface
         [Dependency] private readonly IInputManager _inputManager;
 #pragma warning restore 649
 
+        public Control Hotbar { get; private set; }
         public Control HandsContainer { get; private set; }
         public Control InventoryQuickButtonContainer { get; private set; }
 
@@ -209,6 +211,14 @@ namespace Content.Client.UserInterface
             LayoutContainer.SetGrowHorizontal(inventoryContainer, LayoutContainer.GrowDirection.Begin);
             LayoutContainer.SetGrowVertical(inventoryContainer, LayoutContainer.GrowDirection.Begin);
             LayoutContainer.SetAnchorAndMarginPreset(inventoryContainer, LayoutContainer.LayoutPreset.BottomRight);
+
+            Hotbar = new Hotbar
+            {
+            };
+
+            RootControl.AddChild(Hotbar);
+
+            LayoutContainer.SetAnchorAndMarginPreset(Hotbar, LayoutContainer.LayoutPreset.BottomLeft);
 
             InventoryQuickButtonContainer = new MarginContainer
             {
