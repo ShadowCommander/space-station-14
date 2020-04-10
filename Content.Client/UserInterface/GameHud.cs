@@ -47,7 +47,7 @@ namespace Content.Client.UserInterface
         bool SandboxButtonVisible { get; set; }
         Action<bool> SandboxButtonToggled { get; set; }
 
-        Control Hotbar { get; }
+        Control HotbarContainer { get; }
         Control HandsContainer { get; }
         Control InventoryQuickButtonContainer { get; }
 
@@ -82,7 +82,7 @@ namespace Content.Client.UserInterface
         [Dependency] private readonly IInputManager _inputManager;
 #pragma warning restore 649
 
-        public Control Hotbar { get; private set; }
+        public Control HotbarContainer { get; private set; }
         public Control HandsContainer { get; private set; }
         public Control InventoryQuickButtonContainer { get; private set; }
 
@@ -212,17 +212,20 @@ namespace Content.Client.UserInterface
             LayoutContainer.SetGrowVertical(inventoryContainer, LayoutContainer.GrowDirection.Begin);
             LayoutContainer.SetAnchorAndMarginPreset(inventoryContainer, LayoutContainer.LayoutPreset.BottomRight);
 
-            Hotbar = new Hotbar
+            HotbarContainer = new MarginContainer
             {
+                SizeFlagsVertical = SizeFlags.ShrinkEnd
             };
 
-            RootControl.AddChild(Hotbar);
+            RootControl.AddChild(HotbarContainer);
 
-            LayoutContainer.SetAnchorAndMarginPreset(Hotbar, LayoutContainer.LayoutPreset.BottomLeft);
+            LayoutContainer.SetAnchorAndMarginPreset(HotbarContainer, LayoutContainer.LayoutPreset.BottomLeft);
+            LayoutContainer.SetGrowHorizontal(HotbarContainer, LayoutContainer.GrowDirection.End);
+            LayoutContainer.SetGrowVertical(HotbarContainer, LayoutContainer.GrowDirection.Begin);
 
             InventoryQuickButtonContainer = new MarginContainer
             {
-                SizeFlagsVertical = Control.SizeFlags.ShrinkEnd
+                SizeFlagsVertical = SizeFlags.ShrinkEnd
             };
 
             _combatPanelContainer = new VBoxContainer
@@ -247,7 +250,7 @@ namespace Content.Client.UserInterface
 
             HandsContainer = new MarginContainer
             {
-                SizeFlagsVertical = Control.SizeFlags.ShrinkEnd
+                SizeFlagsVertical = SizeFlags.ShrinkEnd
             };
 
             RootControl.AddChild(HandsContainer);
