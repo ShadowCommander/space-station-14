@@ -159,8 +159,8 @@ namespace Content.Client.GameObjects.Components.HUD.Hotbar
     public class Ability
     {
         public Texture Texture;
-        public TimeSpan CooldownStart;
-        public TimeSpan CooldownEnd;
+        public TimeSpan? CooldownStart;
+        public TimeSpan? CooldownEnd;
         public bool Active;
     }
 }

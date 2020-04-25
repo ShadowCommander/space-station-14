@@ -22,6 +22,7 @@ namespace Content.Shared.GameObjects.Components.HUD.Hotbar
         }
     }
 
+    [Serializable, NetSerializable]
     public class AbilityData
     {
         public readonly string TexturePath;
