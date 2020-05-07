@@ -18,7 +18,7 @@ namespace Content.Client.UserInterface
             AddChild(Texture = new TextureRect
             {
                 Texture = texture,
-                Scale = (2, 2),
+                TextureScale = (2, 2),
             });
 
             AddChild(SpriteView = new SpriteView
@@ -32,7 +32,7 @@ namespace Content.Client.UserInterface
                 SizeFlagsHorizontal = SizeFlags.ShrinkCenter,
                 SizeFlagsVertical = SizeFlags.ShrinkCenter,
                 Stretch = TextureRect.StretchMode.KeepCentered,
-                Scale = (2, 2),
+                TextureScale = (2, 2),
                 Visible = false,
             });
         }

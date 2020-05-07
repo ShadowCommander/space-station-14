@@ -1,24 +1,19 @@
 ﻿using System;
-using Content.Server.GameObjects.Components.HUD.Hotbar;
+using System.Collections.Generic;
+using System.Text;
+using Content.Client.GameObjects.Components.HUD.Hotbar;
 using Content.Shared.Input;
-using Robust.Server.GameObjects.EntitySystems;
-using Robust.Server.Interfaces.Player;
+using Robust.Client.GameObjects.EntitySystems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.GameObjects.Systems;
 using Robust.Shared.Input;
-using Robust.Shared.Interfaces.Timing;
-using Robust.Shared.IoC;
 using Robust.Shared.Map;
 using Robust.Shared.Players;
 
-namespace Content.Server.GameObjects.EntitySystems
+namespace Content.Client.GameObjects.EntitySystems
 {
-    internal sealed class HotbarSystem : EntitySystem
+    public class ClientHotbarSystem : EntitySystem
     {
-#pragma warning disable 649
-        [Dependency] private readonly IGameTiming _gameTiming;
-#pragma warning restore 649
-
         public override void Initialize()
         {
             base.Initialize();
@@ -31,6 +26,8 @@ namespace Content.Server.GameObjects.EntitySystems
             }
 
             input.BindMap.BindFunction(ContentKeyFunctions.MouseMiddle, new PointerInputCmdHandler(ActivateAbility));
+            input.BindMap.BindFunction(ContentKeyFunctions.OpenAbilitiesMenu, new PointerInputCmdHandler(ActivateAbility));
+            input.BindMap.BindFunction(ContentKeyFunctions.Hotbar0, new PointerInputCmdHandler((s, pos, uid) => HotkeyToggle(s, pos, uid, 0)));
         }
 
         public override void Shutdown()
@@ -43,11 +40,12 @@ namespace Content.Server.GameObjects.EntitySystems
             }
 
             input.BindMap.UnbindFunction(ContentKeyFunctions.MouseMiddle);
+            input.BindMap.UnbindFunction(ContentKeyFunctions.Hotbar0);
         }
 
         private bool ActivateAbility(ICommonSession session, GridCoordinates coords, EntityUid uid)
         {
-            var plyEnt = ((IPlayerSession)session).AttachedEntity;
+            var plyEnt = session.AttachedEntity;
 
             if (plyEnt == null || !plyEnt.IsValid())
                 return false;
@@ -55,11 +53,30 @@ namespace Content.Server.GameObjects.EntitySystems
             if (!plyEnt.TryGetComponent(out HotbarComponent hotbarComp))
                 return false;
 
-            if (hotbarComp.SelectedAbility == null)
-                return false;
+            //if (hotbarComp.SelectedAbility == null)
+            //    return false;
 
-            hotbarComp.SelectedAbility?.Trigger(session, coords, uid, _gameTiming.CurTime);
+            //hotbarComp.SelectedAbility?.Trigger(session, coords, uid, _gameTiming.CurTime);
             return true;
         }
+
+        private bool HotkeyToggle(ICommonSession session, GridCoordinates pos, EntityUid uid, int index)
+        {
+            var plyEnt = session.AttachedEntity;
+
+            if (plyEnt == null || !plyEnt.IsValid())
+            {
+                return false;
+            }
+
+            if (!plyEnt.TryGetComponent(out HotbarComponent hotbarComp))
+            {
+                return false;
+            }
+
+            hotbarComp.ActivateAbility(index, pos);
+            return true;
+        }
+
     }
 }

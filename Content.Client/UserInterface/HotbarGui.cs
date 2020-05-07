@@ -13,7 +13,7 @@ namespace Content.Client.UserInterface
 {
     public class HotbarGui : PanelContainer
     {
-        private List<HotbarSlot> _slots = new List<HotbarSlot>();
+        private List<HotbarButton> _slots = new List<HotbarButton>();
 
         private VBoxContainer _vBox;
         private TextureButton _hideButton;
@@ -25,9 +25,9 @@ namespace Content.Client.UserInterface
             _vBox = new VBoxContainer();
             AddChild(_vBox);
 
-            HotbarSlot CreateSlot(int index)
+            HotbarButton CreateSlot(int index)
             {
-                var button = new HotbarSlot(null, index);
+                var button = new HotbarButton(null, index);
                 button.OnPressed += args =>
                 {
                     OnPressed?.Invoke(args, index);
@@ -58,14 +58,14 @@ namespace Content.Client.UserInterface
             _slots[index].TextureNormal = texture;
         }
 
-        public class HotbarSlot : TextureButton
+        public class HotbarButton : TextureButton
         {
             public const string StyleClassButtonRect = "buttonRect";
 
 
             public int Index;
 
-            public HotbarSlot(Texture background, int index)
+            public HotbarButton(Texture background, int index)
             {
                 AddStyleClass(StyleClassButtonRect);
                 CustomMinimumSize = (64, 64);

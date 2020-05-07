@@ -30,6 +30,7 @@ namespace Content.Client.Input
             human.AddFunction(ContentKeyFunctions.MouseMiddle);
             human.AddFunction(ContentKeyFunctions.ToggleCombatMode);
             human.AddFunction(ContentKeyFunctions.Attack);
+            human.AddFunction(ContentKeyFunctions.OpenAbilitiesMenu);
             human.AddFunction(ContentKeyFunctions.Hotbar0);
             human.AddFunction(ContentKeyFunctions.Hotbar1);
             human.AddFunction(ContentKeyFunctions.Hotbar2);

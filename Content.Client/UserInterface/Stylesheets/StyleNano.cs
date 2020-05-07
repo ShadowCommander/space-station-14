@@ -94,7 +94,6 @@ namespace Content.Client.UserInterface.Stylesheets
 
             var buttonRect = new StyleBoxTexture
             {
-                Texture = buttonTex,
                 Modulate = ButtonColorDefault
             };
             buttonRect.SetPatchMargin(StyleBox.Margin.All, 10);
@@ -359,19 +358,19 @@ namespace Content.Client.UserInterface.Stylesheets
                     }),
 
                 // Thin buttons
-                new StyleRule(new SelectorElement(typeof(HotbarGui.HotbarSlot), null, null, new[] {ContainerButton.StylePseudoClassNormal}), new[]
+                new StyleRule(new SelectorElement(typeof(HotbarGui.HotbarButton), null, null, new[] {ContainerButton.StylePseudoClassNormal}), new[]
                 {
                     new StyleProperty(ContainerButton.StylePropertyStyleBox, buttonRect),
                 }),
-                new StyleRule(new SelectorElement(typeof(HotbarGui.HotbarSlot), null, null, new[] {ContainerButton.StylePseudoClassHover}), new[]
+                new StyleRule(new SelectorElement(typeof(HotbarGui.HotbarButton), null, null, new[] {ContainerButton.StylePseudoClassHover}), new[]
                 {
                     new StyleProperty(ContainerButton.StylePropertyStyleBox, buttonRectHover),
                 }),
-                new StyleRule(new SelectorElement(typeof(HotbarGui.HotbarSlot), null, null, new[] {ContainerButton.StylePseudoClassPressed}), new[]
+                new StyleRule(new SelectorElement(typeof(HotbarGui.HotbarButton), null, null, new[] {ContainerButton.StylePseudoClassPressed}), new[]
                 {
                     new StyleProperty(ContainerButton.StylePropertyStyleBox, buttonRectPressed),
                 }),
-                new StyleRule(new SelectorElement(typeof(HotbarGui.HotbarSlot), null, null, new[] {ContainerButton.StylePseudoClassDisabled}), new[]
+                new StyleRule(new SelectorElement(typeof(HotbarGui.HotbarButton), null, null, new[] {ContainerButton.StylePseudoClassDisabled}), new[]
                 {
                     new StyleProperty(ContainerButton.StylePropertyStyleBox, buttonRectDisabled),
                 }),

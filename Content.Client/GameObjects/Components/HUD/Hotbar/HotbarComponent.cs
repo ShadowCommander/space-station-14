@@ -13,6 +13,7 @@ using Robust.Shared.Interfaces.GameObjects;
 using Robust.Shared.Interfaces.Network;
 using Robust.Shared.Interfaces.Timing;
 using Robust.Shared.IoC;
+using Robust.Shared.Map;
 
 namespace Content.Client.GameObjects.Components.HUD.Hotbar
 {
@@ -67,10 +68,9 @@ namespace Content.Client.GameObjects.Components.HUD.Hotbar
             _gui?.Dispose();
         }
 
-        public override void HandleMessage(ComponentMessage message, INetChannel netChannel = null,
-            IComponent component = null)
+        public override void HandleMessage(ComponentMessage message, IComponent component = null)
         {
-            base.HandleMessage(message, netChannel, component);
+            base.HandleMessage(message, component);
 
             switch (message)
             {
@@ -129,6 +129,11 @@ namespace Content.Client.GameObjects.Components.HUD.Hotbar
             }
         }*/
 
+        /// <summary>
+        /// Trigger on client, then if not handled, trigger on server.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="index">Ability slot index on hotbar</param>
         private void OnPressed(BaseButton.ButtonEventArgs args, int index)
         {
             if (index < 0 || index > _actions.Count)
@@ -148,6 +153,11 @@ namespace Content.Client.GameObjects.Components.HUD.Hotbar
         {
             SendMessage(new TriggerAbilityMsg(index));
         }
+
+        public void ActivateAbility(int index, GridCoordinates pos)
+        {
+            _hotbar[index].Action?.Invoke(pos);
+        }
     }
 
     public class AbilityButton : ContainerButton
@@ -162,5 +172,15 @@ namespace Content.Client.GameObjects.Components.HUD.Hotbar
         public TimeSpan? CooldownStart;
         public TimeSpan? CooldownEnd;
         public bool Active;
+        public Action<GridCoordinates> Action;
+
+        public Ability(Texture texture, Action<GridCoordinates> action)
+        {
+            Texture = texture;
+            CooldownStart = null;
+            CooldownEnd = null;
+            Active = false;
+            Action = action;
+        }
     }
 }

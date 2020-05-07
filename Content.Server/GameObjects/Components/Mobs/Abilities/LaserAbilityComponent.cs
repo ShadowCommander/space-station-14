@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Content.Server.GameObjects.Components.HUD.Hotbar;
 using Content.Server.GameObjects.Components.Sound;
 using Content.Shared.GameObjects;
+using Content.Shared.GameObjects.Components.HUD.Hotbar;
+using Content.Shared.GameObjects.Components.Mobs.Abilities;
 using Content.Shared.Input;
 using Content.Shared.Physics;
 using Robust.Server.GameObjects.EntitySystems;
@@ -23,12 +26,11 @@ using Robust.Shared.Serialization;
 
 namespace Content.Server.GameObjects.Components.Mobs.Abilities
 {
-    public class LaserAbilityComponent : AbilityComponent
+    public class LaserAbilityComponent : SharedLaserAbilityComponent
     {
 #pragma warning disable 649
         [Dependency] private readonly IEntitySystemManager _entitySystemManager;
 #pragma warning restore 649
-        public override string Name => "LaserAbility";
 
         private const float MaxLength = 20;
 
@@ -38,13 +40,15 @@ namespace Content.Server.GameObjects.Components.Mobs.Abilities
         private float _lowerChargeLimit;
         private string _fireSound;
 
+        public HotbarComponent.Ability Ability;
+
         public override void Initialize()
         {
             base.Initialize();
 
-            Cooldown = 10;
+            //Cooldown = 10;
 
-            Ability = new HotbarComponent.Ability(TriggerAbility, "Textures/Objects/Guns/Laser/laser_cannon.rsi/laser_cannon.png");
+            //Ability = new HotbarComponent.Ability(TriggerAbility, "Textures/Objects/Guns/Laser/laser_cannon.rsi/laser_cannon.png");
 
             if (Owner.TryGetComponent(out HotbarComponent hotbarComponent))
             {
@@ -63,10 +67,9 @@ namespace Content.Server.GameObjects.Components.Mobs.Abilities
             serializer.DataField(ref _fireSound, "fireSound", "/Audio/laser.ogg");
         }
 
-        public override void HandleMessage(ComponentMessage message, INetChannel netChannel = null,
-            IComponent component = null)
+        public override void HandleMessage(ComponentMessage message, IComponent component = null)
         {
-            base.HandleMessage(message, netChannel, component);
+            base.HandleMessage(message, component);
 
             switch (message)
             {
@@ -81,15 +84,29 @@ namespace Content.Server.GameObjects.Components.Mobs.Abilities
             }
         }
 
-        public override void TriggerAbility(ICommonSession session, GridCoordinates coords, EntityUid uid, TimeSpan curTime)
+        public override void HandleNetworkMessage(ComponentMessage message, INetChannel netChannel, ICommonSession session = null)
         {
-            if (curTime < CooldownEnd)
-            {
-                return;
-            }
+            base.HandleNetworkMessage(message, netChannel, session);
 
-            CooldownStart = curTime;
-            CooldownEnd = CooldownStart + TimeSpan.FromSeconds(Cooldown);
+            switch (message)
+            {
+                case TriggerAbilityMsg msg:
+                {
+                    TriggerAbility(session, msg.Pos);
+                    break;
+                }
+            }
+        }
+
+        public void TriggerAbility(ICommonSession session, GridCoordinates coords)
+        {
+            //if (curTime < CooldownEnd)
+            //{
+            //    return;
+            //}
+
+            //CooldownStart = curTime;
+            //CooldownEnd = CooldownStart + TimeSpan.FromSeconds(Cooldown);
 
             var player = ((IPlayerSession) session).AttachedEntity;
             Fire(player, coords);
