@@ -41383,14 +41383,14 @@ entities:
     parent: 853
     type: Transform
 - uid: 4167
-  type: TableMetal
+  type: Table
   components:
   - rot: 4.371139006309477E-08 rad
     pos: 14.5,-13.5
     parent: 853
     type: Transform
 - uid: 4168
-  type: TableMetal
+  type: Table
   components:
   - rot: 4.371139006309477E-08 rad
     pos: 15.5,-13.5
@@ -42110,14 +42110,14 @@ entities:
       light_bulb: !type:ContainerSlot {}
     type: ContainerContainer
 - uid: 4259
-  type: TableMetal
+  type: Table
   components:
   - rot: 1.5707963705062866 rad
     pos: -14.5,18.5
     parent: 853
     type: Transform
 - uid: 4260
-  type: TableMetal
+  type: Table
   components:
   - rot: 1.5707963705062866 rad
     pos: -14.5,19.5
