@@ -1,10 +1,11 @@
+#nullable enable
 using System;
 using Content.Server.GameObjects.Components.Mobs;
 using Content.Server.GameObjects.EntitySystems;
+using Content.Server.Mobs;
 using Content.Server.Players;
 using Robust.Server.Player;
 using Robust.Shared.GameObjects;
-using Robust.Shared.Utility;
 
 namespace Content.Server.GameObjects.Components.Observer.GhostRoles
 {
@@ -28,11 +29,13 @@ namespace Content.Server.GameObjects.Components.Observer.GhostRoles
             if (mind.HasMind)
                 throw new Exception("MindComponent already has a mind!");
 
-            var sessionMind = session.ContentData()?.Mind;
+            var data = session.ContentData();
+            if (data == null)
+                return false;
 
-            DebugTools.AssertNotNull(sessionMind);
-
-            sessionMind!.TransferTo(Owner);
+            data.WipeMind();
+            data.Mind = new Mind(session.UserId);
+            data.Mind.TransferTo(Owner);
 
             EntitySystem.Get<GhostRoleSystem>().UnregisterGhostRole(this);
 
