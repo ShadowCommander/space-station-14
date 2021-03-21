@@ -1,6 +1,8 @@
-﻿using System;
+#nullable enable
+using System;
 using Content.Server.Commands;
 using Content.Server.GameObjects.Components.Mobs;
+using Content.Server.Mobs;
 using Content.Server.Players;
 using JetBrains.Annotations;
 using Robust.Server.Player;
@@ -51,11 +53,13 @@ namespace Content.Server.GameObjects.Components.Observer.GhostRoles
 
             mob.EnsureComponent<MindComponent>();
 
-            var mind = session.ContentData()?.Mind;
+            var data = session.ContentData();
+            if (data == null)
+                return false;
 
-            DebugTools.AssertNotNull(mind);
-
-            mind!.TransferTo(mob);
+            data.WipeMind();
+            data.Mind = new Mind(session.UserId);
+            data.Mind.TransferTo(mob);
 
             if (++_currentTakeovers < _availableTakeovers) return true;
 
@@ -63,7 +67,6 @@ namespace Content.Server.GameObjects.Components.Observer.GhostRoles
 
             if (_deleteOnSpawn)
                 Owner.Delete();
-
 
             return true;
 
