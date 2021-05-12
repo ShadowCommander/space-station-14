@@ -69,7 +69,7 @@ namespace Content.Client.Chat
         // Note that these are persisted here, at the manager,
         // rather than the chatbox so that these settings persist between instances of different
         // chatboxes.
-        public readonly Dictionary<ChatChannel, bool> _channelFilters = new();
+        public readonly Dictionary<ChatChannel, bool> ChannelFilters = new();
 
         // Maintains which channels a client should be able to filter (for showing in the chatbox)
         // and select (for attempting to send on).
@@ -242,7 +242,7 @@ namespace Content.Client.Chat
             }
 
             // let our chatbox know all the new settings
-            CurrentChatBox?.SetChannelPermissions(_selectableChannels, _filterableChannels, _channelFilters, _unreadMessages);
+            CurrentChatBox?.SetChannelPermissions(_selectableChannels, _filterableChannels, ChannelFilters, _unreadMessages);
         }
 
         /// <summary>
@@ -251,8 +251,8 @@ namespace Content.Client.Chat
         /// </summary>
         private void AddFilterableChannel(ChatChannel channel)
         {
-            if (!_channelFilters.ContainsKey(channel))
-                _channelFilters[channel] = true;
+            if (!ChannelFilters.ContainsKey(channel))
+                ChannelFilters[channel] = true;
             _filterableChannels.Add(channel);
         }
 
@@ -311,7 +311,7 @@ namespace Content.Client.Chat
                 CurrentChatBox.FilterToggled += OnFilterButtonToggled;
                 CurrentChatBox.OnResized += ChatBoxOnResized;
 
-                CurrentChatBox.SetChannelPermissions(_selectableChannels, _filterableChannels, _channelFilters, _unreadMessages);
+                CurrentChatBox.SetChannelPermissions(_selectableChannels, _filterableChannels, ChannelFilters, _unreadMessages);
             }
 
             RepopulateChat(_filteredHistory);
@@ -452,14 +452,14 @@ namespace Content.Client.Chat
         {
             if (enabled)
             {
-                _channelFilters[channel] = true;
+                ChannelFilters[channel] = true;
                 _filteredChannels &= ~channel;
                 _unreadMessages.Remove(channel);
                 CurrentChatBox?.UpdateUnreadMessageCounts(_unreadMessages);
             }
             else
             {
-                _channelFilters[channel] = false;
+                ChannelFilters[channel] = false;
                 _filteredChannels |= channel;
             }
 
