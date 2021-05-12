@@ -172,7 +172,7 @@ namespace Content.Server.GameObjects.EntitySystems
         {
             base.Update(frameTime);
 
-            foreach (var (mapGridComponent, gridAtmosphereComponent) in EntityManager.ComponentManager.EntityQuery<IMapGridComponent, IGridAtmosphereComponent>(true))
+            foreach (var (gridAtmosphereComponent, mapGridComponent) in EntityManager.ComponentManager.EntityQuery<IGridAtmosphereComponent, IMapGridComponent>(true))
             {
                 if (_pauseManager.IsGridPaused(mapGridComponent.GridIndex)) continue;
 
