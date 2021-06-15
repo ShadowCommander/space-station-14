@@ -212,7 +212,7 @@ namespace Content.Server.Weapon.Ranged.Barrels.Components
                 return false;
             }
 
-            if (_ammoContainer.ContainedEntities.Count < Capacity - 1)
+            if (_ammoContainer.Count < Capacity - 1)
             {
                 _ammoContainer.Insert(eventArgs.Using);
                 _spawnedAmmo.Push(eventArgs.Using);

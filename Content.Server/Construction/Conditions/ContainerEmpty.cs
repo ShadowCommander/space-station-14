@@ -21,7 +21,7 @@ namespace Content.Server.Construction.Conditions
             if (!entity.TryGetComponent(out ContainerManagerComponent? containerManager) ||
                 !containerManager.TryGetContainer(Container, out var container)) return true;
 
-            return container.ContainedEntities.Count == 0;
+            return container.Count == 0;
         }
 
         public bool DoExamine(IEntity entity, FormattedMessage message, bool inDetailsRange)
@@ -29,7 +29,7 @@ namespace Content.Server.Construction.Conditions
             if (!entity.TryGetComponent(out ContainerManagerComponent? containerManager) ||
                 !containerManager.TryGetContainer(Container, out var container)) return false;
 
-            if (container.ContainedEntities.Count == 0)
+            if (container.Count == 0)
                 return false;
 
             message.AddMarkup(Text);

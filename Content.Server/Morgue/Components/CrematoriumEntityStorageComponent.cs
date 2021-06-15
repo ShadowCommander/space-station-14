@@ -101,9 +101,9 @@ namespace Content.Server.Morgue.Components
                 Appearance?.SetData(CrematoriumVisuals.Burning, false);
                 Cooking = false;
 
-                if (Contents.ContainedEntities.Count > 0)
+                if (Contents.Count > 0)
                 {
-                    for (var i = Contents.ContainedEntities.Count - 1; i >= 0; i--)
+                    for (var i = Contents.Count - 1; i >= 0; i--)
                     {
                         var item = Contents.ContainedEntities[i];
                         Contents.Remove(item);

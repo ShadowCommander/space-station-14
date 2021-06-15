@@ -36,8 +36,8 @@ namespace Content.Server.Access.Components
         [ViewVariables] private BoundUserInterface? UserInterface => Owner.GetUIOrNull(IdCardConsoleUiKey.Key);
         [ViewVariables] private bool Powered => !Owner.TryGetComponent(out PowerReceiverComponent? receiver) || receiver.Powered;
 
-        private bool PrivilegedIDEmpty => _privilegedIdContainer.ContainedEntities.Count < 1;
-        private bool TargetIDEmpty => _targetIdContainer.ContainedEntities.Count < 1;
+        private bool PrivilegedIDEmpty => _privilegedIdContainer.Count < 1;
+        private bool TargetIDEmpty => _targetIdContainer.Count < 1;
 
         protected override void Initialize()
         {

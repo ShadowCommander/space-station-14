@@ -382,7 +382,7 @@ namespace Content.Server.Storage.Components
                 return true;
             }
 
-            if (Contents.ContainedEntities.Count >= _storageCapacityMax)
+            if (Contents.Count >= _storageCapacityMax)
             {
                 return false;
             }

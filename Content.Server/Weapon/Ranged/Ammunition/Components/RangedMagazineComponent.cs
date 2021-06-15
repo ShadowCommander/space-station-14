@@ -64,7 +64,7 @@ namespace Content.Server.Weapon.Ranged.Ammunition.Components
 
             if (existing)
             {
-                if (_ammoContainer.ContainedEntities.Count > Capacity)
+                if (_ammoContainer.Count > Capacity)
                 {
                     throw new InvalidOperationException("Initialized capacity of magazine higher than its actual capacity");
                 }

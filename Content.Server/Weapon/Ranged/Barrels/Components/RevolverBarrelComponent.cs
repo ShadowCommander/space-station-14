@@ -49,7 +49,7 @@ namespace Content.Server.Weapon.Ranged.Barrels.Components
         [DataField("ammoSlots", readOnly: true)]
         private IEntity?[] _ammoSlots = Array.Empty<IEntity?>();
 
-        public override int ShotsLeft => _ammoContainer.ContainedEntities.Count;
+        public override int ShotsLeft => _ammoContainer.Count;
 
         [ViewVariables]
         [DataField("fillPrototype")]
@@ -246,7 +246,7 @@ namespace Content.Server.Weapon.Ranged.Barrels.Components
                 _ammoSlots[i] = null;
             }
 
-            if (_ammoContainer.ContainedEntities.Count > 0)
+            if (_ammoContainer.Count > 0)
             {
                 if (_soundEject != null)
                 {

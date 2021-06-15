@@ -31,7 +31,7 @@ namespace Content.Server.Construction.Completions
                 return;
             }
 
-            if (container.ContainedEntities.Count != 1)
+            if (container.Count != 1)
             {
                 Logger.Warning($"Computer entity {entity} did not have exactly one item in the specified '{Container}' container! Aborting build computer action.");
             }

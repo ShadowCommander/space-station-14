@@ -24,7 +24,7 @@ namespace Content.Server.Storage.Components
             base.CloseStorage();
 
             // No contents, we do nothing
-            if (Contents.ContainedEntities.Count == 0) return;
+            if (Contents.Count == 0) return;
 
             var lockers = Owner.EntityManager.GetEntities(new TypeEntityQuery(typeof(EntityStorageComponent))).ToList();
 

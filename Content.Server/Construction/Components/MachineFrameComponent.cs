@@ -59,7 +59,7 @@ namespace Content.Server.Construction.Components
         }
 
         [ViewVariables]
-        public bool HasBoard => _boardContainer?.ContainedEntities.Count != 0;
+        public bool HasBoard => _boardContainer?.Count != 0;
 
         [ViewVariables]
         private readonly Dictionary<MachinePart, int> _progress = new();

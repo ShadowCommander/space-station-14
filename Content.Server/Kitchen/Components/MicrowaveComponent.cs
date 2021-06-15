@@ -68,7 +68,7 @@ namespace Content.Server.Kitchen.Components
         private uint _currentCookTimerTime = 1;
 
         private bool Powered => !Owner.TryGetComponent(out PowerReceiverComponent? receiver) || receiver.Powered;
-        private bool _hasContents => Owner.TryGetComponent(out SolutionContainerComponent? solution) && (solution.ReagentList.Count > 0 || _storage.ContainedEntities.Count > 0);
+        private bool _hasContents => Owner.TryGetComponent(out SolutionContainerComponent? solution) && (solution.ReagentList.Count > 0 || _storage.Count > 0);
         private bool _uiDirty = true;
         private bool _lostPower = false;
         private int _currentCookTimeButtonIndex = 0;
@@ -391,7 +391,7 @@ namespace Content.Server.Kitchen.Components
 
         private void VaporizeSolids()
         {
-            for(var i = _storage.ContainedEntities.Count-1; i>=0; i--)
+            for(var i = _storage.Count-1; i>=0; i--)
             {
                 var item = _storage.ContainedEntities.ElementAt(i);
                 _storage.Remove(item);
@@ -402,7 +402,7 @@ namespace Content.Server.Kitchen.Components
         private void EjectSolids()
         {
 
-            for(var i = _storage.ContainedEntities.Count-1; i>=0; i--)
+            for(var i = _storage.Count-1; i>=0; i--)
             {
                 _storage.Remove(_storage.ContainedEntities.ElementAt(i));
             }

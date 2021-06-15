@@ -33,7 +33,7 @@ namespace Content.Server.Cuffs.Components
         /// How many of this entity's hands are currently cuffed.
         /// </summary>
         [ViewVariables]
-        public int CuffedHandCount => Container.ContainedEntities.Count * 2;
+        public int CuffedHandCount => Container.Count * 2;
 
         protected IEntity LastAddedCuffs => Container.ContainedEntities[^1];
 
@@ -187,7 +187,7 @@ namespace Content.Server.Cuffs.Components
 
             if (cuffsToRemove == null)
             {
-                if (Container.ContainedEntities.Count == 0)
+                if (Container.Count == 0)
                 {
                     return;
                 }

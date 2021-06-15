@@ -49,7 +49,7 @@ namespace Content.Server.Kitchen.Components
         /// </summary>
         [ViewVariables] private Container _chamber = default!;
 
-        [ViewVariables] private bool ChamberEmpty => _chamber.ContainedEntities.Count <= 0;
+        [ViewVariables] private bool ChamberEmpty => _chamber.Count <= 0;
         [ViewVariables] private bool HasBeaker => _beakerContainer.ContainedEntity != null;
         [ViewVariables] private BoundUserInterface? UserInterface => Owner.GetUIOrNull(ReagentGrinderUiKey.Key);
 
@@ -132,7 +132,7 @@ namespace Content.Server.Kitchen.Components
                     if(!ChamberEmpty)
                     {
                         ClickSound();
-                        for (var i = _chamber.ContainedEntities.Count - 1; i >= 0; i--)
+                        for (var i = _chamber.Count - 1; i >= 0; i--)
                         {
                             EjectSolid(_chamber.ContainedEntities.ElementAt(i).Uid);
                         }
@@ -297,7 +297,7 @@ namespace Content.Server.Kitchen.Components
 
             //Cap the chamber. Don't want someone putting in 500 entities and ejecting them all at once.
             //Maybe I should have done that for the microwave too?
-            if (_chamber.ContainedEntities.Count >= _storageCap)
+            if (_chamber.Count >= _storageCap)
             {
                 return false;
             }

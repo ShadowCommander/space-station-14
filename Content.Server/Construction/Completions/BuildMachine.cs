@@ -47,7 +47,7 @@ namespace Content.Server.Construction.Completions
                 return;
             }
 
-            if (entBoardContainer.ContainedEntities.Count != 1)
+            if (entBoardContainer.Count != 1)
             {
                 Logger.Warning($"Machine frame entity {entity} did not have exactly one item in the '{MachineFrameComponent.BoardContainer}' container! Aborting build machine action.");
             }

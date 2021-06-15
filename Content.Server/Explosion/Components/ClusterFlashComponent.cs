@@ -59,7 +59,7 @@ namespace Content.Server.Explosion.Components
 
         async Task<bool> IInteractUsing.InteractUsing(InteractUsingEventArgs args)
         {
-            if (_grenadesContainer.ContainedEntities.Count >= _maxGrenades || !args.Using.HasComponent<FlashExplosiveComponent>())
+            if (_grenadesContainer.Count >= _maxGrenades || !args.Using.HasComponent<FlashExplosiveComponent>())
                 return false;
 
             _grenadesContainer.Insert(args.Using);
@@ -81,14 +81,14 @@ namespace Content.Server.Explosion.Components
 
             if (_fillPrototype != null)
             {
-                _unspawnedCount = Math.Max(0, _maxGrenades - _grenadesContainer.ContainedEntities.Count);
+                _unspawnedCount = Math.Max(0, _maxGrenades - _grenadesContainer.Count);
                 UpdateAppearance();
             }
         }
 
         bool IUse.UseEntity(UseEntityEventArgs eventArgs)
         {
-            if (_countDown || (_grenadesContainer.ContainedEntities.Count + _unspawnedCount) <= 0)
+            if (_countDown || (_grenadesContainer.Count + _unspawnedCount) <= 0)
                 return false;
             Owner.SpawnTimer((int) (_delay * 1000), () =>
             {
@@ -97,7 +97,7 @@ namespace Content.Server.Explosion.Components
                 _countDown = true;
                 var random = IoCManager.Resolve<IRobustRandom>();
                 var delay = 20;
-                var grenadesInserted = _grenadesContainer.ContainedEntities.Count + _unspawnedCount;
+                var grenadesInserted = _grenadesContainer.Count + _unspawnedCount;
                 var thrownCount = 0;
                 var segmentAngle = (int) (360 / grenadesInserted);
                 while (TryGetGrenade(out var grenade))
@@ -141,7 +141,7 @@ namespace Content.Server.Explosion.Components
                 return true;
             }
 
-            if (_grenadesContainer.ContainedEntities.Count > 0)
+            if (_grenadesContainer.Count > 0)
             {
                 grenade = _grenadesContainer.ContainedEntities[0];
 
@@ -159,7 +159,7 @@ namespace Content.Server.Explosion.Components
         {
             if (!Owner.TryGetComponent(out AppearanceComponent? appearance)) return;
 
-            appearance.SetData(ClusterFlashVisuals.GrenadesCounter, _grenadesContainer.ContainedEntities.Count + _unspawnedCount);
+            appearance.SetData(ClusterFlashVisuals.GrenadesCounter, _grenadesContainer.Count + _unspawnedCount);
         }
     }
 }

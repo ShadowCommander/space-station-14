@@ -650,7 +650,7 @@ namespace Content.Server.Doors.Components
             if (existed)
             {
                 // We already contain a board. Note: We don't check if it's the right one!
-                if (container.ContainedEntities.Count != 0)
+                if (container.Count != 0)
                     return;
             }
 

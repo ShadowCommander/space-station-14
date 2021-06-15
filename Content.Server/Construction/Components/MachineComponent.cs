@@ -57,7 +57,7 @@ namespace Content.Server.Construction.Components
             if (existedBoard || existedParts)
             {
                 // We're done here, let's suppose all containers are correct just so we don't screw SaveLoadSave.
-                if (boardContainer.ContainedEntities.Count > 0)
+                if (boardContainer.Count > 0)
                     return;
             }
 
