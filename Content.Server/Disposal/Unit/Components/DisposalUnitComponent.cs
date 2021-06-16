@@ -306,10 +306,7 @@ namespace Content.Server.Disposal.Unit.Components
 
         private void TryEjectContents()
         {
-            foreach (var entity in _container.ContainedEntities.ToArray())
-            {
-                Remove(entity);
-            }
+            _container.RemoveAll();
         }
 
         private void TogglePower()
@@ -516,10 +513,7 @@ namespace Content.Server.Disposal.Unit.Components
 
         protected override void OnRemove()
         {
-            foreach (var entity in _container.ContainedEntities.ToArray())
-            {
-                _container.ForceRemove(entity);
-            }
+            _container.ForceRemoveAll();
 
             UserInterface?.CloseAll();
 
