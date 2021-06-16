@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System.Linq;
 using System.Threading.Tasks;
 using Content.Server.Disposal.Tube.Components;
@@ -54,10 +54,10 @@ namespace Content.IntegrationTests.Tests.Disposal
         private void Flush(DisposalUnitComponent unit, bool result, params IEntity[] entities)
         {
             Assert.That(unit.ContainedEntities, Is.SupersetOf(entities));
-            Assert.That(entities.Length, Is.EqualTo(unit.Count));
+            Assert.That(entities.Length, Is.EqualTo(unit.ContainedEntities.Count));
 
             Assert.That(result, Is.EqualTo(unit.TryFlush()));
-            Assert.That(result || entities.Length == 0, Is.EqualTo(unit.Count == 0));
+            Assert.That(result || entities.Length == 0, Is.EqualTo(unit.ContainedEntities.Count == 0));
         }
 
         private const string Prototypes = @"
