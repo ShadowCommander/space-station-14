@@ -306,7 +306,7 @@ namespace Content.Server.Disposal.Unit.Components
 
         private void TryEjectContents()
         {
-            _container.RemoveAll();
+            _container.EmptyContainer();
         }
 
         private void TogglePower()
@@ -513,7 +513,7 @@ namespace Content.Server.Disposal.Unit.Components
 
         protected override void OnRemove()
         {
-            _container.ForceRemoveAll();
+            _container.EmptyContainer(true);
 
             UserInterface?.CloseAll();
 

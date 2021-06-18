@@ -55,11 +55,7 @@ namespace Content.Server.Construction.Completions
             if (existed)
             {
                 // In case there are any entities inside this, delete them.
-                foreach (var ent in computerContainer.ContainedEntities.ToArray())
-                {
-                    computerContainer.ForceRemove(ent);
-                    ent.Delete();
-                }
+                computerContainer.CleanContainer();
             }
 
             computerContainer.Insert(board);

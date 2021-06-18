@@ -19,11 +19,7 @@ namespace Content.Server.Construction.Completions
             if (!entity.TryGetComponent(out ContainerManagerComponent? containerMan)) return;
             if (!containerMan.TryGetContainer(Container, out var container)) return;
 
-            foreach (var contained in container.ContainedEntities.ToArray())
-            {
-                if(container.Remove(contained))
-                    contained.QueueDelete();
-            }
+            container.CleanContainer();
         }
     }
 }

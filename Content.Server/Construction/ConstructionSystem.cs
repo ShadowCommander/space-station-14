@@ -127,11 +127,11 @@ namespace Content.Server.Construction
 
             void FailCleanup()
             {
-                container.RemoveAll();
+                container.EmptyContainer();
 
                 foreach (var cont in containers!.Values)
                 {
-                    cont.RemoveAll();
+                    cont.EmptyContainer();
                 }
 
                 // If we don't do this, items are invisible for some fucking reason. Nice.

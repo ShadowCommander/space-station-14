@@ -296,7 +296,7 @@ namespace Content.Server.Disposal.Mailing
 
             var entryComponent = Owner.EntityManager.ComponentManager.GetComponent<DisposalEntryComponent>(entry);
             var entities = _container.ContainedEntities.ToList();
-            _container.RemoveAll();
+            _container.EmptyContainer();
 
             if (_target == null)
             {
@@ -361,7 +361,7 @@ namespace Content.Server.Disposal.Mailing
 
         private void TryEjectContents()
         {
-            _container.RemoveAll();
+            _container.EmptyContainer();
         }
 
         private void TogglePower()
@@ -582,7 +582,7 @@ namespace Content.Server.Disposal.Mailing
         {
             if (_container != null)
             {
-                _container.ForceRemoveAll();
+                _container.EmptyContainer(true);
             }
 
             UserInterface?.CloseAll();
