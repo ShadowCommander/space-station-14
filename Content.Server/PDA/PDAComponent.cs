@@ -196,7 +196,7 @@ namespace Content.Server.PDA
             if (!IdSlotEmpty)
             {
                 // Swap
-                swap = _idSlot.ContainedEntities[0];
+                swap = _idSlot.ContainedEntity;
             }
 
             if (!hands.Drop(item))
@@ -231,7 +231,7 @@ namespace Content.Server.PDA
             if (!PenSlotEmpty)
             {
                 // Swap
-                swap = _penSlot.ContainedEntities[0];
+                swap = _penSlot.ContainedEntity;
             }
 
             if (!hands.Drop(item))
@@ -358,7 +358,7 @@ namespace Content.Server.PDA
             if (PenSlotEmpty)
                 return;
 
-            var pen = _penSlot.ContainedEntities[0];
+            var pen = _penSlot.ContainedEntity;
             _penSlot.Remove(pen);
 
             var hands = pdaUser.GetComponent<HandsComponent>();

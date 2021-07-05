@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Content.Server.Stack;
 using Content.Shared.Construction;
@@ -59,7 +59,7 @@ namespace Content.Server.Construction.Components
         }
 
         [ViewVariables]
-        public bool HasBoard => _boardContainer?.Count != 0;
+        public bool HasBoard => _boardContainer.ContainedEntity != null;
 
         [ViewVariables]
         private readonly Dictionary<MachinePart, int> _progress = new();
@@ -86,7 +86,7 @@ namespace Content.Server.Construction.Components
         private Dictionary<string, GenericPartInfo> _tagRequirements = new();
 
         [ViewVariables]
-        private Container _boardContainer = default!;
+        private ContainerSlot _boardContainer = default!;
 
         [ViewVariables]
         private Container _partContainer = default!;
@@ -111,7 +111,7 @@ namespace Content.Server.Construction.Components
         {
             base.Initialize();
 
-            _boardContainer = ContainerHelpers.EnsureContainer<Container>(Owner, BoardContainer);
+            _boardContainer = ContainerHelpers.EnsureContainer<ContainerSlot>(Owner, BoardContainer);
             _partContainer = ContainerHelpers.EnsureContainer<Container>(Owner, PartContainer);
         }
 
@@ -184,7 +184,7 @@ namespace Content.Server.Construction.Components
                 return;
             }
 
-            var board = _boardContainer.ContainedEntities[0];
+            var board = _boardContainer.ContainedEntity;
 
             if (!board.TryGetComponent<MachineBoardComponent>(out var machineBoard))
                 return;
