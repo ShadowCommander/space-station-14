@@ -37,8 +37,6 @@ namespace Content.Server.Cuffs.Components
 
         protected IEntity LastAddedCuffs => Container.ContainedEntities[^1];
 
-        public IReadOnlyList<IEntity> StoredEntities => Container.ContainedEntities;
-
         /// <summary>
         ///     Container of various handcuffs currently applied to the entity.
         /// </summary>
@@ -199,6 +197,7 @@ namespace Content.Server.Cuffs.Components
                 if (!Container.ContainedEntities.Contains(cuffsToRemove))
                 {
                     Logger.Warning("A user is trying to remove handcuffs that aren't in the owner's container. This should never happen!");
+                    return;
                 }
             }
 

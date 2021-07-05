@@ -94,7 +94,7 @@ namespace Content.Server.Strip
                 return dictionary;
             }
 
-            foreach (IEntity entity in cuffed.StoredEntities)
+            foreach (IEntity entity in cuffed.Container.ContainedEntities)
             {
                 dictionary.Add(entity.Uid, entity.Name);
             }
@@ -389,7 +389,7 @@ namespace Content.Server.Strip
             switch (obj.Message)
             {
                 case StrippingInventoryButtonPressed inventoryMessage:
-
+                {
                     if (Owner.TryGetComponent<InventoryComponent>(out var inventory))
                     {
                         if (inventory.TryGetSlotItem(inventoryMessage.Slot, out ItemComponent _))
@@ -401,9 +401,9 @@ namespace Content.Server.Strip
                             TakeItemFromInventory(user, inventoryMessage.Slot);
                     }
                     break;
-
+                }
                 case StrippingHandButtonPressed handMessage:
-
+                {
                     if (Owner.TryGetComponent<HandsComponent>(out var hands))
                     {
                         if (hands.TryGetItem(handMessage.Hand, out _))
@@ -415,21 +415,16 @@ namespace Content.Server.Strip
                             TakeItemFromHands(user, handMessage.Hand);
                     }
                     break;
-
+                }
                 case StrippingHandcuffButtonPressed handcuffMessage:
-
-                    if (Owner.TryGetComponent<CuffableComponent>(out var cuffed))
-                    {
-                        foreach (var entity in cuffed.StoredEntities)
-                        {
-                            if (entity.Uid == handcuffMessage.Handcuff)
-                            {
-                                cuffed.TryUncuff(user, entity);
-                                return;
-                            }
-                        }
-                    }
+                {
+                    if (!Owner.EntityManager.TryGetEntity(handcuffMessage.Handcuff, out var handcuffs))
+                        break;
+                    if (!Owner.TryGetComponent<CuffableComponent>(out var cuffed))
+                        break;
+                    cuffed.TryUncuff(user, handcuffs);
                     break;
+                }
             }
         }
 
