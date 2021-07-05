@@ -184,7 +184,7 @@ namespace Content.Server.Construction.Components
                 return;
             }
 
-            var board = _boardContainer.ContainedEntity;
+            var board = _boardContainer.ContainedEntity!;
 
             if (!board.TryGetComponent<MachineBoardComponent>(out var machineBoard))
                 return;

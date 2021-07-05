@@ -358,7 +358,7 @@ namespace Content.Server.PDA
             if (PenSlotEmpty)
                 return;
 
-            var pen = _penSlot.ContainedEntity;
+            var pen = _penSlot.ContainedEntity!;
             _penSlot.Remove(pen);
 
             var hands = pdaUser.GetComponent<HandsComponent>();
