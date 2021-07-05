@@ -98,7 +98,7 @@ namespace Content.Server.Atmos.Piping.Binary.EntitySystems
             switch (msg.Message)
             {
                 case GasCanisterHoldingTankEjectMessage:
-                    if (container.ContainedEntities.Count == 0)
+                    if (container.Count == 0)
                         break;
 
                     container.Remove(container.ContainedEntities[0]);

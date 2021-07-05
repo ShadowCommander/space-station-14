@@ -171,7 +171,7 @@ namespace Content.Server.Disposal.Mailing
 
         private void TryQueueEngage()
         {
-            if (!Powered && ContainedEntities.Count == 0)
+            if (!Powered && _container.Count == 0)
             {
                 return;
             }
@@ -253,7 +253,7 @@ namespace Content.Server.Disposal.Mailing
         {
             _container.Remove(entity);
 
-            if (ContainedEntities.Count == 0)
+            if (_container.Count == 0)
             {
                 _automaticEngageToken?.Cancel();
                 _automaticEngageToken = null;
@@ -492,7 +492,7 @@ namespace Content.Server.Disposal.Mailing
                 return;
             }
 
-            if (ContainedEntities.Count > 0)
+            if (_container.Count > 0)
             {
                 appearance.SetData(Visuals.Light, LightState.Full);
                 return;
