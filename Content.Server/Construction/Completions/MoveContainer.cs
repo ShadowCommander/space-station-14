@@ -24,11 +24,7 @@ namespace Content.Server.Construction.Completions
             var from = entity.EnsureContainer<Container>(FromContainer);
             var to = entity.EnsureContainer<Container>(ToContainer);
 
-            foreach (var contained in from.ContainedEntities.ToArray())
-            {
-                if (from.Remove(contained))
-                    to.Insert(contained);
-            }
+            from.TransferTo(to);
         }
     }
 }

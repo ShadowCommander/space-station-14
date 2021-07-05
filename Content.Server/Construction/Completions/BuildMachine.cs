@@ -85,11 +85,7 @@ namespace Content.Server.Construction.Completions
             boardContainer.Insert(board);
 
             // Now we insert all parts.
-            foreach (var part in entPartContainer.ContainedEntities.ToArray())
-            {
-                entPartContainer.ForceRemove(part);
-                partContainer.Insert(part);
-            }
+            entPartContainer.TransferTo(partContainer);
 
             if (machine.TryGetComponent(out ConstructionComponent? construction))
             {

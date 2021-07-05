@@ -432,11 +432,7 @@ namespace Content.Server.Construction.Components
                     var otherContainer = entity.EnsureContainer<Container>(container);
                     var ourContainer = containerComp.GetContainer(container);
 
-                    foreach (var ent in ourContainer.ContainedEntities.ToArray())
-                    {
-                        ourContainer.ForceRemove(ent);
-                        otherContainer.Insert(ent);
-                    }
+                    ourContainer.TransferTo(otherContainer);
                 }
             }
 

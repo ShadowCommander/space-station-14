@@ -251,11 +251,7 @@ namespace Content.Server.Construction
             {
                 var newCont = ContainerHelpers.EnsureContainer<Container>(newEntity, name);
 
-                foreach (var entity in cont.ContainedEntities.ToArray())
-                {
-                    cont.ForceRemove(entity);
-                    newCont.Insert(entity);
-                }
+                cont.TransferTo(newCont);
             }
 
             // We now get rid of all them.
