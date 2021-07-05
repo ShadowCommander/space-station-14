@@ -391,21 +391,12 @@ namespace Content.Server.Kitchen.Components
 
         private void VaporizeSolids()
         {
-            for(var i = _storage.Count-1; i>=0; i--)
-            {
-                var item = _storage.ContainedEntities.ElementAt(i);
-                _storage.Remove(item);
-                item.Delete();
-            }
+            _storage.CleanContainer();
         }
 
         private void EjectSolids()
         {
-
-            for(var i = _storage.Count-1; i>=0; i--)
-            {
-                _storage.Remove(_storage.ContainedEntities.ElementAt(i));
-            }
+            _storage.EmptyContainer();
         }
 
         private void EjectSolid(EntityUid entityID)

@@ -16,6 +16,7 @@ using Content.Shared.Standing;
 using Content.Shared.Verbs;
 using Robust.Server.Player;
 using Robust.Shared.Audio;
+using Robust.Shared.Containers;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
@@ -103,12 +104,7 @@ namespace Content.Server.Morgue.Components
 
                 if (Contents.Count > 0)
                 {
-                    for (var i = Contents.Count - 1; i >= 0; i--)
-                    {
-                        var item = Contents.ContainedEntities[i];
-                        Contents.Remove(item);
-                        item.Delete();
-                    }
+                    Contents.CleanContainer();
 
                     var ash = Owner.EntityManager.SpawnEntity("Ash", Owner.Transform.Coordinates);
                     Contents.Insert(ash);

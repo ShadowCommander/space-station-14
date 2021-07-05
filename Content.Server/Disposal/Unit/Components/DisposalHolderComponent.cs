@@ -129,12 +129,7 @@ namespace Content.Server.Disposal.Unit.Components
                     physics.CanCollide = true;
                 }
 
-                _contents.ForceRemove(entity);
-
-                if (entity.Transform.Parent == Owner.Transform)
-                {
-                    entity.Transform.AttachParentToContainerOrGrid();
-                }
+                _contents.Remove(entity);
             }
 
             if (Owner.Transform.Coordinates.TryGetTileAtmosphere(out var tileAtmos) &&
