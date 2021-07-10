@@ -64,6 +64,8 @@ namespace Content.Server.Kitchen.Components
         /// </summary>
         private bool _busy = false;
 
+        private float _emptyOffset = 0.4f;
+
         //YAML serialization vars
         [ViewVariables(VVAccess.ReadWrite)] [DataField("chamberCapacity")] private int _storageCap = 16;
         [ViewVariables(VVAccess.ReadWrite)] [DataField("workTime")] private int _workTime = 3500; //3.5 seconds, completely arbitrary for now.
@@ -132,10 +134,9 @@ namespace Content.Server.Kitchen.Components
                     if(!ChamberEmpty)
                     {
                         ClickSound();
-                        for (var i = _chamber.Count - 1; i >= 0; i--)
-                        {
-                            EjectSolid(_chamber.ContainedEntities.ElementAt(i).Uid);
-                        }
+                        if (_busy)
+                            break;
+                        ContainerHelpers.EmptyContainer(_chamber, false, Owner.Transform.Coordinates, false, _emptyOffset);
                     }
                     break;
 
@@ -223,7 +224,7 @@ namespace Content.Server.Kitchen.Components
 
                 //Give the ejected entity a tiny bit of offset so each one is apparent in case of a big stack,
                 //but (hopefully) not enough to clip it through a solid (wall).
-                entity.RandomOffset(0.4f);
+                entity.RandomOffset(_emptyOffset);
             }
             _uiDirty = true;
         }

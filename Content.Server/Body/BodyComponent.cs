@@ -108,12 +108,7 @@ namespace Content.Server.Body
             {
                 foreach (var cont in container.GetAllContainers())
                 {
-                    foreach (var ent in cont.ContainedEntities)
-                    {
-                        cont.ForceRemove(ent);
-                        ent.Transform.Coordinates = Owner.Transform.Coordinates;
-                        ent.RandomOffset(0.25f);
-                    }
+                    cont.EmptyContainer(true, randomOffset: 0.25f);
                 }
             }
 
