@@ -52,7 +52,7 @@ namespace Content.Server.Construction.Completions
                 Logger.Warning($"Machine frame entity {entity} did not have exactly one item in the '{MachineFrameComponent.BoardContainer}' container! Aborting build machine action.");
             }
 
-            var board = entBoardContainer.ContainedEntities[0];
+            var board = entBoardContainer.First();
 
             if (!board.TryGetComponent(out MachineBoardComponent? boardComponent))
             {

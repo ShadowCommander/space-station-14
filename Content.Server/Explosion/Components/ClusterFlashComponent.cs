@@ -143,7 +143,7 @@ namespace Content.Server.Explosion.Components
 
             if (_grenadesContainer.Count > 0)
             {
-                grenade = _grenadesContainer.ContainedEntities[0];
+                grenade = _grenadesContainer.First();
 
                 // This shouldn't happen but you never know.
                 if (!_grenadesContainer.Remove(grenade))

@@ -36,7 +36,7 @@ namespace Content.Server.Construction.Completions
                 Logger.Warning($"Computer entity {entity} did not have exactly one item in the specified '{Container}' container! Aborting build computer action.");
             }
 
-            var board = container.ContainedEntities[0];
+            var board = container.First();
 
             if (!board.TryGetComponent(out ComputerBoardComponent? boardComponent))
             {

@@ -35,7 +35,7 @@ namespace Content.Server.Cuffs.Components
         [ViewVariables]
         public int CuffedHandCount => Container.Count * 2;
 
-        protected IEntity LastAddedCuffs => Container.ContainedEntities[^1];
+        protected IEntity LastAddedCuffs => Container.Last();
 
         /// <summary>
         ///     Container of various handcuffs currently applied to the entity.
@@ -66,7 +66,7 @@ namespace Content.Server.Cuffs.Components
 
             if (CuffedHandCount > 0)
             {
-                if (LastAddedCuffs.TryGetComponent<HandcuffComponent>(out var cuffs))
+                if (LastAddedCuffs!.TryGetComponent<HandcuffComponent>(out var cuffs))
                 {
                     return new CuffableComponentState(CuffedHandCount,
                        CanStillInteract,

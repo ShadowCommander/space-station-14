@@ -69,10 +69,12 @@ namespace Content.Server.Atmos.Piping.Binary.EntitySystems
             string? tankLabel = null;
             var tankPressure = 0f;
 
-            if (ComponentManager.TryGetComponent(uid, out ContainerManagerComponent? containerManager) && containerManager.TryGetContainer(canister.ContainerName, out var tankContainer) && tankContainer.ContainedEntities.Count > 0)
+            if (ComponentManager.TryGetComponent(uid, out ContainerManagerComponent? containerManager)
+                && containerManager.TryGetContainer(canister.ContainerName, out var tankContainer)
+                && tankContainer.Count > 0)
             {
-                var tank = tankContainer.ContainedEntities[0];
-                tankLabel = tank.Name;
+                var tank = tankContainer.First();
+                tankLabel = tank!.Name;
                 tankPressure = tankNode.Air.Pressure;
             }
 
@@ -101,7 +103,7 @@ namespace Content.Server.Atmos.Piping.Binary.EntitySystems
                     if (container.Count == 0)
                         break;
 
-                    container.Remove(container.ContainedEntities[0]);
+                    container.Remove(container.First()!);
                     break;
 
                 case GasCanisterChangeReleasePressureMessage changeReleasePressure:

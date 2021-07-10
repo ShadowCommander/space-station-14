@@ -103,8 +103,6 @@ namespace Content.Server.Disposal.Mailing
         [ViewVariables]
         private WiredNetworkConnection? _connection;
 
-        [ViewVariables] public IReadOnlyList<IEntity> ContainedEntities => _container.ContainedEntities;
-
         [ViewVariables]
         private readonly List<string> _targetList = new();
 
@@ -247,6 +245,11 @@ namespace Content.Server.Disposal.Mailing
             AfterInsert(entity);
 
             return true;
+        }
+
+        private bool Contains(IEntity entity)
+        {
+            return _container.Contains(entity);
         }
 
         private void Remove(IEntity entity)
@@ -740,7 +743,7 @@ namespace Content.Server.Disposal.Mailing
                 data.Visibility = VerbVisibility.Invisible;
 
                 if (!EntitySystem.Get<ActionBlockerSystem>().CanInteract(user) ||
-                    component.ContainedEntities.Contains(user))
+                    component.Contains(user))
                 {
                     return;
                 }
@@ -763,7 +766,7 @@ namespace Content.Server.Disposal.Mailing
                 data.Visibility = VerbVisibility.Invisible;
 
                 if (!EntitySystem.Get<ActionBlockerSystem>().CanInteract(user) ||
-                    component.ContainedEntities.Contains(user))
+                    component.Contains(user))
                 {
                     return;
                 }

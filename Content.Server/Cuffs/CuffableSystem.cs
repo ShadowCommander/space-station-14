@@ -31,15 +31,14 @@ namespace Content.Server.Cuffs
             var dirty = false;
             var handCount = owner.GetComponentOrNull<HandsComponent>()?.Count ?? 0;
 
+            var container = cuffable.Container;
             while (cuffable.CuffedHandCount > handCount && cuffable.CuffedHandCount > 0)
             {
                 dirty = true;
 
-                var container = cuffable.Container;
-                var entity = container.ContainedEntities[^1];
-
+                var entity = container.Last();
                 container.Remove(entity);
-                entity.Transform.WorldPosition = owner.Transform.WorldPosition;
+                entity.Transform.WorldPosition = owner.Transform.WorldPosition; // TODO refactor: is this needed?
             }
 
             if (dirty)
