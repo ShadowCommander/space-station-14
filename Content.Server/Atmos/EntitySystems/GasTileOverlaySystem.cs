@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -25,7 +24,7 @@ using Dependency = Robust.Shared.IoC.DependencyAttribute;
 namespace Content.Server.Atmos.EntitySystems
 {
     [UsedImplicitly]
-    internal sealed class GasTileOverlaySystem : SharedGasTileOverlaySystem, IResettingEntitySystem
+    internal sealed class GasTileOverlaySystem : SharedGasTileOverlaySystem
     {
         [Dependency] private readonly IGameTiming _gameTiming = default!;
         [Dependency] private readonly IPlayerManager _playerManager = default!;
@@ -66,6 +65,8 @@ namespace Content.Server.Atmos.EntitySystems
         public override void Initialize()
         {
             base.Initialize();
+
+            SubscribeLocalEvent<RoundRestartCleanupEvent>(Reset);
 
             _atmosphereSystem = Get<AtmosphereSystem>();
             _playerManager.PlayerStatusChanged += OnPlayerStatusChanged;
@@ -167,7 +168,7 @@ namespace Content.Server.Atmos.EntitySystems
                     var overlay = _atmosphereSystem.GetOverlay(i);
                     if (overlay == null) continue;
 
-                    var moles = tile.Air.Gases[i];
+                    var moles = tile.Air.Moles[i];
 
                     if (moles < gas.GasMolesVisible) continue;
 
@@ -479,7 +480,7 @@ namespace Content.Server.Atmos.EntitySystems
             }
         }
 
-        public void Reset()
+        public void Reset(RoundRestartCleanupEvent ev)
         {
             _invalidTiles.Clear();
             _overlay.Clear();

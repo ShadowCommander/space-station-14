@@ -1,4 +1,3 @@
-#nullable enable
 using System.Threading;
 using Content.Server.Act;
 using Content.Server.Chat.Managers;
@@ -127,11 +126,11 @@ namespace Content.Server.Morgue.Components
             }
 
             victim.PopupMessageOtherClients(Loc.GetString("crematorium-entity-storage-component-suicide-message-others", ("victim", victim)));
-            EntitySystem.Get<SharedStandingStateSystem>().Down(victim, false, false, true);
 
             if (CanInsert(victim))
             {
                 Insert(victim);
+                EntitySystem.Get<StandingStateSystem>().Down(victim, false);
             }
             else
             {

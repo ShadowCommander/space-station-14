@@ -1,13 +1,14 @@
-#nullable enable
 using System;
 using Content.Server.Atmos;
 using Content.Server.Atmos.Components;
+using Content.Server.Atmos.EntitySystems;
 using Content.Server.Body.Circulatory;
 using Content.Server.Body.Respiratory;
 using Content.Server.Notification;
 using Content.Shared.Atmos;
 using Content.Shared.Body.Components;
 using Content.Shared.MobState;
+using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 using Robust.Shared.Localization;
 using Robust.Shared.Serialization.Manager.Attributes;
@@ -67,7 +68,7 @@ namespace Content.Server.Body.Behavior
 
         public void Transfer(GasMixture from, GasMixture to, float ratio)
         {
-            to.Merge(from.RemoveRatio(ratio));
+            EntitySystem.Get<AtmosphereSystem>().Merge(to, from.RemoveRatio(ratio));
         }
 
         public void ToBloodstream(GasMixture mixture)
@@ -84,7 +85,7 @@ namespace Content.Server.Body.Behavior
 
             var to = bloodstream.Air;
 
-            to.Merge(mixture);
+            EntitySystem.Get<AtmosphereSystem>().Merge(to, mixture);
             mixture.Clear();
         }
 
@@ -147,7 +148,7 @@ namespace Content.Server.Body.Behavior
                 return;
             }
 
-            if (!Owner.Transform.Coordinates.TryGetTileAir(out var tileAir))
+            if (EntitySystem.Get<AtmosphereSystem>().GetTileMixture(Owner.Transform.Coordinates, true) is not {} tileAir)
             {
                 return;
             }
@@ -165,7 +166,7 @@ namespace Content.Server.Body.Behavior
 
         public void Exhale(float frameTime)
         {
-            if (!Owner.Transform.Coordinates.TryGetTileAir(out var tileAir))
+            if (EntitySystem.Get<AtmosphereSystem>().GetTileMixture(Owner.Transform.Coordinates, true) is not {} tileAir)
             {
                 return;
             }
@@ -189,7 +190,7 @@ namespace Content.Server.Body.Behavior
             bloodstream.PumpToxins(Air);
 
             var lungRemoved = Air.RemoveRatio(0.5f);
-            to.Merge(lungRemoved);
+            EntitySystem.Get<AtmosphereSystem>().Merge(to, lungRemoved);
         }
     }
 

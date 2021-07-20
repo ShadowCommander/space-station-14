@@ -1,4 +1,3 @@
-#nullable enable
 using System.Linq;
 using Content.Server.Power.Components;
 using Robust.Server.GameObjects;
@@ -35,7 +34,7 @@ namespace Content.Server.BarSign
             }
         }
 
-        private bool Powered => !Owner.TryGetComponent(out PowerReceiverComponent? receiver) || receiver.Powered;
+        private bool Powered => !Owner.TryGetComponent(out ApcPowerReceiverComponent? receiver) || receiver.Powered;
 
         private void UpdateSignInfo()
         {

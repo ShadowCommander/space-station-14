@@ -1,4 +1,3 @@
-#nullable enable
 // ReSharper disable once RedundantUsingDirective
 using System;
 using System.Collections;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Atmos.Piping.Components;
+using Content.Server.CPUJob.JobQueues.Queues;
 using Content.Server.NodeContainer.NodeGroups;
 using Content.Shared.Atmos;
 using Content.Shared.Maps;
@@ -36,7 +36,6 @@ namespace Content.Server.Atmos.Components
         [Dependency] private IServerEntityManager _serverEntityManager = default!;
         [Dependency] private IGameTiming _gameTiming = default!;
 
-        public GridTileLookupSystem GridTileLookupSystem { get; private set; } = default!;
         internal GasTileOverlaySystem GasTileOverlaySystem { get; private set; } = default!;
         public AtmosphereSystem AtmosphereSystem { get; private set; } = default!;
 
@@ -182,7 +181,6 @@ namespace Content.Server.Atmos.Components
                 }
             }
 
-            GridTileLookupSystem = EntitySystem.Get<GridTileLookupSystem>();
             GasTileOverlaySystem = EntitySystem.Get<GasTileOverlaySystem>();
             AtmosphereSystem = EntitySystem.Get<AtmosphereSystem>();
 
@@ -204,7 +202,7 @@ namespace Content.Server.Atmos.Components
             foreach (var tile in mapGrid.Grid.GetAllTiles())
             {
                 if(!Tiles.ContainsKey(tile.GridIndices))
-                    Tiles.Add(tile.GridIndices, new TileAtmosphere(this, tile.GridIndex, tile.GridIndices, new GasMixture(GetVolumeForCells(1), AtmosphereSystem){Temperature = Atmospherics.T20C}));
+                    Tiles.Add(tile.GridIndices, new TileAtmosphere(this, tile.GridIndex, tile.GridIndices, new GasMixture(GetVolumeForCells(1)){Temperature = Atmospherics.T20C}));
 
                 Invalidate(tile.GridIndices);
             }
@@ -230,7 +228,7 @@ namespace Content.Server.Atmos.Components
 
                 if (tile == null)
                 {
-                    tile = new TileAtmosphere(this, _gridId, indices, new GasMixture(GetVolumeForCells(1), AtmosphereSystem){Temperature = Atmospherics.T20C});
+                    tile = new TileAtmosphere(this, _gridId, indices, new GasMixture(GetVolumeForCells(1)){Temperature = Atmospherics.T20C});
                     Tiles[indices] = tile;
                 }
 
@@ -238,7 +236,7 @@ namespace Content.Server.Atmos.Components
 
                 if (IsSpace(indices) && !isAirBlocked)
                 {
-                    tile.Air = new GasMixture(GetVolumeForCells(1), AtmosphereSystem);
+                    tile.Air = new GasMixture(GetVolumeForCells(1));
                     tile.Air.MarkImmutable();
                     Tiles[indices] = tile;
 
@@ -271,7 +269,7 @@ namespace Content.Server.Atmos.Components
                         tile.Air = null;
                     }
 
-                    tile.Air ??= new GasMixture(GetVolumeForCells(1), AtmosphereSystem){Temperature = Atmospherics.T20C};
+                    tile.Air ??= new GasMixture(GetVolumeForCells(1)){Temperature = Atmospherics.T20C};
                 }
 
                 // By removing the active tile, we effectively remove its excited group, if any.
@@ -312,7 +310,7 @@ namespace Content.Server.Atmos.Components
             if (tile?.GridIndex != _gridId) return;
             // includeAirBlocked is false, therefore all tiles in this have Air != null.
             var adjacent = GetAdjacentTiles(indices);
-            tile.Air = new GasMixture(GetVolumeForCells(1), AtmosphereSystem){Temperature = Atmospherics.T20C};
+            tile.Air = new GasMixture(GetVolumeForCells(1)){Temperature = Atmospherics.T20C};
             Tiles[indices] = tile;
 
             var ratio = 1f / adjacent.Count;
@@ -320,8 +318,8 @@ namespace Content.Server.Atmos.Components
             foreach (var (_, adj) in adjacent)
             {
                 var mix = adj.Air!.RemoveRatio(ratio);
-                tile.Air.Merge(mix);
-                adj.Air.Merge(mix);
+                AtmosphereSystem.Merge(tile.Air, mix);
+                AtmosphereSystem.Merge(adj.Air, mix);
             }
         }
 
@@ -435,7 +433,7 @@ namespace Content.Server.Atmos.Components
             // We don't have that tile!
             if (IsSpace(indices) && createSpace)
             {
-                return new TileAtmosphere(this, _gridId, indices, new GasMixture(GetVolumeForCells(1), AtmosphereSystem){Temperature = Atmospherics.TCMB}, true);
+                return new TileAtmosphere(this, _gridId, indices, new GasMixture(GetVolumeForCells(1)){Temperature = Atmospherics.TCMB}, true);
             }
 
             return null;
