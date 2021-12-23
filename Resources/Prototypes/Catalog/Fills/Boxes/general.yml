@@ -95,7 +95,6 @@
       - id: ClothingMaskBreath
       - id: EmergencyOxygenTankFilled
       - id: EpinephrineMedipen
-      - id: Flare
       - id: FoodSnackChocolate
   - type: Sprite
     layers:
