@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using Content.Server.Administration.Logs;
 using Content.Server.Administration.Managers;
 using Content.Server.Players;
 using Content.Server.Roles;
 using Content.Shared.Administration;
 using Content.Shared.Administration.Events;
+using Content.Shared.Database;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
@@ -18,6 +20,7 @@ namespace Content.Server.Administration
     {
         [Dependency] private readonly IPlayerManager _playerManager = default!;
         [Dependency] private readonly IAdminManager _adminManager = default!;
+        [Dependency] private readonly AdminLogSystem _adminLogSystem = default!;
 
         private readonly Dictionary<NetUserId, PlayerInfo> _playerList = new();
 
@@ -78,6 +81,8 @@ namespace Content.Server.Administration
 
         private void OnPlayerAttached(PlayerAttachedEvent ev)
         {
+            _adminLogSystem.Add(LogType.PlayerAttached, LogImpact.Low, $"{ev.Player.Name} was attached to {ToPrettyString(ev.Entity):entity}");
+
             if(ev.Player.Status == SessionStatus.Disconnected) return;
 
             UpdatePlayerList(ev.Player);
