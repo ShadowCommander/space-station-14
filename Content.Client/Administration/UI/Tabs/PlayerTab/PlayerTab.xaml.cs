@@ -10,6 +10,7 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
+using Robust.Shared.Localization;
 using Robust.Shared.Maths;
 
 namespace Content.Client.Administration.UI.Tabs.PlayerTab
@@ -44,15 +45,15 @@ namespace Content.Client.Administration.UI.Tabs.PlayerTab
         {
             PlayerList.RemoveAllChildren();
             var playerManager = IoCManager.Resolve<IPlayerManager>();
-            PlayerCount.Text = $"Players: {playerManager.PlayerCount}";
+            PlayerCount.Text = Loc.GetString("admin-menu-players-tab-player-count", ("count", playerManager.PlayerCount));
 
             var altColor = Color.FromHex("#292B38");
             var defaultColor = Color.FromHex("#2F2F3B");
 
-            PlayerList.AddChild(new PlayerTabEntry("Username",
-                "Character",
-                "Job",
-                "Antagonist",
+            PlayerList.AddChild(new PlayerTabEntry(Loc.GetString("admin-menu-players-tab-column-username"),
+                Loc.GetString("admin-menu-players-tab-column-character"),
+                Loc.GetString("admin-menu-players-tab-column-job"),
+                Loc.GetString("admin-menu-players-tab-column-antagonist"),
                 new StyleBoxFlat(altColor),
                 true));
             PlayerList.AddChild(new HSeparator());
@@ -63,7 +64,7 @@ namespace Content.Client.Administration.UI.Tabs.PlayerTab
                 var entry = new PlayerTabEntry(player.Username,
                     player.CharacterName,
                     player.StartingJob,
-                    player.Antag ? "YES" : "NO",
+                    player.Antag ? Loc.GetString("admin-menu-players-tab-antagonist-yes") : Loc.GetString("admin-menu-players-tab-antagonist-no"),
                     new StyleBoxFlat(useAltColor ? altColor : defaultColor),
                     player.Connected);
                 entry.PlayerUid = player.EntityUid;
