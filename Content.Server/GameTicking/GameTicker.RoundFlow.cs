@@ -189,6 +189,14 @@ namespace Content.Server.GameTicking
 
                 AddGamePresetRules();
 
+                RoundLengthMetric.Set(0);
+
+                var playerIds = _playersInLobby.Keys.Select(player => player.UserId.UserId).ToArray();
+                RoundId = await _db.AddNewRound(playerIds);
+
+                var startingEvent = new RoundStartingEvent();
+                RaiseLocalEvent(startingEvent);
+
                 List<IPlayerSession> readyPlayers;
                 if (LobbyEnabled)
                 {
@@ -199,14 +207,6 @@ namespace Content.Server.GameTicking
                 {
                     readyPlayers = _playersInLobby.Keys.ToList();
                 }
-
-                RoundLengthMetric.Set(0);
-
-                var playerIds = _playersInLobby.Keys.Select(player => player.UserId.UserId).ToArray();
-                RoundId = await _db.AddNewRound(playerIds);
-
-                var startingEvent = new RoundStartingEvent();
-                RaiseLocalEvent(startingEvent);
 
                 // Get the profiles for each player for easier lookup.
                 var profiles = _prefsManager.GetSelectedProfilesForPlayers(
