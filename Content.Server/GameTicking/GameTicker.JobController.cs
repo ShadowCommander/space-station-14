@@ -53,6 +53,11 @@ namespace Content.Server.GameTicking
 
                                 return priority == i;
                             })
+                            .Where(j =>
+                            {
+                                var (jobId, priority) = j;
+                                return !_jobBan.IsBanned(player.UserId, jobId);
+                            })
                             .Select(j => j.Key)
                             .ToList();
 
