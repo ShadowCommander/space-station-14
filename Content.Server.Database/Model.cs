@@ -29,6 +29,7 @@ namespace Content.Server.Database
         public DbSet<ServerUnban> Unban { get; set; } = default!;
         public DbSet<ConnectionLog> ConnectionLog { get; set; } = default!;
         public DbSet<ServerBanHit> ServerBanHit { get; set; } = default!;
+        public DbSet<JobBan> JobBans { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -386,5 +387,13 @@ namespace Content.Server.Database
 
         public ServerBan Ban { get; set; } = null!;
         public ConnectionLog Connection { get; set; } = null!;
+    }
+
+    [Table("job_ban")]
+    public class JobBan
+    {
+        public int Id { get; set; }
+        public Guid UserId { get; set; }
+        public string Job { get; set; } = default!;
     }
 }
