@@ -304,6 +304,36 @@ namespace Content.Server.Database
         public abstract Task AddServerUnbanAsync(ServerUnbanDef serverUnban);
         #endregion
 
+        #region Job Bans
+        /*
+         * JOB BANS
+         */
+        public async Task<List<JobBan>> GetPlayerJobBansAsync(NetUserId userId)
+        {
+            await using var db = await GetDb();
+
+            var query = db.DbContext.JobBans
+                .Where(ban => ban.UserId == userId);
+
+            var jobBans = await query.ToListAsync();
+
+            return jobBans;
+        }
+
+        public async Task AddPlayerJobBanAsync(NetUserId userId, string jobId)
+        {
+            await using var db = await GetDb();
+
+            db.DbContext.JobBans.Add(new JobBan
+            {
+                UserId = userId,
+                Job = jobId
+            });
+
+            await db.DbContext.SaveChangesAsync();
+        }
+        #endregion
+
         #region Player Records
         /*
          * PLAYER RECORDS

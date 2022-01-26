@@ -89,6 +89,12 @@ namespace Content.Server.Database
         Task AddServerUnbanAsync(ServerUnbanDef serverBan);
         #endregion
 
+        #region JobBans
+        Task<List<JobBan>> GetPlayerJobBansAsync(NetUserId userId);
+
+        Task AddPlayerJobBanAsync(NetUserId userId, string jobId);
+        #endregion
+
         #region Player Records
         Task UpdatePlayerRecordAsync(
             NetUserId userId,
@@ -255,6 +261,16 @@ namespace Content.Server.Database
         public Task AddServerUnbanAsync(ServerUnbanDef serverUnban)
         {
             return _db.AddServerUnbanAsync(serverUnban);
+        }
+
+        public Task<List<JobBan>> GetPlayerJobBansAsync(NetUserId userId)
+        {
+            return _db.GetPlayerJobBansAsync(userId);
+        }
+
+        public Task AddPlayerJobBanAsync(NetUserId userId, string jobId)
+        {
+            return _db.AddPlayerJobBanAsync(userId, jobId);
         }
 
         public Task UpdatePlayerRecordAsync(
