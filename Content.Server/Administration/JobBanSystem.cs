@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Content.Server.Database;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
@@ -39,32 +40,44 @@ public class JobBanSystem : EntitySystem
         if (_cachedJobBans.ContainsKey(userId))
             return;
 
-        var jobBans = await _db.GetPlayerJobBansAsync(userId);
+        var jobBans = await _db.GetServerJobBansAsync(null, userId, null);
         if (jobBans.Count == 0)
             return;
 
         var userJobBans = new List<string>();
         foreach (var jobBan in jobBans)
         {
-            userJobBans.Add(jobBan.Job);
+            userJobBans.Add(jobBan.Role);
         }
         _cachedJobBans.Add(userId, userJobBans);
     }
 
-    public void AddJobBan(NetUserId userId, string jobId)
-    {
-        if (!_cachedJobBans.TryGetValue(userId, out var jobBans) || jobBans == null)
-        {
-            jobBans = new List<string>();
-            _cachedJobBans.Add(userId, jobBans);
-        }
-
-        if (jobBans.Contains(jobId))
-            return;
-        jobBans.Add(jobId);
-
-        _db.AddPlayerJobBanAsync(userId, jobId);
-    }
+    // public void AddJobBan(NetUserId userId, string jobId)
+    // {
+    //     if (!_cachedJobBans.TryGetValue(userId, out var jobBans) || jobBans == null)
+    //     {
+    //         jobBans = new List<string>();
+    //         _cachedJobBans.Add(userId, jobBans);
+    //     }
+    //
+    //     if (jobBans.Contains(jobId))
+    //         return;
+    //     jobBans.Add(jobId);
+    //
+    //     var banDef = new ServerJobBanDef(
+    //         null,
+    //         userId,
+    //         null,
+    //         null,
+    //         DateTimeOffset.Now,
+    //         null,
+    //         "",
+    //         player?.UserId,
+    //         null,
+    //         role);
+    //
+    //     _db.AddServerJobBanAsync();
+    // }
 
     public bool IsBanned(NetUserId userId, string jobId)
     {

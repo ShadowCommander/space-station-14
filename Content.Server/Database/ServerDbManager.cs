@@ -91,9 +91,44 @@ namespace Content.Server.Database
         #endregion
 
         #region JobBans
-        Task<List<JobBan>> GetPlayerJobBansAsync(NetUserId userId);
+        /// <summary>
+        ///     Looks up a ban by id.
+        ///     This will return a pardoned ban as well.
+        /// </summary>
+        /// <param name="id">The ban id to look for.</param>
+        /// <returns>The ban with the given id or null if none exist.</returns>
+        Task<ServerJobBanDef?> GetServerJobBanAsync(int id);
 
-        Task AddPlayerJobBanAsync(NetUserId userId, string jobId);
+        /// <summary>
+        ///     Looks up an user's most recent received un-pardoned ban.
+        ///     This will NOT return a pardoned ban.
+        ///     One of <see cref="address"/> or <see cref="userId"/> need to not be null.
+        /// </summary>
+        /// <param name="address">The ip address of the user.</param>
+        /// <param name="userId">The id of the user.</param>
+        /// <param name="hwId">The hardware ID of the user.</param>
+        /// <returns>The user's latest received un-pardoned ban, or null if none exist.</returns>
+        Task<ServerJobBanDef?> GetServerJobBanAsync(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId);
+
+        /// <summary>
+        ///     Looks up an user's ban history.
+        ///     This will return pardoned bans as well.
+        ///     One of <see cref="address"/> or <see cref="userId"/> need to not be null.
+        /// </summary>
+        /// <param name="address">The ip address of the user.</param>
+        /// <param name="userId">The id of the user.</param>
+        /// <param name="hwId">The HWId of the user.</param>
+        /// <returns>The user's ban history.</returns>
+        Task<List<ServerJobBanDef>> GetServerJobBansAsync(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId);
+
+        Task AddServerJobBanAsync(ServerJobBanDef serverBan);
+        Task AddServerJobUnbanAsync(ServerJobUnbanDef serverBan);
         #endregion
 
         #region Player Records
@@ -270,15 +305,38 @@ namespace Content.Server.Database
             return _db.AddServerUnbanAsync(serverUnban);
         }
 
-        public Task<List<JobBan>> GetPlayerJobBansAsync(NetUserId userId)
+        #region Job Ban
+        public Task<ServerJobBanDef?> GetServerJobBanAsync(int id)
         {
-            return _db.GetPlayerJobBansAsync(userId);
+            return _db.GetServerJobBanAsync(id);
         }
 
-        public Task AddPlayerJobBanAsync(NetUserId userId, string jobId)
+        public Task<ServerJobBanDef?> GetServerJobBanAsync(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId)
         {
-            return _db.AddPlayerJobBanAsync(userId, jobId);
+            return _db.GetServerJobBanAsync(address, userId, hwId);
         }
+
+        public Task<List<ServerJobBanDef>> GetServerJobBansAsync(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId)
+        {
+            return _db.GetServerJobBansAsync(address, userId, hwId);
+        }
+
+        public Task AddServerJobBanAsync(ServerJobBanDef serverJobBan)
+        {
+            return _db.AddServerJobBanAsync(serverJobBan);
+        }
+
+        public Task AddServerJobUnbanAsync(ServerJobUnbanDef serverJobUnban)
+        {
+            return _db.AddServerJobUnbanAsync(serverJobUnban);
+        }
+        #endregion
 
         public Task UpdatePlayerRecordAsync(
             NetUserId userId,

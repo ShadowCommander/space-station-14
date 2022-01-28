@@ -310,30 +310,46 @@ namespace Content.Server.Database
         /*
          * JOB BANS
          */
-        public async Task<List<JobBan>> GetPlayerJobBansAsync(NetUserId userId)
-        {
-            await using var db = await GetDb();
+        // public abstract Task<List<JobBan>> GetPlayerJobBansAsync(NetUserId userId);
+        // public abstract Task AddPlayerJobBanAsync(NetUserId userId, string jobId);
+        /// <summary>
+        ///     Looks up a ban by id.
+        ///     This will return a pardoned ban as well.
+        /// </summary>
+        /// <param name="id">The ban id to look for.</param>
+        /// <returns>The ban with the given id or null if none exist.</returns>
+        public abstract Task<ServerJobBanDef?> GetServerJobBanAsync(int id);
 
-            var query = db.DbContext.JobBans
-                .Where(ban => ban.UserId == userId);
+        /// <summary>
+        ///     Looks up an user's most recent received un-pardoned ban.
+        ///     This will NOT return a pardoned ban.
+        ///     One of <see cref="address"/> or <see cref="userId"/> need to not be null.
+        /// </summary>
+        /// <param name="address">The ip address of the user.</param>
+        /// <param name="userId">The id of the user.</param>
+        /// <param name="hwId">The HWId of the user.</param>
+        /// <returns>The user's latest received un-pardoned ban, or null if none exist.</returns>
+        public abstract Task<ServerJobBanDef?> GetServerJobBanAsync(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId);
 
-            var jobBans = await query.ToListAsync();
+        /// <summary>
+        ///     Looks up an user's ban history.
+        ///     This will return pardoned bans as well.
+        ///     One of <see cref="address"/> or <see cref="userId"/> need to not be null.
+        /// </summary>
+        /// <param name="address">The ip address of the user.</param>
+        /// <param name="userId">The id of the user.</param>
+        /// <param name="hwId">The HWId of the user.</param>
+        /// <returns>The user's ban history.</returns>
+        public abstract Task<List<ServerJobBanDef>> GetServerJobBansAsync(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId);
 
-            return jobBans;
-        }
-
-        public async Task AddPlayerJobBanAsync(NetUserId userId, string jobId)
-        {
-            await using var db = await GetDb();
-
-            db.DbContext.JobBans.Add(new JobBan
-            {
-                UserId = userId,
-                Job = jobId
-            });
-
-            await db.DbContext.SaveChangesAsync();
-        }
+        public abstract Task AddServerJobBanAsync(ServerJobBanDef serverJobBan);
+        public abstract Task AddServerJobUnbanAsync(ServerJobUnbanDef serverJobUnban);
         #endregion
 
         #region Player Records
