@@ -34,6 +34,7 @@ namespace Content.Server.Database
             });
         }
 
+        #region Ban
         public override async Task<ServerBanDef?> GetServerBanAsync(int id)
         {
             await using var db = await GetDbImpl();
@@ -220,6 +221,197 @@ namespace Content.Server.Database
 
             await db.PgDbContext.SaveChangesAsync();
         }
+        #endregion
+
+        #region Job Ban
+        public override async Task<ServerJobBanDef?> GetServerJobBanAsync(int id)
+        {
+            await using var db = await GetDbImpl();
+
+            var query = db.PgDbContext.JobBan
+                .Include(p => p.Unban)
+                .Where(p => p.Id == id);
+
+            var ban = await query.SingleOrDefaultAsync();
+
+            return ConvertJobBan(ban);
+        }
+
+        public override async Task<ServerJobBanDef?> GetServerJobBanAsync(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId)
+        {
+            if (address == null && userId == null)
+            {
+                throw new ArgumentException("Address and userId cannot both be null");
+            }
+
+            await using var db = await GetDbImpl();
+
+            var query = MakeJobBanLookupQuery(address, userId, hwId, db)
+                .Where(p => p.Unban == null && (p.ExpirationTime == null || p.ExpirationTime.Value > DateTime.Now))
+                .OrderByDescending(b => b.BanTime);
+
+            var ban = await query.FirstOrDefaultAsync();
+
+            return ConvertJobBan(ban);
+        }
+
+        public override async Task<List<ServerJobBanDef>> GetServerJobBansAsync(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId)
+        {
+            if (address == null && userId == null && hwId == null)
+            {
+                throw new ArgumentException("Address and userId cannot both be null");
+            }
+
+            await using var db = await GetDbImpl();
+
+            var query = MakeJobBanLookupQuery(address, userId, hwId, db);
+
+            var queryJobBans = await query.ToArrayAsync();
+            var bans = new List<ServerJobBanDef>(queryJobBans.Length);
+
+            foreach (var ban in queryJobBans)
+            {
+                var banDef = ConvertJobBan(ban);
+
+                if (banDef != null)
+                {
+                    bans.Add(banDef);
+                }
+            }
+
+            return bans;
+        }
+
+        private static IQueryable<PostgresServerJobBan> MakeJobBanLookupQuery(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId,
+            DbGuardImpl db)
+        {
+            IQueryable<PostgresServerJobBan>? query = null;
+
+            if (userId is { } uid)
+            {
+                var newQ = db.PgDbContext.JobBan
+                    .Include(p => p.Unban)
+                    .Where(b => b.UserId == uid.UserId);
+
+                query = query == null ? newQ : query.Union(newQ);
+            }
+
+            if (address != null)
+            {
+                var newQ = db.PgDbContext.JobBan
+                    .Include(p => p.Unban)
+                    .Where(b => b.Address != null && EF.Functions.ContainsOrEqual(b.Address.Value, address));
+
+                query = query == null ? newQ : query.Union(newQ);
+            }
+
+            if (hwId != null)
+            {
+                var newQ = db.PgDbContext.JobBan
+                    .Include(p => p.Unban)
+                    .Where(b => b.HWId!.SequenceEqual(hwId.Value.ToArray()));
+
+                query = query == null ? newQ : query.Union(newQ);
+            }
+
+            query = query!.Distinct();
+            return query;
+        }
+
+        private static ServerJobBanDef? ConvertJobBan(PostgresServerJobBan? ban)
+        {
+            if (ban == null)
+            {
+                return null;
+            }
+
+            NetUserId? uid = null;
+            if (ban.UserId is {} guid)
+            {
+                uid = new NetUserId(guid);
+            }
+
+            NetUserId? aUid = null;
+            if (ban.BanningAdmin is {} aGuid)
+            {
+                aUid = new NetUserId(aGuid);
+            }
+
+            var unbanDef = ConvertJobUnban(ban.Unban);
+
+            return new ServerJobBanDef(
+                ban.Id,
+                uid,
+                ban.Address,
+                ban.HWId == null ? null : ImmutableArray.Create(ban.HWId),
+                ban.BanTime,
+                ban.ExpirationTime,
+                ban.Reason,
+                aUid,
+                unbanDef,
+                ban.RoleId);
+        }
+
+        private static ServerJobUnbanDef? ConvertJobUnban(PostgresServerJobUnban? unban)
+        {
+            if (unban == null)
+            {
+                return null;
+            }
+
+            NetUserId? aUid = null;
+            if (unban.UnbanningAdmin is {} aGuid)
+            {
+                aUid = new NetUserId(aGuid);
+            }
+
+            return new ServerJobUnbanDef(
+                unban.Id,
+                aUid,
+                unban.UnbanTime);
+        }
+
+        public override async Task AddServerJobBanAsync(ServerJobBanDef serverJobBan)
+        {
+            await using var db = await GetDbImpl();
+
+            db.PgDbContext.JobBan.Add(new PostgresServerJobBan
+            {
+                Address = serverJobBan.Address,
+                HWId = serverJobBan.HWId?.ToArray(),
+                Reason = serverJobBan.Reason,
+                BanningAdmin = serverJobBan.BanningAdmin?.UserId,
+                BanTime = serverJobBan.BanTime.UtcDateTime,
+                ExpirationTime = serverJobBan.ExpirationTime?.UtcDateTime,
+                UserId = serverJobBan.UserId?.UserId
+            });
+
+            await db.PgDbContext.SaveChangesAsync();
+        }
+
+        public override async Task AddServerJobUnbanAsync(ServerJobUnbanDef serverJobUnban)
+        {
+            await using var db = await GetDbImpl();
+
+            db.PgDbContext.JobUnban.Add(new PostgresServerJobUnban
+            {
+                 BanId = serverJobUnban.BanId,
+                 UnbanningAdmin = serverJobUnban.UnbanningAdmin?.UserId,
+                 UnbanTime = serverJobUnban.UnbanTime.UtcDateTime
+            });
+
+            await db.PgDbContext.SaveChangesAsync();
+        }
+        #endregion
 
         protected override PlayerRecord MakePlayerRecord(Player record)
         {

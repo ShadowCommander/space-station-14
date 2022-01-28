@@ -152,6 +152,167 @@ namespace Content.Server.Database
             await db.SqliteDbContext.SaveChangesAsync();
         }
 
+        #region Role Ban
+        public override async Task<ServerJobBanDef?> GetServerJobBanAsync(int id)
+        {
+            await using var db = await GetDbImpl();
+
+            var ban = await db.SqliteDbContext.JobBan
+                .Include(p => p.Unban)
+                .Where(p => p.Id == id)
+                .SingleOrDefaultAsync();
+
+            return ConvertJobBan(ban);
+        }
+
+        public override async Task<ServerJobBanDef?> GetServerJobBanAsync(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId)
+        {
+            await using var db = await GetDbImpl();
+
+            // SQLite can't do the net masking stuff we need to match IP address ranges.
+            // So just pull down the whole list into memory.
+            var bans = await db.SqliteDbContext.JobBan
+                .Include(p => p.Unban)
+                .Where(p => p.Unban == null && (p.ExpirationTime == null || p.ExpirationTime.Value > DateTime.UtcNow))
+                .ToListAsync();
+
+            return bans.FirstOrDefault(b => BanMatches(b, address, userId, hwId)) is { } foundBan
+                ? ConvertJobBan(foundBan)
+                : null;
+        }
+
+        public override async Task<List<ServerJobBanDef>> GetServerJobBansAsync(
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId)
+        {
+            await using var db = await GetDbImpl();
+
+            // SQLite can't do the net masking stuff we need to match IP address ranges.
+            // So just pull down the whole list into memory.
+            var queryBans = await db.SqliteDbContext.JobBan
+                .Include(p => p.Unban)
+                .ToListAsync();
+
+            return queryBans
+                .Where(b => BanMatches(b, address, userId, hwId))
+                .Select(ConvertJobBan)
+                .ToList()!;
+        }
+
+        private static bool BanMatches(
+            SqliteServerJobBan ban,
+            IPAddress? address,
+            NetUserId? userId,
+            ImmutableArray<byte>? hwId)
+        {
+            if (address != null && ban.Address is not null && IPAddressExt.IsInSubnet(address, ban.Address.Value))
+            {
+                return true;
+            }
+
+            if (userId is { } id && ban.UserId == id.UserId)
+            {
+                return true;
+            }
+
+            if (hwId is { } hwIdVar && hwIdVar.AsSpan().SequenceEqual(ban.HWId))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public override async Task AddServerJobBanAsync(ServerJobBanDef serverBan)
+        {
+            await using var db = await GetDbImpl();
+
+            db.SqliteDbContext.JobBan.Add(new SqliteServerJobBan
+            {
+                Address = serverBan.Address,
+                Reason = serverBan.Reason,
+                BanningAdmin = serverBan.BanningAdmin?.UserId,
+                HWId = serverBan.HWId?.ToArray(),
+                BanTime = serverBan.BanTime.UtcDateTime,
+                ExpirationTime = serverBan.ExpirationTime?.UtcDateTime,
+                UserId = serverBan.UserId?.UserId
+            });
+
+            await db.SqliteDbContext.SaveChangesAsync();
+        }
+
+        public override async Task AddServerJobUnbanAsync(ServerJobUnbanDef serverUnban)
+        {
+            await using var db = await GetDbImpl();
+
+            db.SqliteDbContext.JobUnban.Add(new SqliteServerJobUnban
+            {
+                BanId = serverUnban.BanId,
+                UnbanningAdmin = serverUnban.UnbanningAdmin?.UserId,
+                UnbanTime = serverUnban.UnbanTime.UtcDateTime
+            });
+
+            await db.SqliteDbContext.SaveChangesAsync();
+        }
+
+        private static ServerJobBanDef? ConvertJobBan(SqliteServerJobBan? ban)
+        {
+            if (ban == null)
+            {
+                return null;
+            }
+
+            NetUserId? uid = null;
+            if (ban.UserId is { } guid)
+            {
+                uid = new NetUserId(guid);
+            }
+
+            NetUserId? aUid = null;
+            if (ban.BanningAdmin is { } aGuid)
+            {
+                aUid = new NetUserId(aGuid);
+            }
+
+            var unban = ConvertJobUnban(ban.Unban);
+
+            return new ServerJobBanDef(
+                ban.Id,
+                uid,
+                ban.Address,
+                ban.HWId == null ? null : ImmutableArray.Create(ban.HWId),
+                ban.BanTime,
+                ban.ExpirationTime,
+                ban.Reason,
+                aUid,
+                unban,
+                ban.RoleId);
+        }
+
+        private static ServerJobUnbanDef? ConvertJobUnban(SqliteServerJobUnban? unban)
+        {
+            if (unban == null)
+            {
+                return null;
+            }
+
+            NetUserId? aUid = null;
+            if (unban.UnbanningAdmin is { } aGuid)
+            {
+                aUid = new NetUserId(aGuid);
+            }
+
+            return new ServerJobUnbanDef(
+                unban.Id,
+                aUid,
+                unban.UnbanTime);
+        }
+        #endregion
+
         protected override PlayerRecord MakePlayerRecord(Player record)
         {
             return new PlayerRecord(
@@ -298,7 +459,7 @@ namespace Content.Server.Database
                     entity.Name = name;
                     logEntities.Add(entity);
                 }
-                
+
                 foreach (var player in log.Players)
                 {
                     player.LogId = log.Id;

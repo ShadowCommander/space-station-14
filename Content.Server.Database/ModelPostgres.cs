@@ -23,6 +23,8 @@ namespace Content.Server.Database
         public DbSet<PostgresServerBan> Ban { get; set; } = default!;
         public DbSet<PostgresServerUnban> Unban { get; set; } = default!;
         public DbSet<PostgresConnectionLog> ConnectionLog { get; set; } = default!;
+        public DbSet<PostgresServerJobBan> JobBan { get; set; } = null!;
+        public DbSet<PostgresServerJobUnban> JobUnban { get; set; } = null!;
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -151,4 +153,39 @@ namespace Content.Server.Database
         public IPAddress Address { get; set; } = null!;
         public byte[]? HWId { get; set; }
     }
+
+    #region Job Bans
+    [Table("server_role_ban")]
+    public class PostgresServerJobBan
+    {
+        public int Id { get; set; }
+        public Guid? UserId { get; set; }
+        [Column(TypeName = "inet")] public (IPAddress, int)? Address { get; set; }
+        public byte[]? HWId { get; set; }
+
+        public DateTime BanTime { get; set; }
+
+        public DateTime? ExpirationTime { get; set; }
+
+        public string Reason { get; set; } = null!;
+        public Guid? BanningAdmin { get; set; }
+
+        public PostgresServerJobUnban? Unban { get; set; }
+
+        public string RoleId { get; set; } = null!;
+    }
+
+    [Table("server_role_unban")]
+    public class PostgresServerJobUnban
+    {
+        [Column("unban_id")] public int Id { get; set; }
+
+        public int BanId { get; set; }
+        public PostgresServerJobBan Ban { get; set; } = null!;
+
+        public Guid? UnbanningAdmin { get; set; }
+
+        public DateTime UnbanTime { get; set; }
+    }
+    #endregion
 }

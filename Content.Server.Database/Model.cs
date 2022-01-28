@@ -37,7 +37,6 @@ namespace Content.Server.Database
         public DbSet<AdminLog> AdminLog { get; set; } = null!;
         public DbSet<AdminLogPlayer> AdminLogPlayer { get; set; } = null!;
         public DbSet<Whitelist> Whitelist { get; set; } = null!;
-        public DbSet<JobBan> JobBans { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -300,13 +299,5 @@ namespace Content.Server.Database
     {
         [Required, Key] public int Uid { get; set; }
         public string? Name { get; set; } = default!;
-    }
-
-    [Table("job_ban")]
-    public class JobBan
-    {
-        public int Id { get; set; }
-        public Guid UserId { get; set; }
-        public string Job { get; set; } = default!;
     }
 }
