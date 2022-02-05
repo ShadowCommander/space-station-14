@@ -392,7 +392,8 @@ namespace Content.Server.Database
                 BanningAdmin = serverJobBan.BanningAdmin?.UserId,
                 BanTime = serverJobBan.BanTime.UtcDateTime,
                 ExpirationTime = serverJobBan.ExpirationTime?.UtcDateTime,
-                UserId = serverJobBan.UserId?.UserId
+                UserId = serverJobBan.UserId?.UserId,
+                RoleId = serverJobBan.Role,
             });
 
             await db.PgDbContext.SaveChangesAsync();

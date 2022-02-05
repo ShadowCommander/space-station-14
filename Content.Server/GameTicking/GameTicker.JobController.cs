@@ -53,11 +53,7 @@ namespace Content.Server.GameTicking
 
                                 return priority == i;
                             })
-                            .Where(j =>
-                            {
-                                var (jobId, priority) = j;
-                                return !_jobBan.IsBanned(player.UserId, jobId);
-                            })
+                            .Where(p => !_roleBan.IsBanned(player.UserId, p.Key))
                             .Select(j => j.Key)
                             .ToList();
 
@@ -111,7 +107,8 @@ namespace Content.Server.GameTicking
             return assigned;
         }
 
-        private string? PickBestAvailableJob(HumanoidCharacterProfile profile, StationId station)
+        private string? PickBestAvailableJob(IPlayerSession playerSession, HumanoidCharacterProfile profile,
+            StationId station)
         {
             var available = _stationSystem.StationInfo[station].JobList;
 
@@ -119,6 +116,7 @@ namespace Content.Server.GameTicking
             {
                 var filtered = profile.JobPriorities
                     .Where(p => p.Value == priority)
+                    .Where(p => !_roleBan.IsBanned(playerSession.UserId, p.Key))
                     .Select(p => p.Key)
                     .ToList();
 

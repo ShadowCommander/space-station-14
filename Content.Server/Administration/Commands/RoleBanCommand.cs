@@ -6,6 +6,7 @@ using Content.Server.Database;
 using Content.Shared.Administration;
 using Robust.Server.Player;
 using Robust.Shared.Console;
+using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
 
 namespace Content.Server.Administration.Commands;
@@ -66,12 +67,6 @@ public sealed class RoleBanCommand : IConsoleCommand
         var targetHWid = located.LastHWId;
         var targetAddr = located.LastAddress;
 
-        if (player != null && player.UserId == targetUid)
-        {
-            shell.WriteLine("You can't ban yourself!");
-            return;
-        }
-
         DateTimeOffset? expires = null;
         if (minutes > 0)
         {
@@ -101,7 +96,11 @@ public sealed class RoleBanCommand : IConsoleCommand
             null,
             role);
 
-        await dbMan.AddServerJobBanAsync(banDef);
+        if (!await EntitySystem.Get<RoleBanSystem>().AddJobBan(banDef))
+        {
+            shell.WriteLine($"{target} already has a role ban for {role}");
+            return;
+        }
 
         var response = new StringBuilder($"Job banned {target} with reason \"{reason}\"");
 

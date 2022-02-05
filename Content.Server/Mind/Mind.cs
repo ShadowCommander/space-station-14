@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Content.Server.Administration;
 using Content.Server.GameTicking;
 using Content.Server.Ghost.Components;
 using Content.Server.Mind.Components;
@@ -35,7 +36,7 @@ namespace Content.Server.Mind
         private readonly ISet<Role> _roles = new HashSet<Role>();
 
         private readonly List<Objective> _objectives = new();
-        
+
         public string Briefing = String.Empty;
 
         /// <summary>
