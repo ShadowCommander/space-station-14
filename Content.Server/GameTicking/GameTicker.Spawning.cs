@@ -156,7 +156,7 @@ namespace Content.Server.GameTicking
             }
 
             // Pick best job best on prefs.
-            jobId ??= PickBestAvailableJob(character, station);
+            jobId ??= PickBestAvailableJob(player, character, station);
             // If no job available, stay in lobby, or if no lobby spawn as observer
             if (jobId is null)
             {
