@@ -36,6 +36,7 @@ namespace Content.Server.GameTicking
                     {
                         var profile = profiles[player.UserId];
 
+                        var roleBans = _roleBanSystem.GetRoleBans(player.UserId);
                         var availableJobs = profile.JobPriorities
                             .Where(j =>
                             {
@@ -53,7 +54,7 @@ namespace Content.Server.GameTicking
 
                                 return priority == i;
                             })
-                            .Where(p => !_roleBan.IsBanned(player.UserId, p.Key))
+                            .Where(p => roleBans != null && !roleBans.Contains(p.Key))
                             .Select(j => j.Key)
                             .ToList();
 
@@ -114,9 +115,10 @@ namespace Content.Server.GameTicking
 
             bool TryPick(JobPriority priority, [NotNullWhen(true)] out string? jobId)
             {
+                var roleBans = _roleBanSystem.GetRoleBans(playerSession.UserId);
                 var filtered = profile.JobPriorities
                     .Where(p => p.Value == priority)
-                    .Where(p => !_roleBan.IsBanned(playerSession.UserId, p.Key))
+                    .Where(p => roleBans != null && !roleBans.Contains(p.Key))
                     .Select(p => p.Key)
                     .ToList();
 

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Content.Server.Database;
+using Content.Server.Roles;
 using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.GameObjects;
 using Robust.Shared.IoC;
+using Robust.Shared.Log;
 using Robust.Shared.Network;
 
 namespace Content.Server.Administration;
@@ -17,7 +18,7 @@ public class RoleBanSystem : EntitySystem
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IPlayerLocator _playerLocator = default!;
 
-    private readonly Dictionary<LocatedPlayerData, Dictionary<string, ServerJobBanDef>> _cachedJobBans = new();
+    private readonly Dictionary<NetUserId, HashSet<string>> _cachedRoleBans = new();
 
     public override void Initialize()
     {
@@ -30,65 +31,50 @@ public class RoleBanSystem : EntitySystem
     {
         base.Shutdown();
 
-        _cachedJobBans.Clear();
+        _cachedRoleBans.Clear();
     }
 
     private async void OnPlayerStatusChanged(object? sender, SessionStatusEventArgs e)
     {
-        if (e.NewStatus != SessionStatus.Connected)
+        if (e.NewStatus != SessionStatus.Connected
+            || _cachedRoleBans.ContainsKey(e.Session.UserId))
             return;
 
         var playerData = await _playerLocator.LookupIdAsync(e.Session.UserId);
-        if (playerData == null || _cachedJobBans.ContainsKey(playerData))
+        if (playerData == null)
+        {
+            Logger.Error("PlayerLocate", $"Role bans couldn't be found PlayerData for player {e.Session.Name} {e.Session.UserId.ToString()} couldn't be found.");
+            return;
+        }
+
+        if (_cachedRoleBans.ContainsKey(e.Session.UserId))
             return;
 
         var jobBans = await _db.GetServerJobBansAsync(playerData.LastAddress, playerData.UserId, playerData.LastHWId);
         if (jobBans.Count == 0)
             return;
 
-        var userJobBans = new Dictionary<string, ServerJobBanDef>();
+        var userRoleBans = new HashSet<string>();
         foreach (var ban in jobBans)
         {
-            if (userJobBans.ContainsKey(ban.Role))
+            if (userRoleBans.Contains(ban.Role))
                 continue;
-            userJobBans.Add(ban.Role, ban);
+            userRoleBans.Add(ban.Role);
         }
-        _cachedJobBans.Add(playerData, userJobBans);
+        _cachedRoleBans.Add(playerData.UserId, userRoleBans);
     }
 
-    public async Task AddJobBan(NetUserId userId, string jobId)
-    {
-        var banDef = new ServerJobBanDef(
-            null,
-            userId,
-            null,
-            null,
-            DateTimeOffset.Now,
-            null,
-            "",
-            userId,
-            null,
-            jobId);
-
-        await AddJobBan(banDef);
-    }
-
-    public async Task<bool> AddJobBan(ServerJobBanDef banDef)
+    public async Task<bool> AddRoleBan(ServerJobBanDef banDef, LocatedPlayerData? playerData = null)
     {
         if (banDef.UserId != null)
         {
-            var playerData = await _playerLocator.LookupIdAsync(banDef.UserId.Value);
-            if (playerData == null)
-                return false;
-            if (!_cachedJobBans.TryGetValue(playerData, out var jobBans))
+            if (!_cachedRoleBans.TryGetValue(banDef.UserId.Value, out var jobBans))
             {
-                jobBans = new Dictionary<string, ServerJobBanDef>();
-                _cachedJobBans.Add(playerData, jobBans);
+                jobBans = new HashSet<string>();
+                _cachedRoleBans.Add(banDef.UserId.Value, jobBans);
             }
-
-            if (jobBans.ContainsKey(banDef.Role))
-                return false;
-            jobBans.Add(banDef.Role, banDef);
+            if (!jobBans.Contains(banDef.Role))
+                jobBans.Add(banDef.Role);
         }
 
         await _db.AddServerJobBanAsync(banDef);
@@ -97,6 +83,11 @@ public class RoleBanSystem : EntitySystem
 
     public bool IsBanned(NetUserId userId, string jobId)
     {
-        return _cachedJobBans.TryGetValue(playerData, out var jobBans) && jobBans.ContainsKey(jobId);
+        return _cachedRoleBans.TryGetValue(userId, out var jobBans) && jobBans.Contains(jobId);
+    }
+
+    public HashSet<string>? GetRoleBans(NetUserId playerUserId)
+    {
+        return _cachedRoleBans.TryGetValue(playerUserId, out var roleBans) ? roleBans : null;
     }
 }
