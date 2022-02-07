@@ -3,7 +3,7 @@ using Robust.Shared.Network;
 
 namespace Content.Server.Database;
 
-public class ServerJobUnbanDef
+public class ServerRoleUnbanDef
 {
     public int BanId { get; }
 
@@ -11,7 +11,7 @@ public class ServerJobUnbanDef
 
     public DateTimeOffset UnbanTime { get; }
 
-    public ServerJobUnbanDef(int banId, NetUserId? unbanningAdmin, DateTimeOffset unbanTime)
+    public ServerRoleUnbanDef(int banId, NetUserId? unbanningAdmin, DateTimeOffset unbanTime)
     {
         BanId = banId;
         UnbanningAdmin = unbanningAdmin;

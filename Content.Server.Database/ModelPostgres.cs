@@ -15,11 +15,8 @@ namespace Content.Server.Database
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
-        public DbSet<PostgresServerBan> Ban { get; set; } = default!;
-        public DbSet<PostgresServerUnban> Unban { get; set; } = default!;
-        public DbSet<PostgresConnectionLog> ConnectionLog { get; set; } = default!;
-        public DbSet<PostgresServerJobBan> JobBan { get; set; } = null!;
-        public DbSet<PostgresServerJobUnban> JobUnban { get; set; } = null!;
+        public DbSet<PostgresServerRoleBan> RoleBan { get; set; } = null!;
+        public DbSet<PostgresServerRoleUnban> RoleUnban { get; set; } = null!;
 
         public PostgresServerDbContext(DbContextOptions<PostgresServerDbContext> options) : base(options)
         {
@@ -78,7 +75,7 @@ namespace Content.Server.Database
 
     #region Job Bans
     [Table("server_role_ban")]
-    public class PostgresServerJobBan
+    public class PostgresServerRoleBan
     {
         public int Id { get; set; }
         public Guid? UserId { get; set; }
@@ -92,18 +89,18 @@ namespace Content.Server.Database
         public string Reason { get; set; } = null!;
         public Guid? BanningAdmin { get; set; }
 
-        public PostgresServerJobUnban? Unban { get; set; }
+        public PostgresServerRoleUnban? Unban { get; set; }
 
         public string RoleId { get; set; } = null!;
     }
 
     [Table("server_role_unban")]
-    public class PostgresServerJobUnban
+    public class PostgresServerRoleUnban
     {
         [Column("unban_id")] public int Id { get; set; }
 
         public int BanId { get; set; }
-        public PostgresServerJobBan Ban { get; set; } = null!;
+        public PostgresServerRoleBan Ban { get; set; } = null!;
 
         public Guid? UnbanningAdmin { get; set; }
 

@@ -63,7 +63,7 @@ namespace Content.Server.Database
                 .HasConversion(ipMaskConverter);
 
             modelBuilder
-                .Entity<SqliteServerJobBan>()
+                .Entity<SqliteServerRoleBan>()
                 .Property(e => e.Address)
                 .HasColumnType("TEXT")
                 .HasConversion(ipMaskConverter);
@@ -115,7 +115,7 @@ namespace Content.Server.Database
 
     #region Job Bans
     [Table("role_ban")]
-    public class SqliteServerJobBan
+    public class SqliteServerRoleBan
     {
         public int Id { get; set; }
 
@@ -128,18 +128,18 @@ namespace Content.Server.Database
         public string Reason { get; set; } = null!;
         public Guid? BanningAdmin { get; set; }
 
-        public SqliteServerJobUnban? Unban { get; set; }
+        public SqliteServerRoleUnban? Unban { get; set; }
 
         public string RoleId { get; set; } = null!;
     }
 
     [Table("role_unban")]
-    public class SqliteServerJobUnban
+    public class SqliteServerRoleUnban
     {
         [Column("unban_id")] public int Id { get; set; }
 
         public int BanId { get; set; }
-        public SqliteServerJobBan Ban { get; set; } = null!;
+        public SqliteServerRoleBan Ban { get; set; } = null!;
 
         public Guid? UnbanningAdmin { get; set; }
         public DateTime UnbanTime { get; set; }
