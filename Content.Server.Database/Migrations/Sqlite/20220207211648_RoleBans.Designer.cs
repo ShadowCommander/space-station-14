@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Content.Server.Database.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteServerDbContext))]
-    [Migration("20220128062559_RoleBans")]
+    [Migration("20220207211648_RoleBans")]
     partial class RoleBans
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -563,7 +563,7 @@ namespace Content.Server.Database.Migrations.Sqlite
                     b.ToTable("ban", (string)null);
                 });
 
-            modelBuilder.Entity("Content.Server.Database.SqliteServerJobBan", b =>
+            modelBuilder.Entity("Content.Server.Database.SqliteServerRoleBan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -610,7 +610,7 @@ namespace Content.Server.Database.Migrations.Sqlite
                     b.ToTable("role_ban", (string)null);
                 });
 
-            modelBuilder.Entity("Content.Server.Database.SqliteServerJobUnban", b =>
+            modelBuilder.Entity("Content.Server.Database.SqliteServerRoleUnban", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -811,11 +811,11 @@ namespace Content.Server.Database.Migrations.Sqlite
                     b.Navigation("Preference");
                 });
 
-            modelBuilder.Entity("Content.Server.Database.SqliteServerJobUnban", b =>
+            modelBuilder.Entity("Content.Server.Database.SqliteServerRoleUnban", b =>
                 {
-                    b.HasOne("Content.Server.Database.SqliteServerJobBan", "Ban")
+                    b.HasOne("Content.Server.Database.SqliteServerRoleBan", "Ban")
                         .WithOne("Unban")
-                        .HasForeignKey("Content.Server.Database.SqliteServerJobUnban", "BanId")
+                        .HasForeignKey("Content.Server.Database.SqliteServerRoleUnban", "BanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_role_unban_role_ban_ban_id");
@@ -898,7 +898,7 @@ namespace Content.Server.Database.Migrations.Sqlite
                     b.Navigation("Unban");
                 });
 
-            modelBuilder.Entity("Content.Server.Database.SqliteServerJobBan", b =>
+            modelBuilder.Entity("Content.Server.Database.SqliteServerRoleBan", b =>
                 {
                     b.Navigation("Unban");
                 });

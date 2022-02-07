@@ -89,45 +89,45 @@ namespace Content.Server.Database
         Task AddServerUnbanAsync(ServerUnbanDef serverBan);
         #endregion
 
-        #region JobBans
+        #region Role Bans
         /// <summary>
-        ///     Looks up a ban by id.
-        ///     This will return a pardoned ban as well.
+        ///     Looks up a role ban by id.
+        ///     This will return a pardoned role ban as well.
         /// </summary>
-        /// <param name="id">The ban id to look for.</param>
-        /// <returns>The ban with the given id or null if none exist.</returns>
-        Task<ServerJobBanDef?> GetServerJobBanAsync(int id);
+        /// <param name="id">The role ban id to look for.</param>
+        /// <returns>The role ban with the given id or null if none exist.</returns>
+        Task<ServerRoleBanDef?> GetServerRoleBanAsync(int id);
 
         /// <summary>
-        ///     Looks up an user's most recent received un-pardoned ban.
-        ///     This will NOT return a pardoned ban.
+        ///     Looks up an user's most recent received un-pardoned role ban.
+        ///     This will NOT return a pardoned role ban.
         ///     One of <see cref="address"/> or <see cref="userId"/> need to not be null.
         /// </summary>
         /// <param name="address">The ip address of the user.</param>
         /// <param name="userId">The id of the user.</param>
         /// <param name="hwId">The hardware ID of the user.</param>
-        /// <returns>The user's latest received un-pardoned ban, or null if none exist.</returns>
-        Task<ServerJobBanDef?> GetServerJobBanAsync(
+        /// <returns>The user's latest received un-pardoned role ban, or null if none exist.</returns>
+        Task<ServerRoleBanDef?> GetServerRoleBanAsync(
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId);
 
         /// <summary>
-        ///     Looks up an user's ban history.
-        ///     This will return pardoned bans as well.
+        ///     Looks up an user's role ban history.
+        ///     This will return pardoned role bans as well.
         ///     One of <see cref="address"/> or <see cref="userId"/> need to not be null.
         /// </summary>
         /// <param name="address">The ip address of the user.</param>
         /// <param name="userId">The id of the user.</param>
         /// <param name="hwId">The HWId of the user.</param>
-        /// <returns>The user's ban history.</returns>
-        Task<List<ServerJobBanDef>> GetServerJobBansAsync(
+        /// <returns>The user's role ban history.</returns>
+        Task<List<ServerRoleBanDef>> GetServerRoleBansAsync(
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId);
 
-        Task AddServerJobBanAsync(ServerJobBanDef serverBan);
-        Task AddServerJobUnbanAsync(ServerJobUnbanDef serverBan);
+        Task AddServerRoleBanAsync(ServerRoleBanDef serverBan);
+        Task AddServerRoleUnbanAsync(ServerRoleUnbanDef serverBan);
         #endregion
 
         #region Player Records
@@ -298,36 +298,36 @@ namespace Content.Server.Database
             return _db.AddServerUnbanAsync(serverUnban);
         }
 
-        #region Job Ban
-        public Task<ServerJobBanDef?> GetServerJobBanAsync(int id)
+        #region Role Ban
+        public Task<ServerRoleBanDef?> GetServerRoleBanAsync(int id)
         {
-            return _db.GetServerJobBanAsync(id);
+            return _db.GetServerRoleBanAsync(id);
         }
 
-        public Task<ServerJobBanDef?> GetServerJobBanAsync(
+        public Task<ServerRoleBanDef?> GetServerRoleBanAsync(
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId)
         {
-            return _db.GetServerJobBanAsync(address, userId, hwId);
+            return _db.GetServerRoleBanAsync(address, userId, hwId);
         }
 
-        public Task<List<ServerJobBanDef>> GetServerJobBansAsync(
+        public Task<List<ServerRoleBanDef>> GetServerRoleBansAsync(
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId)
         {
-            return _db.GetServerJobBansAsync(address, userId, hwId);
+            return _db.GetServerRoleBansAsync(address, userId, hwId);
         }
 
-        public Task AddServerJobBanAsync(ServerJobBanDef serverJobBan)
+        public Task AddServerRoleBanAsync(ServerRoleBanDef serverRoleBan)
         {
-            return _db.AddServerJobBanAsync(serverJobBan);
+            return _db.AddServerRoleBanAsync(serverRoleBan);
         }
 
-        public Task AddServerJobUnbanAsync(ServerJobUnbanDef serverJobUnban)
+        public Task AddServerRoleUnbanAsync(ServerRoleUnbanDef serverRoleUnban)
         {
-            return _db.AddServerJobUnbanAsync(serverJobUnban);
+            return _db.AddServerRoleUnbanAsync(serverRoleUnban);
         }
         #endregion
 

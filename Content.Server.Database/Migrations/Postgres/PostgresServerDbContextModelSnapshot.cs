@@ -470,7 +470,7 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.HasCheckConstraint("HaveEitherAddressOrUserIdOrHWId", "address IS NOT NULL OR user_id IS NOT NULL OR hwid IS NOT NULL");
                 });
 
-            modelBuilder.Entity("Content.Server.Database.PostgresServerJobBan", b =>
+            modelBuilder.Entity("Content.Server.Database.PostgresServerRoleBan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -519,7 +519,7 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.ToTable("server_role_ban", (string)null);
                 });
 
-            modelBuilder.Entity("Content.Server.Database.PostgresServerJobUnban", b =>
+            modelBuilder.Entity("Content.Server.Database.PostgresServerRoleUnban", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -855,11 +855,11 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("Content.Server.Database.PostgresServerJobUnban", b =>
+            modelBuilder.Entity("Content.Server.Database.PostgresServerRoleUnban", b =>
                 {
-                    b.HasOne("Content.Server.Database.PostgresServerJobBan", "Ban")
+                    b.HasOne("Content.Server.Database.PostgresServerRoleBan", "Ban")
                         .WithOne("Unban")
-                        .HasForeignKey("Content.Server.Database.PostgresServerJobUnban", "BanId")
+                        .HasForeignKey("Content.Server.Database.PostgresServerRoleUnban", "BanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_server_role_unban_server_role_ban_ban_id");
@@ -937,7 +937,7 @@ namespace Content.Server.Database.Migrations.Postgres
                     b.Navigation("Unban");
                 });
 
-            modelBuilder.Entity("Content.Server.Database.PostgresServerJobBan", b =>
+            modelBuilder.Entity("Content.Server.Database.PostgresServerRoleBan", b =>
                 {
                     b.Navigation("Unban");
                 });

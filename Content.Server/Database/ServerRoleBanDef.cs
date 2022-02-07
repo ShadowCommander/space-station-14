@@ -5,7 +5,7 @@ using Robust.Shared.Network;
 
 namespace Content.Server.Database;
 
-public class ServerJobBanDef
+public class ServerRoleBanDef
 {
     public int? Id { get; }
     public NetUserId? UserId { get; }
@@ -16,10 +16,10 @@ public class ServerJobBanDef
     public DateTimeOffset? ExpirationTime { get; }
     public string Reason { get; }
     public NetUserId? BanningAdmin { get; }
-    public ServerJobUnbanDef? Unban { get; }
+    public ServerRoleUnbanDef? Unban { get; }
     public string Role { get; }
 
-    public ServerJobBanDef(
+    public ServerRoleBanDef(
         int? id,
         NetUserId? userId,
         (IPAddress, int)? address,
@@ -28,7 +28,7 @@ public class ServerJobBanDef
         DateTimeOffset? expirationTime,
         string reason,
         NetUserId? banningAdmin,
-        ServerJobUnbanDef? unban,
+        ServerRoleUnbanDef? unban,
         string role)
     {
         if (userId == null && address == null && hwId ==  null)

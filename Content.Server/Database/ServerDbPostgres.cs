@@ -223,21 +223,21 @@ namespace Content.Server.Database
         }
         #endregion
 
-        #region Job Ban
-        public override async Task<ServerJobBanDef?> GetServerJobBanAsync(int id)
+        #region Role Ban
+        public override async Task<ServerRoleBanDef?> GetServerRoleBanAsync(int id)
         {
             await using var db = await GetDbImpl();
 
-            var query = db.PgDbContext.JobBan
+            var query = db.PgDbContext.RoleBan
                 .Include(p => p.Unban)
                 .Where(p => p.Id == id);
 
             var ban = await query.SingleOrDefaultAsync();
 
-            return ConvertJobBan(ban);
+            return ConvertRoleBan(ban);
         }
 
-        public override async Task<ServerJobBanDef?> GetServerJobBanAsync(
+        public override async Task<ServerRoleBanDef?> GetServerRoleBanAsync(
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId)
@@ -249,16 +249,16 @@ namespace Content.Server.Database
 
             await using var db = await GetDbImpl();
 
-            var query = MakeJobBanLookupQuery(address, userId, hwId, db)
+            var query = MakeRoleBanLookupQuery(address, userId, hwId, db)
                 .Where(p => p.Unban == null && (p.ExpirationTime == null || p.ExpirationTime.Value > DateTime.Now))
                 .OrderByDescending(b => b.BanTime);
 
             var ban = await query.FirstOrDefaultAsync();
 
-            return ConvertJobBan(ban);
+            return ConvertRoleBan(ban);
         }
 
-        public override async Task<List<ServerJobBanDef>> GetServerJobBansAsync(
+        public override async Task<List<ServerRoleBanDef>> GetServerRoleBansAsync(
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId)
@@ -270,14 +270,14 @@ namespace Content.Server.Database
 
             await using var db = await GetDbImpl();
 
-            var query = MakeJobBanLookupQuery(address, userId, hwId, db);
+            var query = MakeRoleBanLookupQuery(address, userId, hwId, db);
 
-            var queryJobBans = await query.ToArrayAsync();
-            var bans = new List<ServerJobBanDef>(queryJobBans.Length);
+            var queryRoleBans = await query.ToArrayAsync();
+            var bans = new List<ServerRoleBanDef>(queryRoleBans.Length);
 
-            foreach (var ban in queryJobBans)
+            foreach (var ban in queryRoleBans)
             {
-                var banDef = ConvertJobBan(ban);
+                var banDef = ConvertRoleBan(ban);
 
                 if (banDef != null)
                 {
@@ -288,17 +288,17 @@ namespace Content.Server.Database
             return bans;
         }
 
-        private static IQueryable<PostgresServerJobBan> MakeJobBanLookupQuery(
+        private static IQueryable<PostgresServerRoleBan> MakeRoleBanLookupQuery(
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId,
             DbGuardImpl db)
         {
-            IQueryable<PostgresServerJobBan>? query = null;
+            IQueryable<PostgresServerRoleBan>? query = null;
 
             if (userId is { } uid)
             {
-                var newQ = db.PgDbContext.JobBan
+                var newQ = db.PgDbContext.RoleBan
                     .Include(p => p.Unban)
                     .Where(b => b.UserId == uid.UserId);
 
@@ -307,7 +307,7 @@ namespace Content.Server.Database
 
             if (address != null)
             {
-                var newQ = db.PgDbContext.JobBan
+                var newQ = db.PgDbContext.RoleBan
                     .Include(p => p.Unban)
                     .Where(b => b.Address != null && EF.Functions.ContainsOrEqual(b.Address.Value, address));
 
@@ -316,7 +316,7 @@ namespace Content.Server.Database
 
             if (hwId != null)
             {
-                var newQ = db.PgDbContext.JobBan
+                var newQ = db.PgDbContext.RoleBan
                     .Include(p => p.Unban)
                     .Where(b => b.HWId!.SequenceEqual(hwId.Value.ToArray()));
 
@@ -327,7 +327,7 @@ namespace Content.Server.Database
             return query;
         }
 
-        private static ServerJobBanDef? ConvertJobBan(PostgresServerJobBan? ban)
+        private static ServerRoleBanDef? ConvertRoleBan(PostgresServerRoleBan? ban)
         {
             if (ban == null)
             {
@@ -346,9 +346,9 @@ namespace Content.Server.Database
                 aUid = new NetUserId(aGuid);
             }
 
-            var unbanDef = ConvertJobUnban(ban.Unban);
+            var unbanDef = ConvertRoleUnban(ban.Unban);
 
-            return new ServerJobBanDef(
+            return new ServerRoleBanDef(
                 ban.Id,
                 uid,
                 ban.Address,
@@ -361,7 +361,7 @@ namespace Content.Server.Database
                 ban.RoleId);
         }
 
-        private static ServerJobUnbanDef? ConvertJobUnban(PostgresServerJobUnban? unban)
+        private static ServerRoleUnbanDef? ConvertRoleUnban(PostgresServerRoleUnban? unban)
         {
             if (unban == null)
             {
@@ -374,40 +374,40 @@ namespace Content.Server.Database
                 aUid = new NetUserId(aGuid);
             }
 
-            return new ServerJobUnbanDef(
+            return new ServerRoleUnbanDef(
                 unban.Id,
                 aUid,
                 unban.UnbanTime);
         }
 
-        public override async Task AddServerJobBanAsync(ServerJobBanDef serverJobBan)
+        public override async Task AddServerRoleBanAsync(ServerRoleBanDef serverRoleBan)
         {
             await using var db = await GetDbImpl();
 
-            db.PgDbContext.JobBan.Add(new PostgresServerJobBan
+            db.PgDbContext.RoleBan.Add(new PostgresServerRoleBan
             {
-                Address = serverJobBan.Address,
-                HWId = serverJobBan.HWId?.ToArray(),
-                Reason = serverJobBan.Reason,
-                BanningAdmin = serverJobBan.BanningAdmin?.UserId,
-                BanTime = serverJobBan.BanTime.UtcDateTime,
-                ExpirationTime = serverJobBan.ExpirationTime?.UtcDateTime,
-                UserId = serverJobBan.UserId?.UserId,
-                RoleId = serverJobBan.Role,
+                Address = serverRoleBan.Address,
+                HWId = serverRoleBan.HWId?.ToArray(),
+                Reason = serverRoleBan.Reason,
+                BanningAdmin = serverRoleBan.BanningAdmin?.UserId,
+                BanTime = serverRoleBan.BanTime.UtcDateTime,
+                ExpirationTime = serverRoleBan.ExpirationTime?.UtcDateTime,
+                UserId = serverRoleBan.UserId?.UserId,
+                RoleId = serverRoleBan.Role,
             });
 
             await db.PgDbContext.SaveChangesAsync();
         }
 
-        public override async Task AddServerJobUnbanAsync(ServerJobUnbanDef serverJobUnban)
+        public override async Task AddServerRoleUnbanAsync(ServerRoleUnbanDef serverRoleUnban)
         {
             await using var db = await GetDbImpl();
 
-            db.PgDbContext.JobUnban.Add(new PostgresServerJobUnban
+            db.PgDbContext.RoleUnban.Add(new PostgresServerRoleUnban
             {
-                 BanId = serverJobUnban.BanId,
-                 UnbanningAdmin = serverJobUnban.UnbanningAdmin?.UserId,
-                 UnbanTime = serverJobUnban.UnbanTime.UtcDateTime
+                 BanId = serverRoleUnban.BanId,
+                 UnbanningAdmin = serverRoleUnban.UnbanningAdmin?.UserId,
+                 UnbanTime = serverRoleUnban.UnbanTime.UtcDateTime
             });
 
             await db.PgDbContext.SaveChangesAsync();

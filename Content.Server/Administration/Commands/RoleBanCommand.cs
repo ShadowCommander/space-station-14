@@ -16,7 +16,7 @@ namespace Content.Server.Administration.Commands;
 public sealed class RoleBanCommand : IConsoleCommand
 {
     public string Command => "roleban";
-    public string Description => "Bans a player from a job";
+    public string Description => "Bans a player from a role";
     public string Help => $"Usage: {Command} <name or user ID> <role> <reason> [duration in minutes, leave out or 0 for permanent ban]";
 
     public async void Execute(IConsoleShell shell, string argStr, string[] args)
@@ -82,7 +82,7 @@ public sealed class RoleBanCommand : IConsoleCommand
             addressRange = (targetAddress, cidr);
         }
 
-        var banDef = new ServerJobBanDef(
+        var banDef = new ServerRoleBanDef(
             null,
             targetUid,
             addressRange,
@@ -100,7 +100,7 @@ public sealed class RoleBanCommand : IConsoleCommand
             return;
         }
 
-        var response = new StringBuilder($"Job banned {target} with reason \"{reason}\"");
+        var response = new StringBuilder($"Role banned {target} with reason \"{reason}\"");
 
         response.Append(expires == null ?
             " permanently."

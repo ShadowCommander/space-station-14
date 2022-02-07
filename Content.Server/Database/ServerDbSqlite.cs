@@ -46,6 +46,7 @@ namespace Content.Server.Database
             }
         }
 
+        #region Ban
         public override async Task<ServerBanDef?> GetServerBanAsync(int id)
         {
             await using var db = await GetDbImpl();
@@ -151,21 +152,22 @@ namespace Content.Server.Database
 
             await db.SqliteDbContext.SaveChangesAsync();
         }
+        #endregion
 
         #region Role Ban
-        public override async Task<ServerJobBanDef?> GetServerJobBanAsync(int id)
+        public override async Task<ServerRoleBanDef?> GetServerRoleBanAsync(int id)
         {
             await using var db = await GetDbImpl();
 
-            var ban = await db.SqliteDbContext.JobBan
+            var ban = await db.SqliteDbContext.RoleBan
                 .Include(p => p.Unban)
                 .Where(p => p.Id == id)
                 .SingleOrDefaultAsync();
 
-            return ConvertJobBan(ban);
+            return ConvertRoleBan(ban);
         }
 
-        public override async Task<ServerJobBanDef?> GetServerJobBanAsync(
+        public override async Task<ServerRoleBanDef?> GetServerRoleBanAsync(
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId)
@@ -174,17 +176,17 @@ namespace Content.Server.Database
 
             // SQLite can't do the net masking stuff we need to match IP address ranges.
             // So just pull down the whole list into memory.
-            var bans = await db.SqliteDbContext.JobBan
+            var bans = await db.SqliteDbContext.RoleBan
                 .Include(p => p.Unban)
                 .Where(p => p.Unban == null && (p.ExpirationTime == null || p.ExpirationTime.Value > DateTime.UtcNow))
                 .ToListAsync();
 
             return bans.FirstOrDefault(b => BanMatches(b, address, userId, hwId)) is { } foundBan
-                ? ConvertJobBan(foundBan)
+                ? ConvertRoleBan(foundBan)
                 : null;
         }
 
-        public override async Task<List<ServerJobBanDef>> GetServerJobBansAsync(
+        public override async Task<List<ServerRoleBanDef>> GetServerRoleBansAsync(
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId)
@@ -193,18 +195,18 @@ namespace Content.Server.Database
 
             // SQLite can't do the net masking stuff we need to match IP address ranges.
             // So just pull down the whole list into memory.
-            var queryBans = await db.SqliteDbContext.JobBan
+            var queryBans = await db.SqliteDbContext.RoleBan
                 .Include(p => p.Unban)
                 .ToListAsync();
 
             return queryBans
                 .Where(b => BanMatches(b, address, userId, hwId))
-                .Select(ConvertJobBan)
+                .Select(ConvertRoleBan)
                 .ToList()!;
         }
 
         private static bool BanMatches(
-            SqliteServerJobBan ban,
+            SqliteServerRoleBan ban,
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId)
@@ -227,11 +229,11 @@ namespace Content.Server.Database
             return false;
         }
 
-        public override async Task AddServerJobBanAsync(ServerJobBanDef serverBan)
+        public override async Task AddServerRoleBanAsync(ServerRoleBanDef serverBan)
         {
             await using var db = await GetDbImpl();
 
-            db.SqliteDbContext.JobBan.Add(new SqliteServerJobBan
+            db.SqliteDbContext.RoleBan.Add(new SqliteServerRoleBan
             {
                 Address = serverBan.Address,
                 Reason = serverBan.Reason,
@@ -246,11 +248,11 @@ namespace Content.Server.Database
             await db.SqliteDbContext.SaveChangesAsync();
         }
 
-        public override async Task AddServerJobUnbanAsync(ServerJobUnbanDef serverUnban)
+        public override async Task AddServerRoleUnbanAsync(ServerRoleUnbanDef serverUnban)
         {
             await using var db = await GetDbImpl();
 
-            db.SqliteDbContext.JobUnban.Add(new SqliteServerJobUnban
+            db.SqliteDbContext.RoleUnban.Add(new SqliteServerRoleUnban
             {
                 BanId = serverUnban.BanId,
                 UnbanningAdmin = serverUnban.UnbanningAdmin?.UserId,
@@ -260,7 +262,7 @@ namespace Content.Server.Database
             await db.SqliteDbContext.SaveChangesAsync();
         }
 
-        private static ServerJobBanDef? ConvertJobBan(SqliteServerJobBan? ban)
+        private static ServerRoleBanDef? ConvertRoleBan(SqliteServerRoleBan? ban)
         {
             if (ban == null)
             {
@@ -279,9 +281,9 @@ namespace Content.Server.Database
                 aUid = new NetUserId(aGuid);
             }
 
-            var unban = ConvertJobUnban(ban.Unban);
+            var unban = ConvertRoleUnban(ban.Unban);
 
-            return new ServerJobBanDef(
+            return new ServerRoleBanDef(
                 ban.Id,
                 uid,
                 ban.Address,
@@ -294,7 +296,7 @@ namespace Content.Server.Database
                 ban.RoleId);
         }
 
-        private static ServerJobUnbanDef? ConvertJobUnban(SqliteServerJobUnban? unban)
+        private static ServerRoleUnbanDef? ConvertRoleUnban(SqliteServerRoleUnban? unban)
         {
             if (unban == null)
             {
@@ -307,7 +309,7 @@ namespace Content.Server.Database
                 aUid = new NetUserId(aGuid);
             }
 
-            return new ServerJobUnbanDef(
+            return new ServerRoleUnbanDef(
                 unban.Id,
                 aUid,
                 unban.UnbanTime);

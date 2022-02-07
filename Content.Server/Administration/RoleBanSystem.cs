@@ -50,12 +50,12 @@ public class RoleBanSystem : EntitySystem
         if (_cachedRoleBans.ContainsKey(e.Session.UserId))
             return;
 
-        var jobBans = await _db.GetServerJobBansAsync(playerData.LastAddress, playerData.UserId, playerData.LastHWId);
-        if (jobBans.Count == 0)
+        var roleBans = await _db.GetServerRoleBansAsync(playerData.LastAddress, playerData.UserId, playerData.LastHWId);
+        if (roleBans.Count == 0)
             return;
 
         var userRoleBans = new HashSet<string>();
-        foreach (var ban in jobBans)
+        foreach (var ban in roleBans)
         {
             if (userRoleBans.Contains(ban.Role))
                 continue;
@@ -64,26 +64,26 @@ public class RoleBanSystem : EntitySystem
         _cachedRoleBans.Add(playerData.UserId, userRoleBans);
     }
 
-    public async Task<bool> AddRoleBan(ServerJobBanDef banDef, LocatedPlayerData? playerData = null)
+    public async Task<bool> AddRoleBan(ServerRoleBanDef banDef, LocatedPlayerData? playerData = null)
     {
         if (banDef.UserId != null)
         {
-            if (!_cachedRoleBans.TryGetValue(banDef.UserId.Value, out var jobBans))
+            if (!_cachedRoleBans.TryGetValue(banDef.UserId.Value, out var roleBans))
             {
-                jobBans = new HashSet<string>();
-                _cachedRoleBans.Add(banDef.UserId.Value, jobBans);
+                roleBans = new HashSet<string>();
+                _cachedRoleBans.Add(banDef.UserId.Value, roleBans);
             }
-            if (!jobBans.Contains(banDef.Role))
-                jobBans.Add(banDef.Role);
+            if (!roleBans.Contains(banDef.Role))
+                roleBans.Add(banDef.Role);
         }
 
-        await _db.AddServerJobBanAsync(banDef);
+        await _db.AddServerRoleBanAsync(banDef);
         return true;
     }
 
-    public bool IsBanned(NetUserId userId, string jobId)
+    public bool IsBanned(NetUserId userId, string roleId)
     {
-        return _cachedRoleBans.TryGetValue(userId, out var jobBans) && jobBans.Contains(jobId);
+        return _cachedRoleBans.TryGetValue(userId, out var roleBans) && roleBans.Contains(roleId);
     }
 
     public HashSet<string>? GetRoleBans(NetUserId playerUserId)
