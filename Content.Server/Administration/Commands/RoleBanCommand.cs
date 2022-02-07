@@ -22,9 +22,7 @@ public sealed class RoleBanCommand : IConsoleCommand
     public async void Execute(IConsoleShell shell, string argStr, string[] args)
     {
         var player = shell.Player as IPlayerSession;
-        var plyMgr = IoCManager.Resolve<IPlayerManager>();
         var locator = IoCManager.Resolve<IPlayerLocator>();
-        var dbMan = IoCManager.Resolve<IServerDbManager>();
 
         string target;
         string role;
@@ -65,7 +63,7 @@ public sealed class RoleBanCommand : IConsoleCommand
 
         var targetUid = located.UserId;
         var targetHWid = located.LastHWId;
-        var targetAddr = located.LastAddress;
+        var targetAddress = located.LastAddress;
 
         DateTimeOffset? expires = null;
         if (minutes > 0)
@@ -73,21 +71,21 @@ public sealed class RoleBanCommand : IConsoleCommand
             expires = DateTimeOffset.Now + TimeSpan.FromMinutes(minutes);
         }
 
-        (IPAddress, int)? addrRange = null;
-        if (targetAddr != null)
+        (IPAddress, int)? addressRange = null;
+        if (targetAddress != null)
         {
-            if (targetAddr.IsIPv4MappedToIPv6)
-                targetAddr = targetAddr.MapToIPv4();
+            if (targetAddress.IsIPv4MappedToIPv6)
+                targetAddress = targetAddress.MapToIPv4();
 
             // Ban /64 for IPv4, /32 for IPv4.
-            var cidr = targetAddr.AddressFamily == AddressFamily.InterNetworkV6 ? 64 : 32;
-            addrRange = (targetAddr, cidr);
+            var cidr = targetAddress.AddressFamily == AddressFamily.InterNetworkV6 ? 64 : 32;
+            addressRange = (targetAddress, cidr);
         }
 
         var banDef = new ServerJobBanDef(
             null,
             targetUid,
-            addrRange,
+            addressRange,
             targetHWid,
             DateTimeOffset.Now,
             expires,
@@ -96,7 +94,7 @@ public sealed class RoleBanCommand : IConsoleCommand
             null,
             role);
 
-        if (!await EntitySystem.Get<RoleBanSystem>().AddJobBan(banDef))
+        if (!await EntitySystem.Get<RoleBanSystem>().AddRoleBan(banDef, located))
         {
             shell.WriteLine($"{target} already has a role ban for {role}");
             return;

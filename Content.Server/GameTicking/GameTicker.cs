@@ -101,6 +101,6 @@ namespace Content.Server.GameTicking
         [Dependency] private readonly PDASystem _pdaSystem = default!;
         [Dependency] private readonly DamageableSystem _damageable = default!;
         [Dependency] private readonly GhostSystem _ghosts = default!;
-        [Dependency] private readonly RoleBanSystem _roleBan = default!;
+        [Dependency] private readonly RoleBanSystem _roleBanSystem = default!;
     }
 }
