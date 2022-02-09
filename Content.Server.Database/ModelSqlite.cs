@@ -14,10 +14,7 @@ namespace Content.Server.Database
 {
     public sealed class SqliteServerDbContext : ServerDbContext
     {
-        public DbSet<SqliteServerJobBan> JobBan { get; set; } = default!;
-        public DbSet<SqliteServerJobUnban> JobUnban { get; set; } = default!;
-
-        public SqliteServerDbContext()
+        public SqliteServerDbContext(DbContextOptions<SqliteServerDbContext> options) : base(options)
         {
         }
 
@@ -63,7 +60,7 @@ namespace Content.Server.Database
                 .HasConversion(ipMaskConverter);
 
             modelBuilder
-                .Entity<SqliteServerRoleBan>()
+                .Entity<ServerRoleBan>()
                 .Property(e => e.Address)
                 .HasColumnType("TEXT")
                 .HasConversion(ipMaskConverter);
@@ -112,37 +109,4 @@ namespace Content.Server.Database
             return JsonDocument.Parse(str);
         }
     }
-
-    #region Job Bans
-    [Table("role_ban")]
-    public class SqliteServerRoleBan
-    {
-        public int Id { get; set; }
-
-        public Guid? UserId { get; set; }
-        public (IPAddress address, int mask)? Address { get; set; }
-        public byte[]? HWId { get; set; }
-
-        public DateTime BanTime { get; set; }
-        public DateTime? ExpirationTime { get; set; }
-        public string Reason { get; set; } = null!;
-        public Guid? BanningAdmin { get; set; }
-
-        public SqliteServerRoleUnban? Unban { get; set; }
-
-        public string RoleId { get; set; } = null!;
-    }
-
-    [Table("role_unban")]
-    public class SqliteServerRoleUnban
-    {
-        [Column("unban_id")] public int Id { get; set; }
-
-        public int BanId { get; set; }
-        public SqliteServerRoleBan Ban { get; set; } = null!;
-
-        public Guid? UnbanningAdmin { get; set; }
-        public DateTime UnbanTime { get; set; }
-    }
-    #endregion
 }

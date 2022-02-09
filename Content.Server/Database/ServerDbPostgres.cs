@@ -293,13 +293,13 @@ namespace Content.Server.Database
             return bans;
         }
 
-        private static IQueryable<PostgresServerRoleBan> MakeRoleBanLookupQuery(
+        private static IQueryable<ServerRoleBan> MakeRoleBanLookupQuery(
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId,
             DbGuardImpl db)
         {
-            IQueryable<PostgresServerRoleBan>? query = null;
+            IQueryable<ServerRoleBan>? query = null;
 
             if (userId is { } uid)
             {
@@ -332,7 +332,7 @@ namespace Content.Server.Database
             return query;
         }
 
-        private static ServerRoleBanDef? ConvertRoleBan(PostgresServerRoleBan? ban)
+        private static ServerRoleBanDef? ConvertRoleBan(ServerRoleBan? ban)
         {
             if (ban == null)
             {
@@ -366,7 +366,7 @@ namespace Content.Server.Database
                 ban.RoleId);
         }
 
-        private static ServerRoleUnbanDef? ConvertRoleUnban(PostgresServerRoleUnban? unban)
+        private static ServerRoleUnbanDef? ConvertRoleUnban(ServerRoleUnban? unban)
         {
             if (unban == null)
             {
@@ -389,7 +389,7 @@ namespace Content.Server.Database
         {
             await using var db = await GetDbImpl();
 
-            db.PgDbContext.RoleBan.Add(new PostgresServerRoleBan
+            db.PgDbContext.RoleBan.Add(new ServerRoleBan
             {
                 Address = serverRoleBan.Address,
                 HWId = serverRoleBan.HWId?.ToArray(),
@@ -408,7 +408,7 @@ namespace Content.Server.Database
         {
             await using var db = await GetDbImpl();
 
-            db.PgDbContext.RoleUnban.Add(new PostgresServerRoleUnban
+            db.PgDbContext.RoleUnban.Add(new ServerRoleUnban
             {
                  BanId = serverRoleUnban.BanId,
                  UnbanningAdmin = serverRoleUnban.UnbanningAdmin?.UserId,

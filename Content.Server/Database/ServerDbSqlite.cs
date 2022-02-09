@@ -214,7 +214,7 @@ namespace Content.Server.Database
         }
 
         private static bool BanMatches(
-            SqliteServerRoleBan ban,
+            ServerRoleBan ban,
             IPAddress? address,
             NetUserId? userId,
             ImmutableArray<byte>? hwId)
@@ -241,7 +241,7 @@ namespace Content.Server.Database
         {
             await using var db = await GetDbImpl();
 
-            db.SqliteDbContext.RoleBan.Add(new SqliteServerRoleBan
+            db.SqliteDbContext.RoleBan.Add(new ServerRoleBan
             {
                 Address = serverBan.Address,
                 Reason = serverBan.Reason,
@@ -260,7 +260,7 @@ namespace Content.Server.Database
         {
             await using var db = await GetDbImpl();
 
-            db.SqliteDbContext.RoleUnban.Add(new SqliteServerRoleUnban
+            db.SqliteDbContext.RoleUnban.Add(new ServerRoleUnban
             {
                 BanId = serverUnban.BanId,
                 UnbanningAdmin = serverUnban.UnbanningAdmin?.UserId,
@@ -270,7 +270,7 @@ namespace Content.Server.Database
             await db.SqliteDbContext.SaveChangesAsync();
         }
 
-        private static ServerRoleBanDef? ConvertRoleBan(SqliteServerRoleBan? ban)
+        private static ServerRoleBanDef? ConvertRoleBan(ServerRoleBan? ban)
         {
             if (ban == null)
             {
@@ -304,7 +304,7 @@ namespace Content.Server.Database
                 ban.RoleId);
         }
 
-        private static ServerRoleUnbanDef? ConvertRoleUnban(SqliteServerRoleUnban? unban)
+        private static ServerRoleUnbanDef? ConvertRoleUnban(ServerRoleUnban? unban)
         {
             if (unban == null)
             {

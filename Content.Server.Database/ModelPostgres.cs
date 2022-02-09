@@ -15,9 +15,6 @@ namespace Content.Server.Database
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
-        public DbSet<PostgresServerRoleBan> RoleBan { get; set; } = null!;
-        public DbSet<PostgresServerRoleUnban> RoleUnban { get; set; } = null!;
-
         public PostgresServerDbContext(DbContextOptions<PostgresServerDbContext> options) : base(options)
         {
         }
@@ -72,39 +69,4 @@ namespace Content.Server.Database
             }
         }
     }
-
-    #region Job Bans
-    [Table("server_role_ban")]
-    public class PostgresServerRoleBan
-    {
-        public int Id { get; set; }
-        public Guid? UserId { get; set; }
-        [Column(TypeName = "inet")] public (IPAddress, int)? Address { get; set; }
-        public byte[]? HWId { get; set; }
-
-        public DateTime BanTime { get; set; }
-
-        public DateTime? ExpirationTime { get; set; }
-
-        public string Reason { get; set; } = null!;
-        public Guid? BanningAdmin { get; set; }
-
-        public PostgresServerRoleUnban? Unban { get; set; }
-
-        public string RoleId { get; set; } = null!;
-    }
-
-    [Table("server_role_unban")]
-    public class PostgresServerRoleUnban
-    {
-        [Column("unban_id")] public int Id { get; set; }
-
-        public int BanId { get; set; }
-        public PostgresServerRoleBan Ban { get; set; } = null!;
-
-        public Guid? UnbanningAdmin { get; set; }
-
-        public DateTime UnbanTime { get; set; }
-    }
-    #endregion
 }

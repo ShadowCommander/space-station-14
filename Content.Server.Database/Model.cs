@@ -29,7 +29,8 @@ namespace Content.Server.Database
         public DbSet<ServerUnban> Unban { get; set; } = default!;
         public DbSet<ConnectionLog> ConnectionLog { get; set; } = default!;
         public DbSet<ServerBanHit> ServerBanHit { get; set; } = default!;
-        public DbSet<JobBan> JobBans { get; set; } = null!;
+        public DbSet<ServerRoleBan> RoleBan { get; set; } = default!;
+        public DbSet<ServerRoleUnban> RoleUnban { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -390,10 +391,45 @@ namespace Content.Server.Database
     }
 
     [Table("job_ban")]
-    public class JobBan
+    public class RoleBan
     {
         public int Id { get; set; }
         public Guid UserId { get; set; }
         public string Job { get; set; } = default!;
+    }
+
+    [Table("server_role_ban")]
+    public class ServerRoleBan
+    {
+        public int Id { get; set; }
+        public Guid? UserId { get; set; }
+        [Column(TypeName = "inet")] public (IPAddress, int)? Address { get; set; }
+        public byte[]? HWId { get; set; }
+
+        public DateTime BanTime { get; set; }
+
+        public DateTime? ExpirationTime { get; set; }
+
+        public string Reason { get; set; } = null!;
+        public Guid? BanningAdmin { get; set; }
+
+        public ServerRoleUnban? Unban { get; set; }
+
+        public List<ServerBanHit> BanHits { get; set; } = null!;
+
+        public string RoleId { get; set; } = null!;
+    }
+
+    [Table("server_role_unban")]
+    public class ServerRoleUnban
+    {
+        [Column("unban_id")] public int Id { get; set; }
+
+        public int BanId { get; set; }
+        public ServerBan Ban { get; set; } = null!;
+
+        public Guid? UnbanningAdmin { get; set; }
+
+        public DateTime UnbanTime { get; set; }
     }
 }
