@@ -65,7 +65,7 @@ public sealed class ListContainerTest : RobustUnitTest
         listContainer.PopulateList(list);
         root.Arrange(new UIBox2(0, 0, x, y));
 
-        list.Add(new(0));
+        list.Add(new (0));
         list.Add(new (1));
         listContainer.PopulateList(list);
         root.Arrange(new UIBox2(0, 0, x, y));
@@ -286,5 +286,38 @@ public sealed class ListContainerTest : RobustUnitTest
             throw new Exception("First child of ListContainer is not a button");
         Assert.That(newButton.Pressed);
         Assert.That(newButton.Disposed == false);
+    }
+
+    [Test]
+    public void TestSelectedItemStillSelectedWhenRepopulated()
+    {
+        const int height = 10;
+        var root = new Control { MinSize = (50, height) };
+        var listContainer = new ListContainer { SeparationOverride = 0, Toggle = true };
+        root.AddChild(listContainer);
+        listContainer.GenerateItem += (_, button) => {
+            button.AddChild(new Control { MinSize = (10, 10) });
+        };
+
+        var list = new List<TestListData> {new(0), new(1), new(2), new(3), new(4), new(5)};
+        listContainer.PopulateList(list);
+        root.Arrange(new UIBox2(0, 0, 50, height));
+
+        var children = listContainer.Children.ToList();
+        if (children[0] is not ListContainerButton oldButton)
+            throw new Exception("First child of ListContainer is not a button");
+
+        listContainer.Select(oldButton.Data);
+
+        // Test that the button is selected even when repopulated.
+        listContainer.PopulateList(new List<TestListData> {new(0), new(1), new(2), new(3), new(4), new(5)});
+        listContainer.Arrange(root.SizeBox);
+        Assert.That(oldButton.Disposed);
+
+        children = listContainer.Children.ToList();
+        if (children[0] is not ListContainerButton newButton)
+            throw new Exception("First child of ListContainer is not a button");
+        Assert.That(newButton.Pressed);
+        Assert.That(newButton.Disposed, Is.EqualTo(false));
     }
 }
