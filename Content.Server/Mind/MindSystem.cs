@@ -2,8 +2,8 @@ using Content.Server.GameTicking;
 using Content.Server.Ghost;
 using Content.Server.Ghost.Components;
 using Content.Server.Mind.Components;
+using Content.Server.MobState;
 using Content.Shared.Examine;
-using Content.Shared.MobState.Components;
 using Robust.Shared.Map;
 using Robust.Shared.Timing;
 
@@ -14,6 +14,7 @@ public sealed class MindSystem : EntitySystem
     [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly GhostSystem _ghostSystem = default!;
+    [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
 
     public override void Initialize()
     {
@@ -81,7 +82,7 @@ public sealed class MindSystem : EntitySystem
             else if (mind.GhostOnShutdown)
             {
                 // Changing an entities parents while deleting is VERY sus. This WILL throw exceptions.
-                // TODO: just find the applicable spawn position dirctly without actually updating the transform's parent.
+                // TODO: just find the applicable spawn position directly without actually updating the transform's parent.
                 Transform(uid).AttachToGridOrMap();
                 var spawnPosition = Transform(uid).Coordinates;
 
@@ -131,14 +132,17 @@ public sealed class MindSystem : EntitySystem
             return;
         }
 
-        var dead = TryComp<MobStateComponent?>(uid, out var state) && state.IsDead();
+        var dead = _mobStateSystem.IsDead(uid);
 
         if (dead)
         {
-            if (mind.Mind?.Session == null) {
+            if (mind.Mind?.Session == null)
+            {
                 // Player has no session attached and dead
                 args.PushMarkup($"[color=yellow]{Loc.GetString("mind-component-no-mind-and-dead-text", ("ent", uid))}[/color]");
-            } else {
+            }
+            else
+            {
                 // Player is dead with session
                 args.PushMarkup($"[color=red]{Loc.GetString("comp-mind-examined-dead", ("ent", uid))}[/color]");
             }
