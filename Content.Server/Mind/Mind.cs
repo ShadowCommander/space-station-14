@@ -63,7 +63,8 @@ namespace Content.Server.Mind
         [ViewVariables]
         public EntityUid? VisitingEntity { get; private set; }
 
-        [ViewVariables] public EntityUid? CurrentEntity => VisitingEntity ?? OwnedEntity;
+        [ViewVariables]
+        public EntityUid? CurrentEntity => VisitingEntity ?? OwnedEntity;
 
         [ViewVariables(VVAccess.ReadWrite)]
         public string? CharacterName { get; set; }
@@ -73,7 +74,7 @@ namespace Content.Server.Mind
         ///     Can be null - will be null if the Mind is not considered "dead".
         /// </summary>
         [ViewVariables]
-        public TimeSpan? TimeOfDeath { get; set; } = null;
+        public TimeSpan? TimeOfDeath { get; set; }
 
         /// <summary>
         ///     The component currently owned by this mind.
@@ -283,7 +284,7 @@ namespace Content.Server.Mind
                 {
                     component = entMan.AddComponent<MindComponent>(entity.Value);
                 }
-                else if (component!.HasMind)
+                else if (component.HasMind)
                 {
                     EntitySystem.Get<GameTicker>().OnGhostAttempt(component.Mind!, false);
                 }
