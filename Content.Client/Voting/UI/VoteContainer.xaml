@@ -1,0 +1,5 @@
+﻿<voting:VoteContainer
+    xmlns="https://spacestation14.io"
+    xmlns:voting="clr-namespace:Content.Client.Voting.UI">
+    <voting:VotePopup/>
+</voting:VoteContainer>

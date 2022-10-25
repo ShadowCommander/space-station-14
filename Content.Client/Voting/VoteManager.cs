@@ -97,7 +97,7 @@ namespace Content.Client.Voting
 
             foreach (var (vId, vote) in _votes)
             {
-                var popup = new UI.VotePopup(vote);
+                var popup = new UI.VotePopup();
 
                 _votePopups.Add(vId, popup);
                 _popupContainer.AddChild(popup);
@@ -164,7 +164,7 @@ namespace Content.Client.Voting
 
             if (@new && _popupContainer != null)
             {
-                var popup = new UI.VotePopup(existingVote);
+                var popup = new UI.VotePopup();
 
                 _votePopups.Add(voteId, popup);
                 _popupContainer.AddChild(popup);
