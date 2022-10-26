@@ -21,6 +21,8 @@ public sealed partial class DefaultGameScreen : UIScreen
         SetAnchorAndMarginPreset(Hotbar, LayoutPreset.BottomWide, margin: 5);
         SetAnchorAndMarginPreset(Chat, LayoutPreset.TopRight, margin: 10);
         SetAnchorAndMarginPreset(Alerts, LayoutPreset.TopRight, margin: 10);
+        SetAnchorAndMarginPreset(Vote, LayoutPreset.TopLeft, margin: 180);
+        SetMarginTop(Vote, 100);
 
         Chat.OnResized += ChatOnResized;
     }

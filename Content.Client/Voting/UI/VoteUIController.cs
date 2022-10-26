@@ -9,11 +9,15 @@ public sealed class VoteUIController : UIController
     [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly IVoteManager _voteManager = default!;
 
-    private VoteContainer? VoteContainer => UIManager.GetActiveUIWidget<VoteContainer>();
+    private VoteContainer? VoteContainer => UIManager.GetActiveUIWidgetOrNull<VoteContainer>();
 
     private readonly List<VoteManager.ActiveVote> _activeVotes = new();
     private readonly VoteManager.ActiveVote _vote;
     private readonly Button[] _voteButtons;
+
+    public override void Initialize()
+    {
+    }
     
     public VoteUIController()
     {
@@ -36,6 +40,15 @@ public sealed class VoteUIController : UIController
             var i1 = i;
             button.OnPressed += _ => _voteManager.SendCastVote(vote.Id, i1);
         }
+    }
+
+    public void AddVotePopup()
+    {
+        if (VoteContainer == null)
+            return;
+        var votePopup = new VotePopup();
+        
+        VoteContainer.AddChild(votePopup);
     }
 
     public void UpdateData()
