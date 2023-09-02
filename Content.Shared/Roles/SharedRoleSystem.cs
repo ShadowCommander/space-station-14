@@ -10,7 +10,7 @@ public abstract class SharedRoleSystem : EntitySystem
 {
     [Dependency] private readonly ISharedAdminLogManager _adminLogger = default!;
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
-    [Dependency] private readonly SharedMindSystem _minds = default!;
+    [Dependency] private readonly SharedMindSystem _mindSystem = default!;
 
     // TODO please lord make role entities
     private readonly HashSet<Type> _antagTypes = new();
@@ -88,7 +88,7 @@ public abstract class SharedRoleSystem : EntitySystem
         }
 
         _adminLogger.Add(LogType.Mind, LogImpact.Low,
-            $"'Role {typeof(T).Name}' added to mind of {_minds.MindOwnerLoggingString(mind)}");
+            $"'Role {typeof(T).Name}' added to mind of {_mindSystem.MindOwnerLoggingString(mind)}");
     }
 
     /// <summary>
@@ -115,7 +115,7 @@ public abstract class SharedRoleSystem : EntitySystem
             RaiseLocalEvent(mind.OwnedEntity.Value, message, true);
         }
         _adminLogger.Add(LogType.Mind, LogImpact.Low,
-            $"'Role {typeof(T).Name}' removed from mind of {_minds.MindOwnerLoggingString(mind)}");
+            $"'Role {typeof(T).Name}' removed from mind of {_mindSystem.MindOwnerLoggingString(mind)}");
     }
 
     public bool MindTryRemoveRole<T>(EntityUid mindId) where T : Component

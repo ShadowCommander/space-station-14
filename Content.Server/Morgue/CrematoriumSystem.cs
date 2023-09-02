@@ -26,7 +26,7 @@ public sealed class CrematoriumSystem : EntitySystem
     [Dependency] private readonly EntityStorageSystem _entityStorage = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly StandingStateSystem _standing = default!;
-    [Dependency] private readonly SharedMindSystem _minds = default!;
+    [Dependency] private readonly SharedMindSystem _mindSystem = default!;
 
     public override void Initialize()
     {
@@ -142,7 +142,7 @@ public sealed class CrematoriumSystem : EntitySystem
         args.SetHandled(SuicideKind.Heat);
 
         var victim = args.Victim;
-        if (TryComp(victim, out ActorComponent? actor) && _minds.TryGetMind(victim, out var mindId, out var mind))
+        if (TryComp(victim, out ActorComponent? actor) && _mindSystem.TryGetMind(victim, out var mindId, out var mind))
         {
             _ticker.OnGhostAttempt(mindId, false, mind: mind);
 

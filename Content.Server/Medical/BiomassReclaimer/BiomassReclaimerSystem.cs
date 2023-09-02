@@ -45,7 +45,7 @@ namespace Content.Server.Medical.BiomassReclaimer
         [Dependency] private readonly SharedDoAfterSystem _doAfterSystem = default!;
         [Dependency] private readonly IPlayerManager _playerManager = default!;
         [Dependency] private readonly MaterialStorageSystem _material = default!;
-        [Dependency] private readonly SharedMindSystem _minds = default!;
+        [Dependency] private readonly SharedMindSystem _mindSystem = default!;
 
         public override void Update(float frameTime)
         {
@@ -245,7 +245,7 @@ namespace Content.Server.Medical.BiomassReclaimer
             // Reject souled bodies in easy mode.
             if (_configManager.GetCVar(CCVars.BiomassEasyMode) &&
                 HasComp<HumanoidAppearanceComponent>(dragged) &&
-                _minds.TryGetMind(dragged, out _, out var mind))
+                _mindSystem.TryGetMind(dragged, out _, out var mind))
             {
                 if (mind.UserId != null && _playerManager.TryGetSessionById(mind.UserId.Value, out _))
                     return false;

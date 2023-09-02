@@ -31,7 +31,7 @@ namespace Content.Server.Administration.Systems
         [Dependency] private readonly IGameTiming _timing = default!;
         [Dependency] private readonly IPlayerLocator _playerLocator = default!;
         [Dependency] private readonly GameTicker _gameTicker = default!;
-        [Dependency] private readonly SharedMindSystem _minds = default!;
+        [Dependency] private readonly SharedMindSystem _mindSystem = default!;
 
         private ISawmill _sawmill = default!;
         private readonly HttpClient _httpClient = new();
@@ -237,7 +237,7 @@ namespace Content.Server.Administration.Systems
                     }
                 }
 
-                var characterName = _minds.GetCharacterName(userId);
+                var characterName = _mindSystem.GetCharacterName(userId);
                 existingEmbed = (null, lookup.Username, linkToPrevious, characterName, _gameTicker.RunLevel);
             }
 
@@ -471,4 +471,3 @@ namespace Content.Server.Administration.Systems
         }
     }
 }
-

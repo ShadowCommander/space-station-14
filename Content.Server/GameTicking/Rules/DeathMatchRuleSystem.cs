@@ -18,7 +18,7 @@ namespace Content.Server.GameTicking.Rules;
 public sealed class DeathMatchRuleSystem : GameRuleSystem<DeathMatchRuleComponent>
 {
     [Dependency] private readonly IPlayerManager _player = default!;
-    [Dependency] private readonly MindSystem _mind = default!;
+    [Dependency] private readonly MindSystem _mindSystem = default!;
     [Dependency] private readonly PointSystem _point = default!;
     [Dependency] private readonly RespawnRuleSystem _respawn = default!;
     [Dependency] private readonly RoundEndSystem _roundEnd = default!;
@@ -43,14 +43,14 @@ public sealed class DeathMatchRuleSystem : GameRuleSystem<DeathMatchRuleComponen
             if (!GameTicker.IsGameRuleActive(uid, rule))
                 continue;
 
-            var newMind = _mind.CreateMind(ev.Player.UserId, ev.Profile.Name);
-            _mind.SetUserId(newMind, ev.Player.UserId);
+            var newMind = _mindSystem.CreateMind(ev.Player.UserId, ev.Profile.Name);
+            _mindSystem.SetUserId(newMind, ev.Player.UserId);
 
             var mobMaybe = _stationSpawning.SpawnPlayerCharacterOnStation(ev.Station, null, ev.Profile);
             DebugTools.AssertNotNull(mobMaybe);
             var mob = mobMaybe!.Value;
 
-            _mind.TransferTo(newMind, mob);
+            _mindSystem.TransferTo(newMind, mob);
             SetOutfitCommand.SetOutfit(mob, dm.Gear, EntityManager);
             EnsureComp<KillTrackerComponent>(mob);
             _respawn.AddToTracker(ev.Player.UserId, uid, tracker);

@@ -28,7 +28,7 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
-    [Dependency] private readonly MindSystem _minds = default!;
+    [Dependency] private readonly MindSystem _mindSystem = default!;
     [Dependency] private readonly PlayTimeTrackingManager _tracking = default!;
 
     public override void Initialize()
@@ -105,13 +105,13 @@ public sealed class PlayTimeTrackingSystem : EntitySystem
 
     private void OnRoleRemove(RoleRemovedEvent ev)
     {
-        if (_minds.TryGetSession(ev.Mind, out var session))
+        if (_mindSystem.TryGetSession(ev.Mind, out var session))
             _tracking.QueueRefreshTrackers(session);
     }
 
     private void OnRoleAdd(RoleAddedEvent ev)
     {
-        if (_minds.TryGetSession(ev.Mind, out var session))
+        if (_mindSystem.TryGetSession(ev.Mind, out var session))
             _tracking.QueueRefreshTrackers(session);
     }
 

@@ -262,7 +262,7 @@ namespace Content.Server.Administration.Systems
                     {
                         MakeSentientCommand.MakeSentient(args.Target, EntityManager);
 
-                        if (!_minds.TryGetMind(player, out var mindId, out var mind))
+                        if (!_mindSystem.TryGetMind(player, out var mindId, out var mind))
                             return;
 
                         _mindSystem.TransferTo(mindId, args.Target, ghostCheckOverride: true, mind: mind);

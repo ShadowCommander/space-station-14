@@ -9,7 +9,7 @@ namespace Content.Server.CharacterInfo;
 public sealed class CharacterInfoSystem : EntitySystem
 {
     [Dependency] private readonly JobSystem _jobs = default!;
-    [Dependency] private readonly MindSystem _minds = default!;
+    [Dependency] private readonly MindSystem _mindSystem = default!;
     [Dependency] private readonly RoleSystem _roles = default!;
 
     public override void Initialize()
@@ -30,7 +30,7 @@ public sealed class CharacterInfoSystem : EntitySystem
         var conditions = new Dictionary<string, List<ConditionInfo>>();
         var jobTitle = "No Profession";
         string? briefing = null;
-        if (_minds.TryGetMind(entity, out var mindId, out var mind))
+        if (_mindSystem.TryGetMind(entity, out var mindId, out var mind))
         {
             // Get objectives
             foreach (var objective in mind.AllObjectives)

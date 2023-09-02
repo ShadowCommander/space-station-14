@@ -21,7 +21,7 @@ namespace Content.Server.Administration.Systems
         [Dependency] private readonly IPlayerManager _playerManager = default!;
         [Dependency] private readonly IAdminManager _adminManager = default!;
         [Dependency] private readonly SharedJobSystem _jobs = default!;
-        [Dependency] private readonly MindSystem _minds = default!;
+        [Dependency] private readonly MindSystem _mindSystem = default!;
         [Dependency] private readonly SharedRoleSystem _role = default!;
 
         private readonly Dictionary<NetUserId, PlayerInfo> _playerList = new();
@@ -105,7 +105,7 @@ namespace Content.Server.Administration.Systems
 
         private void OnRoleEvent(RoleEvent ev)
         {
-            var session = _minds.GetSession(ev.Mind);
+            var session = _mindSystem.GetSession(ev.Mind);
             if (!ev.Antagonist || session == null)
                 return;
 
@@ -175,7 +175,7 @@ namespace Content.Server.Administration.Systems
 
             var antag = false;
             var startingRole = string.Empty;
-            if (_minds.TryGetMind(session, out var mindId, out _))
+            if (_mindSystem.TryGetMind(session, out var mindId, out _))
             {
                 antag = _role.MindIsAntagonist(mindId);
                 startingRole = _jobs.MindTryGetJobName(mindId);

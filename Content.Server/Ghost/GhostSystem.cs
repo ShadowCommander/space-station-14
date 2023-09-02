@@ -32,14 +32,13 @@ namespace Content.Server.Ghost
         [Dependency] private readonly IGameTiming _gameTiming = default!;
         [Dependency] private readonly IPlayerManager _playerManager = default!;
         [Dependency] private readonly GameTicker _ticker = default!;
-        [Dependency] private readonly SharedMindSystem _mindSystem = default!;
         [Dependency] private readonly SharedActionsSystem _actions = default!;
         [Dependency] private readonly VisibilitySystem _visibilitySystem = default!;
         [Dependency] private readonly EntityLookupSystem _lookup = default!;
         [Dependency] private readonly FollowerSystem _followerSystem = default!;
         [Dependency] private readonly MobStateSystem _mobState = default!;
         [Dependency] private readonly SharedPhysicsSystem _physics = default!;
-        [Dependency] private readonly MindSystem _minds = default!;
+        [Dependency] private readonly MindSystem _mindSystem = default!;
         [Dependency] private readonly JobSystem _jobs = default!;
 
         public override void Initialize()
@@ -95,7 +94,7 @@ namespace Content.Server.Ghost
             if (EntityManager.HasComponent<VisitingMindComponent>(uid))
                 return;
 
-            if (!_minds.TryGetMind(uid, out var mindId, out var mind) || mind.IsVisitingEntity)
+            if (!_mindSystem.TryGetMind(uid, out var mindId, out var mind) || mind.IsVisitingEntity)
                 return;
 
             if (component.MustBeDead && (_mobState.IsAlive(uid) || _mobState.IsCritical(uid)))
