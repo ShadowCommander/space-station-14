@@ -260,12 +260,12 @@ public sealed class TraitorRuleSystem : GameRuleSystem<TraitorRuleComponent>
         _roleSystem.MindAddRole(mindId, new TraitorRoleComponent
         {
             PrototypeId = traitorRule.TraitorPrototypeId
-        });
+        }, mind);
         // Assign briefing
         _roleSystem.MindAddRole(mindId, new RoleBriefingComponent
         {
             Briefing = briefing
-        });
+        }, mind);
         SendTraitorBriefing(mindId, traitorRule.Codewords, code);
         traitorRule.TraitorMinds.Add(mindId);
 

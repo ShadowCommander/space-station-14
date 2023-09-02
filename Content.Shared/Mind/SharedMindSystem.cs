@@ -64,8 +64,8 @@ public abstract class SharedMindSystem : EntitySystem
 
     public virtual bool TryGetMind(NetUserId user, [NotNullWhen(true)] out EntityUid? mindId, [NotNullWhen(true)] out MindComponent? mind)
     {
-        if (UserMinds.TryGetValue(user, out var mindIdValue) &&
-            TryComp(mindIdValue, out mind))
+        if (UserMinds.TryGetValue(user, out var mindIdValue)
+            && TryComp(mindIdValue, out mind))
         {
             DebugTools.Assert(mind.UserId == user);
             mindId = mindIdValue;

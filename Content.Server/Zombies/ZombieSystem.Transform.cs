@@ -217,11 +217,11 @@ namespace Content.Server.Zombies
             _identity.QueueIdentityUpdate(target);
 
             //He's gotta have a mind
-            var hasMind = _mind.TryGetMind(target, out var mindId, out _);
+            var hasMind = _mind.TryGetMind(target, out var mindId, out var mind);
             if (hasMind && _mind.TryGetSession(mindId, out var session))
             {
                 //Zombie role for player manifest
-                _roles.MindAddRole(mindId, new ZombieRoleComponent { PrototypeId = zombiecomp.ZombieRoleId });
+                _roles.MindAddRole(mindId, new ZombieRoleComponent { PrototypeId = zombiecomp.ZombieRoleId }, mind);
 
                 //Greeting message for new bebe zombers
                 _chatMan.DispatchServerMessage(session, Loc.GetString("zombie-infection-greeting"));

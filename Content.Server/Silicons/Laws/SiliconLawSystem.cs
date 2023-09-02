@@ -182,13 +182,13 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
 
     private void EnsureEmaggedRole(EntityUid uid, EmagSiliconLawComponent component)
     {
-        if (component.AntagonistRole == null || !_mind.TryGetMind(uid, out var mindId, out _))
+        if (component.AntagonistRole == null || !_mind.TryGetMind(uid, out var mindId, out var mind))
             return;
 
         if (_roles.MindHasRole<SubvertedSiliconRoleComponent>(mindId))
             return;
 
-        _roles.MindAddRole(mindId, new SubvertedSiliconRoleComponent { PrototypeId = component.AntagonistRole });
+        _roles.MindAddRole(mindId, new SubvertedSiliconRoleComponent { PrototypeId = component.AntagonistRole }, mind);
     }
 
     public List<SiliconLaw> GetLaws(EntityUid uid, SiliconLawBoundComponent? component = null)

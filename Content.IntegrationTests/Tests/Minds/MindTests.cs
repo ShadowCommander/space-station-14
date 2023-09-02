@@ -292,7 +292,7 @@ public sealed partial class MindTests
 
             var traitorRole = new TraitorRoleComponent();
 
-            roleSystem.MindAddRole(mindId, traitorRole);
+            roleSystem.MindAddRole(mindId, traitorRole, mind);
 
             Assert.Multiple(() =>
             {
@@ -302,7 +302,7 @@ public sealed partial class MindTests
 
             var jobRole = new JobComponent();
 
-            roleSystem.MindAddRole(mindId, jobRole);
+            roleSystem.MindAddRole(mindId, jobRole, mind);
 
             Assert.Multiple(() =>
             {

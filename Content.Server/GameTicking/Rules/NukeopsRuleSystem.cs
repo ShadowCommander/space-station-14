@@ -741,7 +741,7 @@ public sealed class NukeopsRuleSystem : GameRuleSystem<NukeopsRuleComponent>
             if (nukeops.OperativeMindPendingData.TryGetValue(uid, out var role) || !nukeops.SpawnOutpost || !nukeops.EndsRound)
             {
                 role ??= nukeops.OperativeRoleProto;
-                _roles.MindAddRole(mindId, new NukeopsRoleComponent { PrototypeId = role });
+                _roles.MindAddRole(mindId, new NukeopsRoleComponent { PrototypeId = role }, mind);
                 nukeops.OperativeMindPendingData.Remove(uid);
             }
 
