@@ -60,6 +60,7 @@ public abstract class SharedRoleSystem : EntitySystem
     /// <param name="mindId">The mind to add the role to.</param>
     /// <param name="component">The role instance to add.</param>
     /// <typeparam name="T">The role type to add.</typeparam>
+    /// <param name="mind">The mind component of the mind entity.</param>
     /// <param name="silent">Whether or not the role should be added silently</param>
     /// <returns>The instance of the role.</returns>
     /// <exception cref="ArgumentException">
