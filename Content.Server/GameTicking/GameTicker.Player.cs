@@ -168,6 +168,7 @@ namespace Content.Server.GameTicking
             _playerGameStatuses[session.UserId] = PlayerGameStatus.JoinedGame;
             _db.AddRoundPlayers(RoundId, session.UserId);
 
+            RaiseNetworkEvent(GetStatusMsg(session), session.Channel);
             RaiseNetworkEvent(new TickerJoinGameEvent(), session.Channel);
         }
 
