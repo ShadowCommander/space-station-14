@@ -7,11 +7,11 @@
     xmlns:playerTab="clr-namespace:Content.Client.Administration.UI.Tabs.PlayerTab"
     xmlns:objectsTab="clr-namespace:Content.Client.Administration.UI.Tabs.ObjectsTab"
     xmlns:panic="clr-namespace:Content.Client.Administration.UI.Tabs.PanicBunkerTab">
-    <TabContainer Name="MasterTabContainer">
+    <TabContainer Name="MasterTabContainer" Access="Public">
         <adminTab:AdminTab />
         <adminbusTab:AdminbusTab />
         <atmosTab:AtmosTab />
-        <tabs:RoundTab />
+        <tabs:RoundTab Name="RoundTabControl" Access="Public" />
         <tabs:ServerTab />
         <panic:PanicBunkerTab Name="PanicBunkerControl" Access="Public" />
         <playerTab:PlayerTab Name="PlayerTabControl" Access="Public" />

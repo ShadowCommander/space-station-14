@@ -3,11 +3,15 @@
     xmlns:cc="clr-namespace:Content.Client.Administration.UI.CustomControls"
     Margin="4"
     MinSize="50 50">
-    <GridContainer
-        Columns="3">
-        <cc:CommandButton Command="startround" Text="{Loc Start Round}" />
-        <cc:CommandButton Command="endround" Text="{Loc End Round}" />
-        <cc:CommandButton Command="restartround" Text="{Loc Restart Round}" />
-        <cc:CommandButton Command="restartroundnow" Text="{Loc administration-ui-round-tab-restart-round-now}" />
-    </GridContainer>
+    <BoxContainer Orientation="Vertical">
+        <GridContainer
+            Columns="3">
+            <cc:CommandButton Command="startround" Text="{Loc Start Round}" />
+            <cc:CommandButton Command="endround" Text="{Loc End Round}" />
+            <cc:CommandButton Command="restartround" Text="{Loc Restart Round}" />
+            <cc:CommandButton Command="restartroundnow" Text="{Loc administration-ui-round-tab-restart-round-now}" />
+        </GridContainer>
+        <Label Name="StartTime" Access="Public" />
+        <Label Name="StationTime" Access="Public" />
+    </BoxContainer>
 </Control>

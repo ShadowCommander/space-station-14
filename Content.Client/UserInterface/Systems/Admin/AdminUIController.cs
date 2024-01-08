@@ -5,6 +5,7 @@ using Content.Client.Administration.UI.Tabs.ObjectsTab;
 using Content.Client.Administration.UI.Tabs.PanicBunkerTab;
 using Content.Client.Administration.UI.Tabs.PlayerTab;
 using Content.Client.Gameplay;
+using Content.Client.GameTicking.Managers;
 using Content.Client.Lobby;
 using Content.Client.UserInterface.Controls;
 using Content.Client.Verbs.UI;
@@ -18,6 +19,7 @@ using Robust.Client.UserInterface.Controllers;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Input;
 using Robust.Shared.Input.Binding;
+using Robust.Shared.Timing;
 using static Robust.Client.UserInterface.Controls.BaseButton;
 
 namespace Content.Client.UserInterface.Systems.Admin;
@@ -33,6 +35,9 @@ public sealed class AdminUIController : UIController,
     [Dependency] private readonly IClientConsoleHost _conHost = default!;
     [Dependency] private readonly IInputManager _input = default!;
     [Dependency] private readonly VerbMenuUIController _verb = default!;
+    [Dependency] private readonly IGameTiming _gameTiming = default!;
+
+    [UISystemDependency] private readonly ClientGameTicker? _gameTicker = default;
 
     private AdminMenuWindow? _window;
     private MenuButton? AdminButton => UIManager.GetActiveUIWidgetOrNull<MenuBar.Widgets.GameTopMenuBar>()?.AdminButton;
@@ -208,5 +213,47 @@ public sealed class AdminUIController : UIController,
             return;
 
         args.Handle();
+    }
+
+    public override void FrameUpdate(FrameEventArgs args)
+    {
+        base.FrameUpdate(args);
+
+        if (_gameTicker == null
+            || _window is not {IsOpen: true}
+            || _window.MasterTabContainer.CurrentTab != AdminMenuWindow.RoundTabId)
+            return;
+
+        var startTime = _window.RoundTabControl.StartTime;
+        var stationTime = _window.RoundTabControl.StationTime;
+
+        if (_gameTicker.IsGameStarted)
+        {
+            startTime.Text = string.Empty;
+            var roundTime = _gameTiming.CurTime.Subtract(_gameTicker.RoundStartTimeSpan);
+            stationTime.Text = Loc.GetString("lobby-state-player-status-round-time", ("hours", roundTime.Hours), ("minutes", roundTime.Minutes));
+            return;
+        }
+
+        stationTime.Text =  Loc.GetString("lobby-state-player-status-round-not-started");
+        string text;
+
+        if (_gameTicker.Paused)
+        {
+            text = Loc.GetString("lobby-state-paused");
+        }
+        else if (_gameTicker.StartTime < _gameTiming.CurTime)
+        {
+            startTime.Text = Loc.GetString("lobby-state-soon");
+            return;
+        }
+        else
+        {
+            var difference = _gameTicker.StartTime - _gameTiming.CurTime;
+            var seconds = difference.TotalSeconds;
+            text = $"{difference.Minutes}:{difference.Seconds:D2}";
+        }
+
+        startTime.Text = Loc.GetString("lobby-state-round-start-countdown-text", ("timeLeft", text));
     }
 }
