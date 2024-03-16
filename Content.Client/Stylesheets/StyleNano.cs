@@ -85,6 +85,9 @@ namespace Content.Client.Stylesheets
         public const string StyleClassPopupMessageLarge = "PopupMessageLarge";
         public const string StyleClassPopupMessageLargeCaution = "PopupMessageLargeCaution";
 
+        // Background colors
+        public static readonly Color ColorBackgroundPrimary = Color.FromHex("#25252A");
+        public static readonly Color ColorBackgroundSecondary = Color.FromHex("#1F1F23");
         public static readonly Color PanelDark = Color.FromHex("#1E1E22");
 
         public static readonly Color NanoGold = Color.FromHex("#A88B5E");
@@ -144,8 +147,6 @@ namespace Content.Client.Stylesheets
         public const string StyleClassCrossButtonRed = "CrossButtonRed";
         public const string StyleClassButtonColorRed = "ButtonColorRed";
         public const string StyleClassButtonColorGreen = "ButtonColorGreen";
-
-        public static readonly Color ChatBackgroundColor = Color.FromHex("#25252ADD");
 
         public override Stylesheet Stylesheet { get; }
 
@@ -351,14 +352,14 @@ namespace Content.Client.Stylesheets
 
             var chatBg = new StyleBoxFlat
             {
-                BackgroundColor = ChatBackgroundColor
+                BackgroundColor = ColorBackgroundPrimary.WithAlpha(0.85f)
             };
 
             var chatSubBg = new StyleBoxFlat
             {
-                BackgroundColor = ChatBackgroundColor,
+                BackgroundColor = ColorBackgroundSecondary.WithAlpha(0.4f)
             };
-            chatSubBg.SetContentMarginOverride(StyleBox.Margin.All, 2);
+            chatSubBg.SetContentMarginOverride(StyleBox.Margin.All, 4);
 
             var actionSearchBoxTex = resCache.GetTexture("/Textures/Interface/Nano/black_panel_dark_thin_border.png");
             var actionSearchBox = new StyleBoxTexture
@@ -857,20 +858,23 @@ namespace Content.Client.Stylesheets
                 Element<TextEdit>().Pseudo(TextEdit.StylePseudoClassPlaceholder)
                     .Prop("font-color", Color.Gray),
 
-                // chat subpanels (chat lineedit backing, popup backings)
-                new StyleRule(new SelectorElement(typeof(PanelContainer), new[] {StyleClassChatPanel}, null, null),
-                    new[]
+                // Chat panel background
+                new StyleRule(new SelectorElement(typeof(PanelContainer), new[] {StyleClassChatPanel}, null, null), new[]
                     {
                         new StyleProperty(PanelContainer.StylePropertyPanel, chatBg),
                     }),
 
+                Element<PanelContainer>().Class(StyleClassChatPanel)
+                    .Prop(PanelContainer.StylePropertyPanel, chatBg),
+
                 // Chat lineedit - we don't actually draw a stylebox around the lineedit itself, we put it around the
                 // input + other buttons, so we must clear the default stylebox
-                new StyleRule(new SelectorElement(typeof(LineEdit), new[] {StyleClassChatLineEdit}, null, null),
-                    new[]
-                    {
-                        new StyleProperty(LineEdit.StylePropertyStyleBox, new StyleBoxEmpty()),
-                    }),
+                Element<LineEdit>().Class(StyleClassChatLineEdit)
+                    .Prop(LineEdit.StylePropertyStyleBox, new StyleBoxEmpty()),
+
+                // chat subpanels (chat lineedit backing, popup backings)
+                Element<PanelContainer>().Class(StyleClassChatSubPanel)
+                    .Prop(PanelContainer.StylePropertyPanel, chatSubBg),
 
                 // Action searchbox lineedit
                 new StyleRule(new SelectorElement(typeof(LineEdit), new[] {StyleClassActionSearchBox}, null, null),

@@ -1,7 +1,7 @@
 ﻿<PanelContainer
     xmlns="https://spacestation14.io"
     xmlns:chat="clr-namespace:Content.Client.UserInterface.Systems.Chat.Controls"
-    StyleClasses="StyleNano.StyleClassChatSubPanel">
+    StyleClasses="ChatSubPanel">
     <BoxContainer
         Orientation="Horizontal"
         SeparationOverride="4">
