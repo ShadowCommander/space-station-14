@@ -23,22 +23,16 @@ namespace Content.Server.Power.Components
         /// <summary>
         ///     When false, causes this to appear powered even if not receiving power from an Apc.
         /// </summary>
-        [ViewVariables(VVAccess.ReadWrite)]
-        public bool NeedsPower
-        {
-            get => _needsPower;
-            set => _needsPower = value;
-        }
-
         [DataField("needsPower")]
-        private bool _needsPower = true;
+        public bool NeedsPower { get; set; } = true;
 
         /// <summary>
         ///     When true, causes this to never appear powered.
         /// </summary>
         [ViewVariables(VVAccess.ReadWrite)]
         [DataField("powerDisabled")]
-        public bool PowerDisabled {
+        public bool PowerDisabled
+        {
             get => !NetworkLoad.Enabled;
             set => NetworkLoad.Enabled = !value;
         }
