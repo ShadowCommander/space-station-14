@@ -309,14 +309,13 @@ namespace Content.Server.Power.EntitySystems
                                       apcReceiver.Load));
 
                 // If new value is the same as the old, then exit
-                if (!apcReceiver.Recalculate && apcReceiver.Powered == powered)
+                if (apcReceiver.Powered == powered)
                     continue;
 
                 var metadata = metaQuery.Comp(uid);
                 if (metadata.EntityPaused)
                     continue;
 
-                apcReceiver.Recalculate = false;
                 apcReceiver.Powered = powered;
                 Dirty(uid, apcReceiver, metadata);
 
